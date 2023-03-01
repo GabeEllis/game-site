@@ -14,9 +14,9 @@ root.render(
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<App />} />
-      <Route path="home" element={<Home />} />
-      <Route path="sudoku" element={<Sudoku />}></Route>
-      <Route path="chess" element={<Chess />}></Route>
+      <Route path="/Home" element={<Home />} />
+      <Route path="/Sudoku" element={<Sudoku />}></Route>
+      <Route path="/Chess" element={<Chess />}></Route>
       <Route path="*" element={<NoPage />} />
     </Routes>
   </BrowserRouter>

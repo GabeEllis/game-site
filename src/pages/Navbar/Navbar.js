@@ -8,13 +8,13 @@ function Navbar() {
       <nav>
         <ul>
           <li>
-            <NavLink to="./pages/Home/Home">Home</NavLink>
+            <NavLink to="/Home">Home</NavLink>
           </li>
           <li>
-            <NavLink to="./pages/Sudoku/Sudoku">Sudoku</NavLink>
+            <NavLink to="/Sudoku">Sudoku</NavLink>
           </li>
           <li>
-            <NavLink to="./pages/Chess/Chess">Chess</NavLink>
+            <NavLink to="/Chess">Chess</NavLink>
           </li>
         </ul>
       </nav>
