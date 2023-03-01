@@ -1,11 +1,12 @@
+import React from "react";
 import "./App.scss";
-import Sudoku from "../src/pages/Sudoku/Sudoku";
+import Navbar from "./pages/Navbar/Navbar";
 
 function App() {
   return (
-    <>
-      <Sudoku />
-    </>
+    <div className="App">
+      <Navbar />
+    </div>
   );
 }
 
