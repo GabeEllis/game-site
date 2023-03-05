@@ -13,8 +13,8 @@ const root = createRoot(rootElement);
 root.render(
   <BrowserRouter>
     <Routes>
-      <Route path="/" element={<App />} />
-      <Route path="/Home" element={<Home />} />
+      <Route index element={<App />} />
+      <Route path="/" element={<Home />} />
       <Route path="/Sudoku" element={<Sudoku />}></Route>
       <Route path="/Chess" element={<Chess />}></Route>
       <Route path="*" element={<NoPage />} />
