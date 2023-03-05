@@ -469,11 +469,70 @@ function validMoves(board, startIndex) {
   return validMoveArray;
 }
 
+// Checks to see if the king is in check.
+function inCheck(board, kingIndex) {
+  let inCheckFlag = false;
+  if (whichTeam(board[kingIndex]) === "white") {
+    const rookAttackArray = rookMoves(board, kingIndex);
+    rookAttackArray.forEach((tile) => {
+      if (board[tile] === "r" || board[tile] === "q") {
+        console.log("rook");
+        inCheckFlag = true;
+      }
+    });
+    const bishopAttackArray = bishopMoves(board, kingIndex);
+    bishopAttackArray.forEach((tile) => {
+      if (board[tile] === "b" || board[tile] === "q") {
+        inCheckFlag = true;
+      }
+    });
+    const knightAttackArray = knightMoves(board, kingIndex);
+    knightAttackArray.forEach((tile) => {
+      if (board[tile] === "n") {
+        inCheckFlag = true;
+      }
+    });
+    const pawnAttackArray = pawnMoves(board, kingIndex);
+    pawnAttackArray.forEach((tile) => {
+      if (board[tile] === "p") {
+        inCheckFlag = true;
+      }
+    });
+  }
+  if (whichTeam(board[kingIndex]) === "black") {
+    const rookAttackArray = rookMoves(board, kingIndex);
+    rookAttackArray.forEach((tile) => {
+      if (board[tile] === "R" || board[tile] === "Q") {
+        inCheckFlag = true;
+      }
+    });
+    const bishopAttackArray = bishopMoves(board, kingIndex);
+    bishopAttackArray.forEach((tile) => {
+      if (board[tile] === "B" || board[tile] === "Q") {
+        inCheckFlag = true;
+      }
+    });
+    const knightAttackArray = knightMoves(board, kingIndex);
+    knightAttackArray.forEach((tile) => {
+      if (board[tile] === "N") {
+        inCheckFlag = true;
+      }
+    });
+    const pawnAttackArray = pawnMoves(board, kingIndex);
+    pawnAttackArray.forEach((tile) => {
+      if (board[tile] === "P") {
+        inCheckFlag = true;
+      }
+    });
+  }
+  return inCheckFlag;
+}
+
 const testRow = [
+  "r",
   "0",
   "0",
-  "0",
-  "0",
+  "K",
   "0",
   "0",
   "0",
@@ -498,3 +557,5 @@ const testRow = [
 
 console.log(validMoves(testRow, 8));
 console.log(testRow);
+
+console.log(inCheck(testRow, 3));
