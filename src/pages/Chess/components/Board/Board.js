@@ -462,6 +462,9 @@ function validMoves(board, startIndex) {
     // If piece is a pawn.
   } else if (pieceType === "p" || pieceType === "P") {
     validMoveArray = pawnMoves(board, startIndex);
+    // Picked a blank tile.
+  } else {
+    validMoveArray = "Empty Square";
   }
   return validMoveArray;
 }
