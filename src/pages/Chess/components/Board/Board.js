@@ -1,5 +1,6 @@
 import "./Board.scss";
 import Tile from "../Tile/Tile";
+import { useState } from "react";
 
 const chessBoard = [
   "r",
@@ -68,42 +69,10 @@ const chessBoard = [
   "R",
 ];
 
-function Board() {
-  let startingBoard = [];
-  const horizontalLabels = ["a", "b", "c", "d", "e", "f", "g", "h"];
-  const verticalLabels = ["1", "2", "3", "4", "5", "6", "7", "8"];
-
-  for (let i = 7; i >= 0; i--) {
-    for (let j = 0; j < 8; j++) {
-      startingBoard.push({
-        id: `${horizontalLabels[j]}${verticalLabels[i]}`,
-        value: chessBoard[8 * i + j],
-        squareColor: j + i,
-      });
-    }
-  }
-  return (
-    <main className="board">
-      {startingBoard.map((tile) => {
-        return (
-          <Tile
-            key={tile.id}
-            id={tile.id}
-            value={tile.value}
-            squareColor={tile.squareColor}
-          />
-        );
-      })}
-    </main>
-  );
-}
-
-export default Board;
-
 // Moves a piece, and when it does replace its original location with a 0.
 function movePiece(board, startIndex, finalIndex) {
-  board[finalIndex] = board[startIndex];
-  board[startIndex] = "0";
+  board[finalIndex].value = board[startIndex].value;
+  board[startIndex].value = "0";
   return board;
 }
 
@@ -120,9 +89,11 @@ function whichTeam(pieceType) {
 
 // For the single move pieces, checks if the square if valid.
 function ifSquareCheck(board, startIndex, finalIndex, validMoveArray) {
-  if (board[finalIndex] === "0") {
+  if (board[finalIndex].value === "0") {
     validMoveArray.push(finalIndex);
-  } else if (whichTeam(board[startIndex]) !== whichTeam(board[finalIndex])) {
+  } else if (
+    whichTeam(board[startIndex].value) !== whichTeam(board[finalIndex].value)
+  ) {
     validMoveArray.push(finalIndex);
   }
   return validMoveArray;
@@ -136,9 +107,13 @@ function rookMoves(board, startIndex) {
   while (counter >= 0 && (counter + 1) % 8 !== 0) {
     if (board[counter] === "0") {
       validMoveArray.push(counter);
-    } else if (whichTeam(board[startIndex]) === whichTeam(board[counter])) {
+    } else if (
+      whichTeam(board[startIndex].value) === whichTeam(board[counter].value)
+    ) {
       break;
-    } else if (whichTeam(board[startIndex]) !== whichTeam(board[counter])) {
+    } else if (
+      whichTeam(board[startIndex].value) !== whichTeam(board[counter].value)
+    ) {
       validMoveArray.push(counter);
       break;
     }
@@ -149,9 +124,13 @@ function rookMoves(board, startIndex) {
   while (counter % 8 !== 0) {
     if (board[counter] === "0") {
       validMoveArray.push(counter);
-    } else if (whichTeam(board[startIndex]) === whichTeam(board[counter])) {
+    } else if (
+      whichTeam(board[startIndex].value) === whichTeam(board[counter].value)
+    ) {
       break;
-    } else if (whichTeam(board[startIndex]) !== whichTeam(board[counter])) {
+    } else if (
+      whichTeam(board[startIndex].value) !== whichTeam(board[counter].value)
+    ) {
       validMoveArray.push(counter);
       break;
     }
@@ -162,9 +141,13 @@ function rookMoves(board, startIndex) {
   while (counter <= 63) {
     if (board[counter] === "0") {
       validMoveArray.push(counter);
-    } else if (whichTeam(board[startIndex]) === whichTeam(board[counter])) {
+    } else if (
+      whichTeam(board[startIndex].value) === whichTeam(board[counter].value)
+    ) {
       break;
-    } else if (whichTeam(board[startIndex]) !== whichTeam(board[counter])) {
+    } else if (
+      whichTeam(board[startIndex].value) !== whichTeam(board[counter].value)
+    ) {
       validMoveArray.push(counter);
       break;
     }
@@ -175,9 +158,13 @@ function rookMoves(board, startIndex) {
   while (counter >= 0) {
     if (board[counter] === "0") {
       validMoveArray.push(counter);
-    } else if (whichTeam(board[startIndex]) === whichTeam(board[counter])) {
+    } else if (
+      whichTeam(board[startIndex].value) === whichTeam(board[counter].value)
+    ) {
       break;
-    } else if (whichTeam(board[startIndex]) !== whichTeam(board[counter])) {
+    } else if (
+      whichTeam(board[startIndex].value) !== whichTeam(board[counter].value)
+    ) {
       validMoveArray.push(counter);
       break;
     }
@@ -194,9 +181,13 @@ function bishopMoves(board, startIndex) {
   while (counter >= 0 && (counter + 1) % 8 !== 0) {
     if (board[counter] === "0") {
       validMoveArray.push(counter);
-    } else if (whichTeam(board[startIndex]) === whichTeam(board[counter])) {
+    } else if (
+      whichTeam(board[startIndex].value) === whichTeam(board[counter].value)
+    ) {
       break;
-    } else if (whichTeam(board[startIndex]) !== whichTeam(board[counter])) {
+    } else if (
+      whichTeam(board[startIndex].value) !== whichTeam(board[counter].value)
+    ) {
       validMoveArray.push(counter);
       break;
     }
@@ -207,9 +198,13 @@ function bishopMoves(board, startIndex) {
   while (counter >= 0 && counter % 8 !== 0) {
     if (board[counter] === "0") {
       validMoveArray.push(counter);
-    } else if (whichTeam(board[startIndex]) === whichTeam(board[counter])) {
+    } else if (
+      whichTeam(board[startIndex].value) === whichTeam(board[counter].value)
+    ) {
       break;
-    } else if (whichTeam(board[startIndex]) !== whichTeam(board[counter])) {
+    } else if (
+      whichTeam(board[startIndex].value) !== whichTeam(board[counter].value)
+    ) {
       validMoveArray.push(counter);
       break;
     }
@@ -220,9 +215,13 @@ function bishopMoves(board, startIndex) {
   while (counter <= 62 && (counter + 1) % 8 !== 0) {
     if (board[counter] === "0") {
       validMoveArray.push(counter);
-    } else if (whichTeam(board[startIndex]) === whichTeam(board[counter])) {
+    } else if (
+      whichTeam(board[startIndex].value) === whichTeam(board[counter].value)
+    ) {
       break;
-    } else if (whichTeam(board[startIndex]) !== whichTeam(board[counter])) {
+    } else if (
+      whichTeam(board[startIndex].value) !== whichTeam(board[counter].value)
+    ) {
       validMoveArray.push(counter);
       break;
     }
@@ -233,9 +232,13 @@ function bishopMoves(board, startIndex) {
   while (counter <= 63 && counter % 8 !== 0) {
     if (board[counter] === "0") {
       validMoveArray.push(counter);
-    } else if (whichTeam(board[startIndex]) === whichTeam(board[counter])) {
+    } else if (
+      whichTeam(board[startIndex].value) === whichTeam(board[counter].value)
+    ) {
       break;
-    } else if (whichTeam(board[startIndex]) !== whichTeam(board[counter])) {
+    } else if (
+      whichTeam(board[startIndex].value) !== whichTeam(board[counter].value)
+    ) {
       validMoveArray.push(counter);
       break;
     }
@@ -420,43 +423,43 @@ function kingMoves(board, startIndex) {
 function pawnMoves(board, startIndex) {
   let validMoveArray = [];
   // If the the pawn is white.
-  if (whichTeam(board[startIndex]) === "white") {
-    if (startIndex > 49) {
+  if (whichTeam(board[startIndex].value) === "white") {
+    if (startIndex > 47) {
       const finalIndex = startIndex - 16;
-      if (board[finalIndex] === "0") {
+      if (board[finalIndex].value === "0") {
         validMoveArray.push(finalIndex);
       }
     }
     if (startIndex > 7) {
       const finalIndex = startIndex - 8;
-      if (board[finalIndex] === "0") {
+      if (board[finalIndex].value === "0") {
         validMoveArray.push(finalIndex);
       }
-      if (whichTeam(board[finalIndex + 1]) === "black") {
+      if (whichTeam(board[finalIndex + 1].value) === "black") {
         validMoveArray.push(finalIndex + 1);
       }
-      if (whichTeam(board[finalIndex - 1]) === "black") {
+      if (whichTeam(board[finalIndex - 1].value) === "black") {
         validMoveArray.push(finalIndex - 1);
       }
     }
   }
   // If the pawn is black.
-  if (whichTeam(board[startIndex]) === "black") {
+  if (whichTeam(board[startIndex].value) === "black") {
     if (startIndex < 16) {
       const finalIndex = startIndex + 16;
-      if (board[finalIndex] === "0") {
+      if (board[finalIndex].value === "0") {
         validMoveArray.push(finalIndex);
       }
     }
     if (startIndex < 56) {
       const finalIndex = startIndex + 8;
-      if (board[finalIndex] === "0") {
+      if (board[finalIndex].value === "0") {
         validMoveArray.push(finalIndex);
       }
-      if (whichTeam(board[finalIndex + 1]) === "white") {
+      if (whichTeam(board[finalIndex + 1].value) === "white") {
         validMoveArray.push(finalIndex + 1);
       }
-      if (whichTeam(board[finalIndex - 1]) === "white") {
+      if (whichTeam(board[finalIndex - 1].value) === "white") {
         validMoveArray.push(finalIndex - 1);
       }
     }
@@ -466,7 +469,7 @@ function pawnMoves(board, startIndex) {
 
 // Creates an array of all of the valid moves for the selected piece.
 function validMoves(board, startIndex) {
-  const pieceType = board[startIndex];
+  const pieceType = board[startIndex].value;
   let validMoveArray = [];
   console.log(pieceType);
   // If piece is a rook.
@@ -555,59 +558,108 @@ function inCheck(board, kingIndex) {
   return inCheckFlag;
 }
 
-// Returns valid moves of a piece if they pick one of their pieces.
-const selectPiece = (board, index, playerTeam) => {
-  if (whichTeam(board[index]) === playerTeam) {
-    return [validMoves(board, index), index];
-  }
-};
+function Board() {
+  // Piece the user clicked on.
+  const [selectedPiece, useSelectedPiece] = useState();
+  let selectedValidMoves = [];
+  // Intializes the starting board.
+  const startingBoard = [];
+  // Sets the currentBoard as startingBoard.
+  const [currentBoard, useCurrentBoard] = useState(startingBoard);
+  // Used to creates the id values for the chess tiles.
+  const horizontalLabels = ["a", "b", "c", "d", "e", "f", "g", "h"];
+  const verticalLabels = ["8", "7", "6", "5", "4", "3", "2", "1"];
 
-function chessGame(board) {
-  let whoseTurn = "white";
-  let gameOver = false;
-  while (gameOver === false) {
-    let selectedPiece = selectPiece(board, 0, whoseTurn);
-    if (whoseTurn === "white") {
-      whoseTurn = "black";
-    } else if (whoseTurn === "black") {
-      whoseTurn = "white";
-    }
-    if (selectedPiece !== undefined) {
-      console.log(selectedPiece);
-      movePiece(board, selectedPiece[1], selectedPiece[0][0]);
-      console.log(board);
-      gameOver = true;
+  // Creates the intial board.
+  for (var i = 0; i < 8; i++) {
+    for (var j = 0; j < 8; j++) {
+      startingBoard.push({
+        id: `${horizontalLabels[j]}${verticalLabels[i]}`,
+        value: chessBoard[8 * i + j],
+        squareColor: j + i,
+      });
     }
   }
+
+  // Finds the piece the users clicks on and sets selected piece equal to it.
+  const SelectPiece = (id) => {
+    const foundPiece = currentBoard.find((tile) => tile.id === id);
+    useSelectedPiece(foundPiece);
+  };
+
+  function ChessGame(board) {
+    // let whoseTurn = "white";
+    // let moveCounter = 0;
+    let turnOver = false;
+    if (turnOver === false) {
+      // if (whoseTurn === "white") {
+      //   whoseTurn = "black";
+      // } else if (whoseTurn === "black") {
+      //   whoseTurn = "white";
+      // }
+      if (selectedPiece !== undefined) {
+        const foundPieceIndex = board.findIndex(
+          (tile) => tile.id === selectedPiece.id
+        );
+        selectedValidMoves = validMoves(board, foundPieceIndex);
+        console.log(selectedValidMoves);
+        // if (selectedValidMoves !== "Empty Square") {
+        //   movePiece(board, foundPieceIndex, selectedValidMoves[0]);
+        //   turnOver = true;
+        // }
+      }
+    }
+  }
+
+  ChessGame(currentBoard);
+  console.log(currentBoard);
+
+  return (
+    <main className="board">
+      {currentBoard.map((tile, index) => {
+        return (
+          <Tile
+            key={tile.id}
+            id={tile.id}
+            value={tile.value}
+            squareColor={tile.squareColor}
+            SelectPiece={SelectPiece}
+            isValidMove={selectedValidMoves.includes(index)}
+          />
+        );
+      })}
+    </main>
+  );
 }
 
-const testRow = [
-  "R",
-  "0",
-  "0",
-  "K",
-  "0",
-  "0",
-  "0",
-  "0",
-  "p",
-  "0",
-  "0",
-  "0",
-  "0",
-  "0",
-  "0",
-  "0",
-  "0",
-  "P",
-  "0",
-  "0",
-  "0",
-  "0",
-  "0",
-  "0",
-];
+export default Board;
 
+// const testRow = [
+//   "R",
+//   "0",
+//   "0",
+//   "K",
+//   "0",
+//   "0",
+//   "0",
+//   "0",
+//   "p",
+//   "0",
+//   "0",
+//   "0",
+//   "0",
+//   "0",
+//   "0",
+//   "0",
+//   "0",
+//   "P",
+//   "0",
+//   "0",
+//   "0",
+//   "0",
+//   "0",
+//   "0",
+// ];
 // console.log(testRow);
 // console.log(selectPiece(testRow, 8, "black"));
 // console.log(testRow);

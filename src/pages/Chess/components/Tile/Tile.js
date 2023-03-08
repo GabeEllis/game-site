@@ -7,12 +7,12 @@ import WhiteKing from "../../../../assets/images/white_king.png";
 import WhitePawn from "../../../../assets/images/white_pawn.png";
 import BlackRook from "../../../../assets/images/black_rook.png";
 import BlackKnight from "../../../../assets/images/black_knight.png";
-import BlackBishop from "../../../../assets/images/black_rook.png";
+import BlackBishop from "../../../../assets/images/black_bishop.png";
 import BlackQueen from "../../../../assets/images/black_queen.png";
 import BlackKing from "../../../../assets/images/black_king.png";
 import BlackPawn from "../../../../assets/images/black_pawn.png";
 
-function Tile({ id, value, squareColor }) {
+function Tile({ id, value, squareColor, SelectPiece, isValidMove }) {
   function getPieceImage(value) {
     if (value === "R") {
       return WhiteRook;
@@ -46,13 +46,19 @@ function Tile({ id, value, squareColor }) {
     <div
       className={
         squareColor % 2 === 0
-          ? "tile tile__dark-square"
-          : "tile tile__light-square"
+          ? "tile tile__light-square"
+          : "tile tile__dark-square"
       }
     >
       <div
+        onClick={() => SelectPiece(id)}
         className="tile__piece-image"
         style={{ backgroundImage: `url(${getPieceImage(value)})` }}
+      ></div>
+      <div
+        className={
+          isValidMove ? "tile__valid-moves" : "tile__valid-moves--none"
+        }
       ></div>
     </div>
   );
