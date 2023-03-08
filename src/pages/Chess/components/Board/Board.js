@@ -1,10 +1,5 @@
 import "./Board.scss";
-
-function Board() {
-  return <main></main>;
-}
-
-export default Board;
+import Tile from "../Tile/Tile";
 
 const chessBoard = [
   "r",
@@ -72,6 +67,38 @@ const chessBoard = [
   "N",
   "R",
 ];
+
+function Board() {
+  let startingBoard = [];
+  const horizontalLabels = ["a", "b", "c", "d", "e", "f", "g", "h"];
+  const verticalLabels = ["1", "2", "3", "4", "5", "6", "7", "8"];
+
+  for (let i = 7; i >= 0; i--) {
+    for (let j = 0; j < 8; j++) {
+      startingBoard.push({
+        id: `${horizontalLabels[j]}${verticalLabels[i]}`,
+        value: chessBoard[8 * i + j],
+        squareColor: j + i,
+      });
+    }
+  }
+  return (
+    <main className="board">
+      {startingBoard.map((tile) => {
+        return (
+          <Tile
+            key={tile.id}
+            id={tile.id}
+            value={tile.value}
+            squareColor={tile.squareColor}
+          />
+        );
+      })}
+    </main>
+  );
+}
+
+export default Board;
 
 // Moves a piece, and when it does replace its original location with a 0.
 function movePiece(board, startIndex, finalIndex) {
@@ -528,8 +555,34 @@ function inCheck(board, kingIndex) {
   return inCheckFlag;
 }
 
+// Returns valid moves of a piece if they pick one of their pieces.
+const selectPiece = (board, index, playerTeam) => {
+  if (whichTeam(board[index]) === playerTeam) {
+    return [validMoves(board, index), index];
+  }
+};
+
+function chessGame(board) {
+  let whoseTurn = "white";
+  let gameOver = false;
+  while (gameOver === false) {
+    let selectedPiece = selectPiece(board, 0, whoseTurn);
+    if (whoseTurn === "white") {
+      whoseTurn = "black";
+    } else if (whoseTurn === "black") {
+      whoseTurn = "white";
+    }
+    if (selectedPiece !== undefined) {
+      console.log(selectedPiece);
+      movePiece(board, selectedPiece[1], selectedPiece[0][0]);
+      console.log(board);
+      gameOver = true;
+    }
+  }
+}
+
 const testRow = [
-  "r",
+  "R",
   "0",
   "0",
   "K",
@@ -555,7 +608,7 @@ const testRow = [
   "0",
 ];
 
-console.log(validMoves(testRow, 8));
-console.log(testRow);
-
-console.log(inCheck(testRow, 3));
+// console.log(testRow);
+// console.log(selectPiece(testRow, 8, "black"));
+// console.log(testRow);
+// chessGame(testRow);
