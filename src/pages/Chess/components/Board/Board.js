@@ -1,6 +1,6 @@
 import "./Board.scss";
 import Tile from "../Tile/Tile";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const chessBoard = [
   "r",
@@ -494,7 +494,7 @@ function validMoves(board, startIndex) {
     validMoveArray = pawnMoves(board, startIndex);
     // Picked a blank tile.
   } else {
-    validMoveArray = "Empty Square";
+    validMoveArray = [];
   }
   return validMoveArray;
 }
@@ -562,6 +562,8 @@ function Board() {
   // Piece the user clicked on.
   const [selectedPiece, useSelectedPiece] = useState();
   let selectedValidMoves = [];
+  let lastSelectedPiece = usePrevious(selectedPiece);
+  console.log("last click", lastSelectedPiece);
   // Intializes the starting board.
   const startingBoard = [];
   // Sets the currentBoard as startingBoard.
@@ -581,11 +583,21 @@ function Board() {
     }
   }
 
+  console.log(chessBoard);
   // Finds the piece the users clicks on and sets selected piece equal to it.
   const SelectPiece = (id) => {
     const foundPiece = currentBoard.find((tile) => tile.id === id);
     useSelectedPiece(foundPiece);
   };
+
+  // Returns last clicked value by the user.
+  function usePrevious(value) {
+    const lastClick = useRef();
+    useEffect(() => {
+      lastClick.current = value;
+    }, [value]);
+    return lastClick.current;
+  }
 
   function ChessGame(board) {
     // let whoseTurn = "white";
@@ -597,12 +609,41 @@ function Board() {
       // } else if (whoseTurn === "black") {
       //   whoseTurn = "white";
       // }
+      console.log("selected piece", selectedPiece);
       if (selectedPiece !== undefined) {
         const foundPieceIndex = board.findIndex(
           (tile) => tile.id === selectedPiece.id
         );
         selectedValidMoves = validMoves(board, foundPieceIndex);
-        console.log(selectedValidMoves);
+        console.log(
+          "valid moves",
+          selectedValidMoves,
+          "currentIndex",
+          foundPieceIndex,
+          "prevPiece",
+          lastSelectedPiece
+        );
+        if (lastSelectedPiece !== undefined) {
+          const lastFoundPieceIndex = board.findIndex(
+            (tile) => tile.id === lastSelectedPiece.id
+          );
+          console.log(
+            "valid moves",
+            selectedValidMoves,
+            "currentIndex",
+            foundPieceIndex,
+            "prevPiece",
+            lastSelectedPiece,
+            "prevIndex",
+            lastFoundPieceIndex
+          );
+          // What I really want, but don't get to add. If the lastValidMoves Array compared to current selected Index.
+          if (selectedValidMoves.includes(lastFoundPieceIndex)) {
+            console.log("turnOver");
+            movePiece(board, foundPieceIndex, lastFoundPieceIndex);
+            turnOver = true;
+          }
+        }
         // if (selectedValidMoves !== "Empty Square") {
         //   movePiece(board, foundPieceIndex, selectedValidMoves[0]);
         //   turnOver = true;
@@ -612,7 +653,6 @@ function Board() {
   }
 
   ChessGame(currentBoard);
-  console.log(currentBoard);
 
   return (
     <main className="board">

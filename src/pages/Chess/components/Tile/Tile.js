@@ -49,9 +49,9 @@ function Tile({ id, value, squareColor, SelectPiece, isValidMove }) {
           ? "tile tile__light-square"
           : "tile tile__dark-square"
       }
+      onClick={() => SelectPiece(id)}
     >
       <div
-        onClick={() => SelectPiece(id)}
         className="tile__piece-image"
         style={{ backgroundImage: `url(${getPieceImage(value)})` }}
       ></div>
