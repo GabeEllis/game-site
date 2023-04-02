@@ -646,7 +646,6 @@ function Board() {
           if (lastValidMoves.includes(foundPieceIndex)) {
             console.log(foundPieceIndex, lastFoundPieceIndex);
             movePiece(board, lastFoundPieceIndex, foundPieceIndex);
-            let pieceMoved = true;
           }
         }
         // if (selectedValidMoves !== "Empty Square") {
