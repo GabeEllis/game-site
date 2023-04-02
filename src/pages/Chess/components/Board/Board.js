@@ -105,7 +105,7 @@ function rookMoves(board, startIndex) {
   // Left
   let counter = startIndex - 1;
   while (counter >= 0 && (counter + 1) % 8 !== 0) {
-    if (board[counter] === "0") {
+    if (board[counter].value === "0") {
       validMoveArray.push(counter);
     } else if (
       whichTeam(board[startIndex].value) === whichTeam(board[counter].value)
@@ -122,7 +122,7 @@ function rookMoves(board, startIndex) {
   // Right
   counter = startIndex + 1;
   while (counter % 8 !== 0) {
-    if (board[counter] === "0") {
+    if (board[counter].value === "0") {
       validMoveArray.push(counter);
     } else if (
       whichTeam(board[startIndex].value) === whichTeam(board[counter].value)
@@ -139,7 +139,7 @@ function rookMoves(board, startIndex) {
   // Up
   counter = startIndex + 8;
   while (counter <= 63) {
-    if (board[counter] === "0") {
+    if (board[counter].value === "0") {
       validMoveArray.push(counter);
     } else if (
       whichTeam(board[startIndex].value) === whichTeam(board[counter].value)
@@ -156,7 +156,7 @@ function rookMoves(board, startIndex) {
   // Down
   counter = startIndex - 8;
   while (counter >= 0) {
-    if (board[counter] === "0") {
+    if (board[counter].value === "0") {
       validMoveArray.push(counter);
     } else if (
       whichTeam(board[startIndex].value) === whichTeam(board[counter].value)
@@ -179,7 +179,7 @@ function bishopMoves(board, startIndex) {
   // Top-Left
   let counter = startIndex - 9;
   while (counter >= 0 && (counter + 1) % 8 !== 0) {
-    if (board[counter] === "0") {
+    if (board[counter].value === "0") {
       validMoveArray.push(counter);
     } else if (
       whichTeam(board[startIndex].value) === whichTeam(board[counter].value)
@@ -196,7 +196,7 @@ function bishopMoves(board, startIndex) {
   // Top-Right
   counter = startIndex - 7;
   while (counter >= 0 && counter % 8 !== 0) {
-    if (board[counter] === "0") {
+    if (board[counter].value === "0") {
       validMoveArray.push(counter);
     } else if (
       whichTeam(board[startIndex].value) === whichTeam(board[counter].value)
@@ -213,7 +213,7 @@ function bishopMoves(board, startIndex) {
   // Bottom-Left
   counter = startIndex + 7;
   while (counter <= 62 && (counter + 1) % 8 !== 0) {
-    if (board[counter] === "0") {
+    if (board[counter].value === "0") {
       validMoveArray.push(counter);
     } else if (
       whichTeam(board[startIndex].value) === whichTeam(board[counter].value)
@@ -230,7 +230,7 @@ function bishopMoves(board, startIndex) {
   // Bottom-Right
   counter = startIndex + 9;
   while (counter <= 63 && counter % 8 !== 0) {
-    if (board[counter] === "0") {
+    if (board[counter].value === "0") {
       validMoveArray.push(counter);
     } else if (
       whichTeam(board[startIndex].value) === whichTeam(board[counter].value)
@@ -496,6 +496,7 @@ function validMoves(board, startIndex) {
   } else {
     validMoveArray = [];
   }
+  console.log(validMoveArray);
   return validMoveArray;
 }
 
@@ -559,10 +560,13 @@ function inCheck(board, kingIndex) {
 }
 
 function Board() {
+  // Intializes selected piece and the selected piece's valid moves.
   const [selectedPiece, useSelectedPiece] = useState(null);
+  let selectedValidMoves = [];
+
+  // Gets previously selected piece.
   const prev = useRef("null");
   let lastSelectedPiece = prev.current;
-  let selectedValidMoves = [];
 
   useEffect(() => {
     prev.current = selectedPiece;
@@ -611,39 +615,38 @@ function Board() {
           (tile) => tile.id === selectedPiece.id
         );
         let selectedValidMoves = validMoves(board, foundPieceIndex);
-        console.log(
-          "selected piece",
-          selectedPiece,
-          "valid moves",
-          selectedValidMoves,
-          "currentIndex",
-          foundPieceIndex,
-          "prevPiece",
-          lastSelectedPiece
-        );
+        // console.log(
+        //   "selected piece",
+        //   selectedPiece,
+        //   "valid moves",
+        //   selectedValidMoves,
+        //   "currentIndex",
+        //   foundPieceIndex,
+        //   "prevPiece",
+        //   lastSelectedPiece
+        // );
         if (lastSelectedPiece) {
           const lastFoundPieceIndex = board.findIndex(
             (tile) => tile.id === lastSelectedPiece.id
           );
           let lastValidMoves = validMoves(board, lastFoundPieceIndex);
-          console.log(
-            "valid moves",
-            selectedValidMoves,
-            "currentIndex",
-            foundPieceIndex,
-            "prevPiece",
-            lastSelectedPiece,
-            "prevIndex",
-            lastFoundPieceIndex,
-            "last valid",
-            lastValidMoves
-          );
+          // console.log(
+          //   "valid moves",
+          //   selectedValidMoves,
+          //   "currentIndex",
+          //   foundPieceIndex,
+          //   "prevPiece",
+          //   lastSelectedPiece,
+          //   "prevIndex",
+          //   lastFoundPieceIndex,
+          //   "last valid",
+          //   lastValidMoves
+          // );
           // What I really want, but don't get to add. If the lastValidMoves Array compared to current selected Index.
           if (lastValidMoves.includes(foundPieceIndex)) {
             console.log(foundPieceIndex, lastFoundPieceIndex);
             movePiece(board, lastFoundPieceIndex, foundPieceIndex);
-            turnOver = true;
-            console.log("turnOver", currentBoard);
+            let pieceMoved = true;
           }
         }
         // if (selectedValidMoves !== "Empty Square") {
