@@ -613,39 +613,33 @@ function Board() {
   function ChessGame(board) {
     // let moveCounter = 0;
     if (selectedPiece) {
-      // If selected piece is the same color as whose turn or it is an empty tile.
-      if (
-        whichTeam(selectedPiece.value) === whoseTurn ||
-        selectedPiece.value === "0"
-      ) {
-        // Gets the index of the selected piece.
-        const foundPieceIndex = board.findIndex(
-          (tile) => tile.id === selectedPiece.id
-        );
-        let selectedValidMoves = validMoves(board, foundPieceIndex);
-        console.log(selectedValidMoves);
+      // Gets the index of the selected piece.
+      const foundPieceIndex = board.findIndex(
+        (tile) => tile.id === selectedPiece.id
+      );
+      let selectedValidMoves = validMoves(board, foundPieceIndex);
+      console.log(selectedValidMoves);
 
-        if (lastSelectedPiece) {
-          // If last selected piece is the same color as whose turn.
-          if (whichTeam(lastSelectedPiece.value) === whoseTurn) {
-            // Gets the index of the previously selected piece.
-            const lastFoundPieceIndex = board.findIndex(
-              (tile) => tile.id === lastSelectedPiece.id
-            );
-            let lastValidMoves = validMoves(board, lastFoundPieceIndex);
+      if (lastSelectedPiece) {
+        // If last selected piece is the same color as whose turn.
+        if (whichTeam(lastSelectedPiece.value) === whoseTurn) {
+          // Gets the index of the previously selected piece.
+          const lastFoundPieceIndex = board.findIndex(
+            (tile) => tile.id === lastSelectedPiece.id
+          );
+          let lastValidMoves = validMoves(board, lastFoundPieceIndex);
 
-            // If the selected piece is included in the last selected piece's valid moves array.
-            if (lastValidMoves.includes(foundPieceIndex)) {
-              // console.log(foundPieceIndex, lastFoundPieceIndex);
-              movePiece(board, lastFoundPieceIndex, foundPieceIndex);
-              console.log("whoseTurn", whoseTurn);
-              if (whoseTurn === "white") {
-                whoseTurn = "black";
-              } else if (whoseTurn === "black") {
-                whoseTurn = "white";
-              }
-              console.log("whoseTurn after", whoseTurn);
+          // If the selected piece is included in the last selected piece's valid moves array.
+          if (lastValidMoves.includes(foundPieceIndex)) {
+            // console.log(foundPieceIndex, lastFoundPieceIndex);
+            movePiece(board, lastFoundPieceIndex, foundPieceIndex);
+            console.log("whoseTurn", whoseTurn);
+            if (whoseTurn === "white") {
+              whoseTurn = "black";
+            } else if (whoseTurn === "black") {
+              whoseTurn = "white";
             }
+            console.log("whoseTurn after", whoseTurn);
           }
         }
       }
