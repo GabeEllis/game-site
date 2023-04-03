@@ -1,6 +1,6 @@
 import "./Board.scss";
 import Tile from "../Tile/Tile";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, usePrevious } from "react";
 
 const chessBoard = [
   "r",
@@ -471,7 +471,6 @@ function pawnMoves(board, startIndex) {
 function validMoves(board, startIndex) {
   const pieceType = board[startIndex].value;
   let validMoveArray = [];
-  console.log(pieceType);
   // If piece is a rook.
   if (pieceType === "r" || pieceType === "R") {
     validMoveArray = rookMoves(board, startIndex);
@@ -496,7 +495,6 @@ function validMoves(board, startIndex) {
   } else {
     validMoveArray = [];
   }
-  console.log(validMoveArray);
   return validMoveArray;
 }
 
@@ -562,18 +560,30 @@ function inCheck(board, kingIndex) {
 function Board() {
   // Intializes selected piece and the selected piece's valid moves.
   const [selectedPiece, useSelectedPiece] = useState(null);
+  // const [whoseTurn, useWhoseTurn] = useState("white");
   let selectedValidMoves = [];
 
   // Gets previously selected piece.
-  const prev = useRef("null");
-  let lastSelectedPiece = prev.current;
+  const prevPiece = useRef("null");
+  let lastSelectedPiece = prevPiece.current;
 
   useEffect(() => {
-    prev.current = selectedPiece;
-    console.log("useEffect", prev.current);
+    prevPiece.current = selectedPiece;
+    console.log("useEffect Piece", prevPiece.current);
   }, [selectedPiece]);
 
-  console.log("last click", lastSelectedPiece);
+  // Gets previously selected turn.
+  const prevTurn = useRef("white");
+  let whoseTurn = prevTurn.current;
+  let changeTurn = whoseTurn;
+
+  useEffect(() => {
+    prevTurn.current = whoseTurn;
+    console.log("useEffect Turn", prevTurn.current);
+  });
+
+  console.log("last click", lastSelectedPiece, whoseTurn);
+
   // Intializes the starting board.
   const startingBoard = [];
   // Sets the currentBoard as startingBoard.
@@ -601,67 +611,50 @@ function Board() {
   };
 
   function ChessGame(board) {
-    // let whoseTurn = "white";
     // let moveCounter = 0;
-    let turnOver = false;
-    if (turnOver === false) {
-      // if (whoseTurn === "white") {
-      //   whoseTurn = "black";
-      // } else if (whoseTurn === "black") {
-      //   whoseTurn = "white";
-      // }
-      if (selectedPiece) {
+    if (selectedPiece) {
+      // If selected piece is the same color as whose turn or it is an empty tile.
+      if (
+        whichTeam(selectedPiece.value) === whoseTurn ||
+        selectedPiece.value === "0"
+      ) {
+        // Gets the index of the selected piece.
         const foundPieceIndex = board.findIndex(
           (tile) => tile.id === selectedPiece.id
         );
         let selectedValidMoves = validMoves(board, foundPieceIndex);
-        // console.log(
-        //   "selected piece",
-        //   selectedPiece,
-        //   "valid moves",
-        //   selectedValidMoves,
-        //   "currentIndex",
-        //   foundPieceIndex,
-        //   "prevPiece",
-        //   lastSelectedPiece
-        // );
+        console.log(selectedValidMoves);
+
         if (lastSelectedPiece) {
-          const lastFoundPieceIndex = board.findIndex(
-            (tile) => tile.id === lastSelectedPiece.id
-          );
-          let lastValidMoves = validMoves(board, lastFoundPieceIndex);
-          // console.log(
-          //   "valid moves",
-          //   selectedValidMoves,
-          //   "currentIndex",
-          //   foundPieceIndex,
-          //   "prevPiece",
-          //   lastSelectedPiece,
-          //   "prevIndex",
-          //   lastFoundPieceIndex,
-          //   "last valid",
-          //   lastValidMoves
-          // );
-          // What I really want, but don't get to add. If the lastValidMoves Array compared to current selected Index.
-          if (lastValidMoves.includes(foundPieceIndex)) {
-            console.log(foundPieceIndex, lastFoundPieceIndex);
-            movePiece(board, lastFoundPieceIndex, foundPieceIndex);
+          // If last selected piece is the same color as whose turn.
+          if (whichTeam(lastSelectedPiece.value) === whoseTurn) {
+            // Gets the index of the previously selected piece.
+            const lastFoundPieceIndex = board.findIndex(
+              (tile) => tile.id === lastSelectedPiece.id
+            );
+            let lastValidMoves = validMoves(board, lastFoundPieceIndex);
+
+            // If the selected piece is included in the last selected piece's valid moves array.
+            if (lastValidMoves.includes(foundPieceIndex)) {
+              // console.log(foundPieceIndex, lastFoundPieceIndex);
+              movePiece(board, lastFoundPieceIndex, foundPieceIndex);
+              console.log("whoseTurn", whoseTurn);
+              if (whoseTurn === "white") {
+                whoseTurn = "black";
+              } else if (whoseTurn === "black") {
+                whoseTurn = "white";
+              }
+              console.log("whoseTurn after", whoseTurn);
+            }
           }
         }
-        // if (selectedValidMoves !== "Empty Square") {
-        //   movePiece(board, foundPieceIndex, selectedValidMoves[0]);
-        //   turnOver = true;
-        // }
       }
     }
   }
 
-  // if (!lastSelectedPiece) {
-  //   return <h1>Loading...</h1>;
-  // }
-
+  console.log("ran", lastSelectedPiece, whoseTurn);
+  console.log(selectedPiece, selectedValidMoves);
   ChessGame(currentBoard);
-  console.log("ran", lastSelectedPiece);
 
   return (
     <main className="board">
