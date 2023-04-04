@@ -336,6 +336,8 @@ function knightMoves(board, startIndex) {
 // Finds valid moves for a king.
 function kingMoves(board, startIndex) {
   let validMoveArray = [];
+  let hasCastled = false;
+  console.log("in king");
   // Left
   if (startIndex % 8 > 0) {
     const finalIndex = startIndex + 1;
@@ -415,6 +417,50 @@ function kingMoves(board, startIndex) {
       finalIndex,
       validMoveArray
     );
+  }
+  // Checks for castling.
+  if (!hasCastled && whichTeam(board[startIndex].value) === "white") {
+    console.log("white can castle");
+    // Checks for king side castling.
+    let counter = startIndex + 1;
+    for (let i = 0; i < 2; i++) {
+      console.log(counter);
+      if (board[counter + i].value !== "0") {
+        break;
+      } else if ((i = 1)) {
+        validMoveArray.push(62);
+      }
+    }
+    // Checks for queen side castling.
+    counter = startIndex - 1;
+    for (let i = 0; i > -3; i--) {
+      if (board[counter + i].value !== "0") {
+        break;
+      } else if ((i = -2)) {
+        validMoveArray.push(58);
+      }
+    }
+  } else if (!hasCastled && whichTeam(board[startIndex].value) === "black") {
+    console.log("black can castle");
+    // Checks for king side castling.
+    let counter = startIndex + 1;
+    for (let i = 0; i < 2; i++) {
+      console.log(counter);
+      if (board[counter + i].value !== "0") {
+        break;
+      } else if ((i = 1)) {
+        validMoveArray.push(6);
+      }
+    }
+    // Checks for queen side castling.
+    counter = startIndex - 1;
+    for (let i = 0; i > -3; i--) {
+      if (board[counter + i].value !== "0") {
+        break;
+      } else if ((i = -2)) {
+        validMoveArray.push(2);
+      }
+    }
   }
   return validMoveArray;
 }
@@ -617,8 +663,7 @@ function Board() {
       const foundPieceIndex = board.findIndex(
         (tile) => tile.id === selectedPiece.id
       );
-      let selectedValidMoves = validMoves(board, foundPieceIndex);
-      console.log(selectedValidMoves);
+      selectedValidMoves = validMoves(board, foundPieceIndex);
 
       if (lastSelectedPiece) {
         // If last selected piece is the same color as whose turn.
@@ -639,7 +684,6 @@ function Board() {
             } else if (whoseTurn === "black") {
               whoseTurn = "white";
             }
-            console.log("whoseTurn after", whoseTurn);
           }
         }
       }
