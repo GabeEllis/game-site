@@ -334,10 +334,18 @@ function knightMoves(board, startIndex) {
 }
 
 // Finds valid moves for a king.
-function kingMoves(board, startIndex) {
+function kingMoves(
+  board,
+  startIndex,
+  hasWhiteKingMoved,
+  hasWhiteKingRookMoved,
+  hasWhiteQueenRookMoved,
+  hasBlackKingMoved,
+  hasBlackKingRookMoved,
+  hasBlackQueenRookMoved
+) {
   let validMoveArray = [];
-  let hasCastled = false;
-  console.log("in king");
+
   // Left
   if (startIndex % 8 > 0) {
     const finalIndex = startIndex + 1;
@@ -418,47 +426,61 @@ function kingMoves(board, startIndex) {
       validMoveArray
     );
   }
-  // Checks for castling.
-  if (!hasCastled && whichTeam(board[startIndex].value) === "white") {
+
+  // If the king is white and they haven't castled yet.
+  if (!hasWhiteKingMoved && whichTeam(board[startIndex].value) === "white") {
     console.log("white can castle");
     // Checks for king side castling.
-    let counter = startIndex + 1;
-    for (let i = 0; i < 2; i++) {
-      console.log(counter);
-      if (board[counter + i].value !== "0") {
-        break;
-      } else if ((i = 1)) {
-        validMoveArray.push(62);
+    if (!hasWhiteKingRookMoved) {
+      let counter = startIndex + 1;
+      for (let i = 0; i < 2; i++) {
+        console.log(counter);
+        if (board[counter + i].value !== "0") {
+          break;
+        } else if ((i = 1)) {
+          validMoveArray.push(62);
+        }
       }
     }
     // Checks for queen side castling.
-    counter = startIndex - 1;
-    for (let i = 0; i > -3; i--) {
-      if (board[counter + i].value !== "0") {
-        break;
-      } else if ((i = -2)) {
-        validMoveArray.push(58);
+    if (!hasWhiteQueenRookMoved) {
+      let counter = startIndex - 1;
+      for (let i = 0; i > -3; i--) {
+        if (board[counter + i].value !== "0") {
+          break;
+        } else if ((i = -2)) {
+          validMoveArray.push(58);
+        }
       }
     }
-  } else if (!hasCastled && whichTeam(board[startIndex].value) === "black") {
+
+    // If the king is black and they haven't castled yet.
+  } else if (
+    !hasBlackKingMoved &&
+    whichTeam(board[startIndex].value) === "black"
+  ) {
     console.log("black can castle");
     // Checks for king side castling.
-    let counter = startIndex + 1;
-    for (let i = 0; i < 2; i++) {
-      console.log(counter);
-      if (board[counter + i].value !== "0") {
-        break;
-      } else if ((i = 1)) {
-        validMoveArray.push(6);
+    if (!hasBlackKingRookMoved) {
+      let counter = startIndex + 1;
+      for (let i = 0; i < 2; i++) {
+        console.log(counter);
+        if (board[counter + i].value !== "0") {
+          break;
+        } else if ((i = 1)) {
+          validMoveArray.push(6);
+        }
       }
     }
     // Checks for queen side castling.
-    counter = startIndex - 1;
-    for (let i = 0; i > -3; i--) {
-      if (board[counter + i].value !== "0") {
-        break;
-      } else if ((i = -2)) {
-        validMoveArray.push(2);
+    if (!hasBlackQueenRookMoved) {
+      let counter = startIndex - 1;
+      for (let i = 0; i > -3; i--) {
+        if (board[counter + i].value !== "0") {
+          break;
+        } else if ((i = -2)) {
+          validMoveArray.push(2);
+        }
       }
     }
   }
@@ -514,7 +536,16 @@ function pawnMoves(board, startIndex) {
 }
 
 // Creates an array of all of the valid moves for the selected piece.
-function validMoves(board, startIndex) {
+function validMoves(
+  board,
+  startIndex,
+  hasWhiteKingMoved,
+  hasWhiteKingRookMoved,
+  hasWhiteQueenRookMoved,
+  hasBlackKingMoved,
+  hasBlackKingRookMoved,
+  hasBlackQueenRookMoved
+) {
   const pieceType = board[startIndex].value;
   let validMoveArray = [];
   // If piece is a rook.
@@ -533,7 +564,16 @@ function validMoves(board, startIndex) {
     validMoveArray = validMoveArray.concat(bishopMoves(board, startIndex));
     // If piece is a king.
   } else if (pieceType === "k" || pieceType === "K") {
-    validMoveArray = kingMoves(board, startIndex);
+    validMoveArray = kingMoves(
+      board,
+      startIndex,
+      hasWhiteKingMoved,
+      hasWhiteKingRookMoved,
+      hasWhiteQueenRookMoved,
+      hasBlackKingMoved,
+      hasBlackKingRookMoved,
+      hasBlackQueenRookMoved
+    );
     // If piece is a pawn.
   } else if (pieceType === "p" || pieceType === "P") {
     validMoveArray = pawnMoves(board, startIndex);
