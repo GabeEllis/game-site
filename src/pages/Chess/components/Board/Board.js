@@ -1,6 +1,6 @@
 import "./Board.scss";
 import Tile from "../Tile/Tile";
-import { useState, useEffect, useRef, usePrevious } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const chessBoard = [
   "r",
@@ -349,7 +349,7 @@ function kingMoves(board, startIndex, castlingRules) {
 
   // Left
   if (startIndex % 8 > 0) {
-    const finalIndex = startIndex + 1;
+    const finalIndex = startIndex - 1;
     validMoveArray = ifSquareCheck(
       board,
       startIndex,
@@ -625,6 +625,14 @@ function inCheck(board, kingIndex) {
 }
 
 function Board() {
+  // Intializes the starting board.
+  const startingBoard = [];
+  // Sets the currentBoard as startingBoard.
+  const [currentBoard, useCurrentBoard] = useState(startingBoard);
+  // Used to creates the id values for the chess tiles.
+  const horizontalLabels = ["a", "b", "c", "d", "e", "f", "g", "h"];
+  const verticalLabels = ["8", "7", "6", "5", "4", "3", "2", "1"];
+
   // Intializes selected piece and the selected piece's valid moves.
   const [selectedPiece, useSelectedPiece] = useState(null);
   // const [whoseTurn, useWhoseTurn] = useState("white");
@@ -670,14 +678,6 @@ function Board() {
 
   console.log("last click", lastSelectedPiece, whoseTurn);
 
-  // Intializes the starting board.
-  const startingBoard = [];
-  // Sets the currentBoard as startingBoard.
-  const [currentBoard, useCurrentBoard] = useState(startingBoard);
-  // Used to creates the id values for the chess tiles.
-  const horizontalLabels = ["a", "b", "c", "d", "e", "f", "g", "h"];
-  const verticalLabels = ["8", "7", "6", "5", "4", "3", "2", "1"];
-
   // Creates the intial board.
   for (var i = 0; i < 8; i++) {
     for (var j = 0; j < 8; j++) {
@@ -689,7 +689,7 @@ function Board() {
     }
   }
 
-  console.log(chessBoard);
+  console.log(currentBoard);
   // Finds the piece the users clicks on and sets selected piece equal to it.
   const SelectPiece = (id) => {
     const foundPiece = currentBoard.find((tile) => tile.id === id);
@@ -704,6 +704,7 @@ function Board() {
         (tile) => tile.id === selectedPiece.id
       );
       selectedValidMoves = validMoves(board, foundPieceIndex, castlingRules);
+      console.log(selectedValidMoves);
 
       if (lastSelectedPiece) {
         // If last selected piece is the same color as whose turn.
@@ -722,6 +723,47 @@ function Board() {
           if (lastValidMoves.includes(foundPieceIndex)) {
             // console.log(foundPieceIndex, lastFoundPieceIndex);
             movePiece(board, lastFoundPieceIndex, foundPieceIndex);
+
+            // Checks for white king side castle and then moves the rook.
+            if (
+              !castlingRules.hasWhiteKingMoved &&
+              !castlingRules.hasWhiteKingRookMoved &&
+              foundPieceIndex === 62
+            ) {
+              castlingRules.hasWhiteKingMoved = true;
+              castlingRules.hasWhiteKingRookMoved = true;
+              movePiece(board, 63, 61);
+            }
+            // Checks for white queen side castle and then moves the rook.
+            if (
+              !castlingRules.hasWhiteKingMoved &&
+              !castlingRules.hasWhiteQueenRookMoved &&
+              foundPieceIndex === 58
+            ) {
+              castlingRules.hasWhiteKingMoved = true;
+              castlingRules.hasWhiteQueenRookMoved = true;
+              movePiece(board, 56, 59);
+            }
+            // Checks for black king side castle and then moves the rook.
+            if (
+              !castlingRules.hasBlackKingMoved &&
+              !castlingRules.hasBlackKingRookMoved &&
+              foundPieceIndex === 6
+            ) {
+              castlingRules.hasBlackKingMoved = true;
+              castlingRules.hasBlackKingRookMoved = true;
+              movePiece(board, 7, 5);
+            }
+            // Checks for black queen side castle and then moves the rook.
+            if (
+              !castlingRules.hasBlackKingMoved &&
+              !castlingRules.hasBlackQueenRookMoved &&
+              foundPieceIndex === 2
+            ) {
+              castlingRules.hasBlackKingMoved = true;
+              castlingRules.hasBlackQueenRookMoved = true;
+              movePiece(board, 0, 3);
+            }
 
             // If white king moves, set hasWhiteKingMoved to true.
             console.log(
@@ -760,49 +802,6 @@ function Board() {
               castlingRules.hasBlackQueenRookMoved = true;
             }
 
-            // Checks for white king side castle and then moves the rook.
-            if (
-              !castlingRules.hasWhiteKingMoved &&
-              !castlingRules.hasWhiteKingRookMoved &&
-              foundPieceIndex === 62
-            ) {
-              castlingRules.hasWhiteKingMoved = true;
-              castlingRules.hasWhiteKingRookMoved = true;
-              movePiece(board, 63, 61);
-            }
-
-            // Checks for white queen side castle and then moves the rook.
-            if (
-              !castlingRules.hasWhiteKingMoved &&
-              !castlingRules.hasWhiteQueenRookMoved &&
-              foundPieceIndex === 58
-            ) {
-              castlingRules.hasWhiteKingMoved = true;
-              castlingRules.hasWhiteQueenRookMoved = true;
-              movePiece(board, 56, 59);
-            }
-
-            // Checks for black king side castle and then moves the rook.
-            if (
-              !castlingRules.hasBlackKingMoved &&
-              !castlingRules.hasBlackKingRookMoved &&
-              foundPieceIndex === 6
-            ) {
-              castlingRules.hasBlackKingMoved = true;
-              castlingRules.hasBlackKingRookMoved = true;
-              movePiece(board, 7, 5);
-            }
-
-            // Checks for black queen side castle and then moves the rook.
-            if (
-              !castlingRules.hasBlackKingMoved &&
-              !castlingRules.hasBlackQueenRookMoved &&
-              foundPieceIndex === 2
-            ) {
-              castlingRules.hasBlackKingMoved = true;
-              castlingRules.hasBlackQueenRookMoved = true;
-              movePiece(board, 0, 3);
-            }
             console.log("whoseTurn", whoseTurn);
             if (whoseTurn === "white") {
               whoseTurn = "black";
