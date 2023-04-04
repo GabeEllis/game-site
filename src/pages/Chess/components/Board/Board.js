@@ -627,19 +627,17 @@ function inCheck(board, kingIndex) {
 function Board() {
   // Intializes the starting board.
   const startingBoard = [];
-  // Sets the currentBoard as startingBoard.
+  // Intializes state variables.
   const [currentBoard, useCurrentBoard] = useState(startingBoard);
+  const [selectedPiece, useSelectedPiece] = useState(null);
   // Used to creates the id values for the chess tiles.
   const horizontalLabels = ["a", "b", "c", "d", "e", "f", "g", "h"];
   const verticalLabels = ["8", "7", "6", "5", "4", "3", "2", "1"];
-
-  // Intializes selected piece and the selected piece's valid moves.
-  const [selectedPiece, useSelectedPiece] = useState(null);
   // const [whoseTurn, useWhoseTurn] = useState("white");
   let selectedValidMoves = [];
 
   // Gets previously selected piece.
-  const prevPiece = useRef("null");
+  const prevPiece = useRef("");
   let lastSelectedPiece = prevPiece.current;
 
   useEffect(() => {
@@ -650,6 +648,10 @@ function Board() {
   // Gets previously selected turn.
   const prevTurn = useRef("white");
   let whoseTurn = prevTurn.current;
+
+  // Gets previously selected promotion choice.
+  const prevPromo = useRef("");
+  let promotionChoice = prevPromo.current;
 
   // Gets castling rules values.
   const prevCastlingRules = useRef({
@@ -664,19 +666,10 @@ function Board() {
 
   useEffect(() => {
     prevTurn.current = whoseTurn;
+    prevPromo.current = promotionChoice;
     prevCastlingRules.current = castlingRules;
-    // castlingRules = {
-    //   hasWhiteKingMoved: false,
-    //   hasWhiteKingRookMoved: false,
-    //   hasWhiteQueenRookMoved: false,
-    //   hasBlackKingMoved: false,
-    //   hasBlackKingRookMoved: false,
-    //   hasBlackQueenRookMoved: false,
-    // };
-    console.log("useEffect Turn", prevTurn.current, prevCastlingRules.current);
+    console.log("useEffect Turn", prevTurn.current, prevPromo.current);
   });
-
-  console.log("last click", lastSelectedPiece, whoseTurn);
 
   // Creates the intial board.
   for (var i = 0; i < 8; i++) {
@@ -685,6 +678,8 @@ function Board() {
         id: `${horizontalLabels[j]}${verticalLabels[i]}`,
         value: chessBoard[8 * i + j],
         squareColor: j + i,
+        isPromoted: false,
+        promotionColor: "white",
       });
     }
   }
@@ -696,9 +691,17 @@ function Board() {
     useSelectedPiece(foundPiece);
   };
 
+  // Finds the piece the users clicks on and sets selected piece equal to it.
+  const PromotionOptions = (piece) => {
+    promotionChoice = piece;
+    console.log("promotionChoice", piece);
+  };
+
+  console.log(promotionChoice);
+
   function ChessGame(board) {
-    // let moveCounter = 0;
-    if (selectedPiece) {
+    console.log(!promotionChoice);
+    if (selectedPiece || promotionChoice) {
       // Gets the index of the selected piece.
       const foundPieceIndex = board.findIndex(
         (tile) => tile.id === selectedPiece.id
@@ -706,9 +709,12 @@ function Board() {
       selectedValidMoves = validMoves(board, foundPieceIndex, castlingRules);
       console.log(selectedValidMoves);
 
-      if (lastSelectedPiece) {
+      if (lastSelectedPiece || promotionChoice) {
         // If last selected piece is the same color as whose turn.
-        if (whichTeam(lastSelectedPiece.value) === whoseTurn) {
+        if (
+          whichTeam(lastSelectedPiece.value) === whoseTurn ||
+          promotionChoice
+        ) {
           // Gets the index of the previously selected piece.
           const lastFoundPieceIndex = board.findIndex(
             (tile) => tile.id === lastSelectedPiece.id
@@ -720,12 +726,13 @@ function Board() {
           );
 
           // If the selected piece is included in the last selected piece's valid moves array.
-          if (lastValidMoves.includes(foundPieceIndex)) {
+          if (lastValidMoves.includes(foundPieceIndex) || promotionChoice) {
             // console.log(foundPieceIndex, lastFoundPieceIndex);
             movePiece(board, lastFoundPieceIndex, foundPieceIndex);
 
             // Checks for white king side castle and then moves the rook.
             if (
+              board[foundPieceIndex].value === "K" &&
               !castlingRules.hasWhiteKingMoved &&
               !castlingRules.hasWhiteKingRookMoved &&
               foundPieceIndex === 62
@@ -736,6 +743,7 @@ function Board() {
             }
             // Checks for white queen side castle and then moves the rook.
             if (
+              board[foundPieceIndex].value === "K" &&
               !castlingRules.hasWhiteKingMoved &&
               !castlingRules.hasWhiteQueenRookMoved &&
               foundPieceIndex === 58
@@ -746,6 +754,7 @@ function Board() {
             }
             // Checks for black king side castle and then moves the rook.
             if (
+              board[foundPieceIndex].value === "k" &&
               !castlingRules.hasBlackKingMoved &&
               !castlingRules.hasBlackKingRookMoved &&
               foundPieceIndex === 6
@@ -756,6 +765,7 @@ function Board() {
             }
             // Checks for black queen side castle and then moves the rook.
             if (
+              board[foundPieceIndex].value === "k" &&
               !castlingRules.hasBlackKingMoved &&
               !castlingRules.hasBlackQueenRookMoved &&
               foundPieceIndex === 2
@@ -802,6 +812,37 @@ function Board() {
               castlingRules.hasBlackQueenRookMoved = true;
             }
 
+            // If a white pawn gets to the end of the board, give the user the ability to promote it to another piece.
+            if (board[foundPieceIndex].value === "P" && foundPieceIndex <= 7) {
+              board[foundPieceIndex].isPromoted = true;
+              board[foundPieceIndex].promotionColor = "white";
+            }
+            // If a black pawn gets to the end of the board, give the user the ability to promote it to another piece.
+            if (board[foundPieceIndex].value === "p" && foundPieceIndex >= 56) {
+              board[foundPieceIndex].isPromoted = true;
+              board[foundPieceIndex].promotionColor = "black";
+            }
+
+            console.log(
+              foundPieceIndex <= 7,
+              foundPieceIndex >= 56,
+              promotionChoice,
+              (promotionChoice && foundPieceIndex <= 7) ||
+                (promotionChoice && foundPieceIndex >= 56)
+            );
+            if (
+              (promotionChoice && foundPieceIndex <= 7) ||
+              (promotionChoice && foundPieceIndex >= 56)
+            ) {
+              board[foundPieceIndex].value = promotionChoice;
+              board[foundPieceIndex].isPromoted = false;
+              promotionChoice = "test";
+              console.log(
+                "promo",
+                board[foundPieceIndex].value,
+                promotionChoice
+              );
+            }
             console.log("whoseTurn", whoseTurn);
             if (whoseTurn === "white") {
               whoseTurn = "black";
@@ -814,8 +855,10 @@ function Board() {
     }
   }
 
-  console.log("ran", lastSelectedPiece, whoseTurn);
+  console.log("ran", lastSelectedPiece, whoseTurn, promotionChoice);
+  console.log(promotionChoice);
   console.log(selectedPiece, selectedValidMoves);
+
   ChessGame(currentBoard);
 
   return (
@@ -829,6 +872,9 @@ function Board() {
             squareColor={tile.squareColor}
             SelectPiece={SelectPiece}
             isValidMove={selectedValidMoves.includes(index)}
+            isPromoted={tile.isPromoted}
+            promotionColor={tile.promotionColor}
+            PromotionOptions={PromotionOptions}
           />
         );
       })}
@@ -837,34 +883,3 @@ function Board() {
 }
 
 export default Board;
-
-// const testRow = [
-//   "R",
-//   "0",
-//   "0",
-//   "K",
-//   "0",
-//   "0",
-//   "0",
-//   "0",
-//   "p",
-//   "0",
-//   "0",
-//   "0",
-//   "0",
-//   "0",
-//   "0",
-//   "0",
-//   "0",
-//   "P",
-//   "0",
-//   "0",
-//   "0",
-//   "0",
-//   "0",
-//   "0",
-// ];
-// console.log(testRow);
-// console.log(selectPiece(testRow, 8, "black"));
-// console.log(testRow);
-// chessGame(testRow);
