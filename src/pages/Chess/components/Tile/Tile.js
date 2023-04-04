@@ -42,6 +42,7 @@ function Tile({ id, value, squareColor, SelectPiece, isValidMove }) {
       return "";
     }
   }
+
   return (
     <div
       className={
