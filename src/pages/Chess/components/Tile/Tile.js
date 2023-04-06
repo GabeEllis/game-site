@@ -22,7 +22,6 @@ function Tile({
   promotionColor,
   PromotionOptions,
 }) {
-  console.log(promotionColor);
   function getPieceImage(value) {
     if (value === "R") {
       return WhiteRook;

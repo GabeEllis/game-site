@@ -628,8 +628,9 @@ function Board() {
   // Intializes the starting board.
   const startingBoard = [];
   // Intializes state variables.
-  const [currentBoard, useCurrentBoard] = useState(startingBoard);
-  const [selectedPiece, useSelectedPiece] = useState(null);
+  const [currentBoard, setCurrentBoard] = useState(startingBoard);
+  const [selectedPiece, setSelectedPiece] = useState(null);
+  const [promotionChoice, setPromotionChoice] = useState(null);
   // Used to creates the id values for the chess tiles.
   const horizontalLabels = ["a", "b", "c", "d", "e", "f", "g", "h"];
   const verticalLabels = ["8", "7", "6", "5", "4", "3", "2", "1"];
@@ -649,10 +650,6 @@ function Board() {
   const prevTurn = useRef("white");
   let whoseTurn = prevTurn.current;
 
-  // Gets previously selected promotion choice.
-  const prevPromo = useRef("");
-  let promotionChoice = prevPromo.current;
-
   // Gets castling rules values.
   const prevCastlingRules = useRef({
     hasWhiteKingMoved: false,
@@ -666,9 +663,8 @@ function Board() {
 
   useEffect(() => {
     prevTurn.current = whoseTurn;
-    prevPromo.current = promotionChoice;
     prevCastlingRules.current = castlingRules;
-    console.log("useEffect Turn", prevTurn.current, prevPromo.current);
+    console.log("useEffect Turn", prevTurn.current);
   });
 
   // Creates the intial board.
@@ -688,12 +684,13 @@ function Board() {
   // Finds the piece the users clicks on and sets selected piece equal to it.
   const SelectPiece = (id) => {
     const foundPiece = currentBoard.find((tile) => tile.id === id);
-    useSelectedPiece(foundPiece);
+    setSelectedPiece(foundPiece);
   };
 
   // Finds the piece the users clicks on and sets selected piece equal to it.
+  // Change name.
   const PromotionOptions = (piece) => {
-    promotionChoice = piece;
+    setPromotionChoice(piece);
     console.log("promotionChoice", piece);
   };
 
@@ -836,12 +833,7 @@ function Board() {
             ) {
               board[foundPieceIndex].value = promotionChoice;
               board[foundPieceIndex].isPromoted = false;
-              promotionChoice = "test";
-              console.log(
-                "promo",
-                board[foundPieceIndex].value,
-                promotionChoice
-              );
+              setPromotionChoice(null);
             }
             console.log("whoseTurn", whoseTurn);
             if (whoseTurn === "white") {
