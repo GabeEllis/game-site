@@ -12,7 +12,16 @@ import BlackQueen from "../../../../assets/images/black_queen.png";
 import BlackKing from "../../../../assets/images/black_king.png";
 import BlackPawn from "../../../../assets/images/black_pawn.png";
 
-function Tile({ id, value, squareColor, SelectPiece, isValidMove }) {
+function Tile({
+  id,
+  value,
+  squareColor,
+  SelectPiece,
+  isValidMove,
+  isPromoted,
+  promotionColor,
+  PromotionOptions,
+}) {
   function getPieceImage(value) {
     if (value === "R") {
       return WhiteRook;
@@ -50,12 +59,54 @@ function Tile({ id, value, squareColor, SelectPiece, isValidMove }) {
           ? "tile tile__light-square"
           : "tile tile__dark-square"
       }
-      onClick={() => SelectPiece(id)}
     >
       <div
-        className="tile__piece-image"
+        className={
+          isPromoted ? "tile__piece-image--hidden" : "tile__piece-image"
+        }
         style={{ backgroundImage: `url(${getPieceImage(value)})` }}
+        onClick={() => SelectPiece(id)}
       ></div>
+      <div
+        className={
+          isPromoted
+            ? "tile__promotion-options"
+            : "tile__promotion-options--hidden"
+        }
+      >
+        <img
+          src={promotionColor === "white" ? WhiteQueen : BlackQueen}
+          onClick={
+            promotionColor === "white"
+              ? () => PromotionOptions("Q")
+              : () => PromotionOptions("q")
+          }
+        />
+        <img
+          src={promotionColor === "white" ? WhiteKnight : BlackKnight}
+          onClick={
+            promotionColor === "white"
+              ? () => PromotionOptions("N")
+              : () => PromotionOptions("n")
+          }
+        />
+        <img
+          src={promotionColor === "white" ? WhiteRook : BlackRook}
+          onClick={
+            promotionColor === "white"
+              ? () => PromotionOptions("R")
+              : () => PromotionOptions("r")
+          }
+        />
+        <img
+          src={promotionColor === "white" ? WhiteBishop : BlackBishop}
+          onClick={
+            promotionColor === "white"
+              ? () => PromotionOptions("B")
+              : () => PromotionOptions("b")
+          }
+        />
+      </div>
       <div
         className={
           isValidMove ? "tile__valid-moves" : "tile__valid-moves--none"

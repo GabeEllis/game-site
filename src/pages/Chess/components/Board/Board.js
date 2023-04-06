@@ -335,7 +335,6 @@ function knightMoves(board, startIndex) {
 // Finds valid moves for a king.
 function kingMoves(board, startIndex, castlingRules) {
   // Gets castling rules values from object.
-  console.log(castlingRules);
   const {
     hasWhiteKingMoved,
     hasWhiteKingRookMoved,
@@ -430,7 +429,6 @@ function kingMoves(board, startIndex, castlingRules) {
 
   // If the king is white and they haven't castled yet.
   if (!hasWhiteKingMoved && whichTeam(board[startIndex].value) === "white") {
-    console.log("white can castle");
     // Checks for king side castling.
     if (!hasWhiteKingRookMoved) {
       let counter = startIndex + 1;
@@ -459,7 +457,6 @@ function kingMoves(board, startIndex, castlingRules) {
     !hasBlackKingMoved &&
     whichTeam(board[startIndex].value) === "black"
   ) {
-    console.log("black can castle");
     // Checks for king side castling.
     if (!hasBlackKingRookMoved) {
       let counter = startIndex + 1;
@@ -566,57 +563,75 @@ function validMoves(board, startIndex, castlingRules) {
 }
 
 // Checks to see if the king is in check.
-function inCheck(board, kingIndex) {
+function inCheck(board, whoseTurn) {
+  const kingIndex = findKingIndex(board, whoseTurn);
   let inCheckFlag = false;
-  if (whichTeam(board[kingIndex]) === "white") {
+  console.log(board);
+  console.log(kingIndex, board[kingIndex].value);
+  if (whoseTurn === "white") {
     const rookAttackArray = rookMoves(board, kingIndex);
+    console.log(rookAttackArray);
     rookAttackArray.forEach((tile) => {
-      if (board[tile] === "r" || board[tile] === "q") {
-        console.log("rook");
+      if (board[tile].value === "r" || board[tile].value === "q") {
+        console.log("black r or q");
         inCheckFlag = true;
       }
     });
     const bishopAttackArray = bishopMoves(board, kingIndex);
+    console.log(bishopAttackArray);
     bishopAttackArray.forEach((tile) => {
-      if (board[tile] === "b" || board[tile] === "q") {
+      if (board[tile].value === "b" || board[tile].value === "q") {
+        console.log("black b or q");
         inCheckFlag = true;
       }
     });
     const knightAttackArray = knightMoves(board, kingIndex);
+    console.log(knightAttackArray);
     knightAttackArray.forEach((tile) => {
-      if (board[tile] === "n") {
+      if (board[tile].value === "n") {
+        console.log("black n");
         inCheckFlag = true;
       }
     });
     const pawnAttackArray = pawnMoves(board, kingIndex);
+    console.log(pawnAttackArray);
     pawnAttackArray.forEach((tile) => {
-      if (board[tile] === "p") {
+      if (board[tile].value === "p") {
+        console.log("black p");
         inCheckFlag = true;
       }
     });
   }
-  if (whichTeam(board[kingIndex]) === "black") {
+  if (whoseTurn === "black") {
     const rookAttackArray = rookMoves(board, kingIndex);
+    console.log(rookAttackArray);
     rookAttackArray.forEach((tile) => {
-      if (board[tile] === "R" || board[tile] === "Q") {
+      if (board[tile].value === "R" || board[tile].value === "Q") {
+        console.log("white R or Q");
         inCheckFlag = true;
       }
     });
     const bishopAttackArray = bishopMoves(board, kingIndex);
+    console.log(bishopAttackArray);
     bishopAttackArray.forEach((tile) => {
-      if (board[tile] === "B" || board[tile] === "Q") {
+      if (board[tile].value === "B" || board[tile].value === "Q") {
+        console.log("white B or Q");
         inCheckFlag = true;
       }
     });
     const knightAttackArray = knightMoves(board, kingIndex);
+    console.log(knightAttackArray);
     knightAttackArray.forEach((tile) => {
-      if (board[tile] === "N") {
+      if (board[tile].value === "N") {
+        console.log("white N");
         inCheckFlag = true;
       }
     });
     const pawnAttackArray = pawnMoves(board, kingIndex);
+    console.log(pawnAttackArray);
     pawnAttackArray.forEach((tile) => {
-      if (board[tile] === "P") {
+      if (board[tile].value === "P") {
+        console.log("white P");
         inCheckFlag = true;
       }
     });
@@ -624,27 +639,36 @@ function inCheck(board, kingIndex) {
   return inCheckFlag;
 }
 
+function findKingIndex(board, whoseTurn) {
+  let kingIndex;
+  if (whoseTurn === "white") {
+    kingIndex = board.findIndex((tile) => tile.value === "K");
+  } else if (whoseTurn === "black") {
+    kingIndex = board.findIndex((tile) => tile.value === "k");
+  }
+  return kingIndex;
+}
+
 function Board() {
   // Intializes the starting board.
   const startingBoard = [];
-  // Sets the currentBoard as startingBoard.
-  const [currentBoard, useCurrentBoard] = useState(startingBoard);
+  // Intializes state variables.
+  const [currentBoard, setCurrentBoard] = useState(startingBoard);
+  const [selectedPiece, setSelectedPiece] = useState(null);
+  const [promotionChoice, setPromotionChoice] = useState(null);
   // Used to creates the id values for the chess tiles.
   const horizontalLabels = ["a", "b", "c", "d", "e", "f", "g", "h"];
   const verticalLabels = ["8", "7", "6", "5", "4", "3", "2", "1"];
-
-  // Intializes selected piece and the selected piece's valid moves.
-  const [selectedPiece, useSelectedPiece] = useState(null);
   // const [whoseTurn, useWhoseTurn] = useState("white");
   let selectedValidMoves = [];
 
   // Gets previously selected piece.
-  const prevPiece = useRef("null");
+  const prevPiece = useRef("");
   let lastSelectedPiece = prevPiece.current;
 
   useEffect(() => {
     prevPiece.current = selectedPiece;
-    console.log("useEffect Piece", prevPiece.current);
+    // console.log("useEffect Piece", prevPiece.current);
   }, [selectedPiece]);
 
   // Gets previously selected turn.
@@ -665,18 +689,8 @@ function Board() {
   useEffect(() => {
     prevTurn.current = whoseTurn;
     prevCastlingRules.current = castlingRules;
-    // castlingRules = {
-    //   hasWhiteKingMoved: false,
-    //   hasWhiteKingRookMoved: false,
-    //   hasWhiteQueenRookMoved: false,
-    //   hasBlackKingMoved: false,
-    //   hasBlackKingRookMoved: false,
-    //   hasBlackQueenRookMoved: false,
-    // };
-    console.log("useEffect Turn", prevTurn.current, prevCastlingRules.current);
+    // console.log("useEffect Turn", prevTurn.current);
   });
-
-  console.log("last click", lastSelectedPiece, whoseTurn);
 
   // Creates the intial board.
   for (var i = 0; i < 8; i++) {
@@ -685,30 +699,42 @@ function Board() {
         id: `${horizontalLabels[j]}${verticalLabels[i]}`,
         value: chessBoard[8 * i + j],
         squareColor: j + i,
+        isPromoted: false,
+        promotionColor: "white",
       });
     }
   }
 
-  console.log(currentBoard);
+  console.log(inCheck(currentBoard, whoseTurn));
+
   // Finds the piece the users clicks on and sets selected piece equal to it.
   const SelectPiece = (id) => {
     const foundPiece = currentBoard.find((tile) => tile.id === id);
-    useSelectedPiece(foundPiece);
+    setSelectedPiece(foundPiece);
+  };
+
+  // Finds the piece the users clicks on and sets selected piece equal to it.
+  // Change name.
+  const PromotionOptions = (piece) => {
+    setPromotionChoice(piece);
+    console.log("promotionChoice", piece);
   };
 
   function ChessGame(board) {
-    // let moveCounter = 0;
-    if (selectedPiece) {
+    if (selectedPiece || promotionChoice) {
       // Gets the index of the selected piece.
       const foundPieceIndex = board.findIndex(
         (tile) => tile.id === selectedPiece.id
       );
+      // Gets the validMoves array for the selected piece.
       selectedValidMoves = validMoves(board, foundPieceIndex, castlingRules);
-      console.log(selectedValidMoves);
 
-      if (lastSelectedPiece) {
+      if (lastSelectedPiece || promotionChoice) {
         // If last selected piece is the same color as whose turn.
-        if (whichTeam(lastSelectedPiece.value) === whoseTurn) {
+        if (
+          whichTeam(lastSelectedPiece.value) === whoseTurn ||
+          promotionChoice
+        ) {
           // Gets the index of the previously selected piece.
           const lastFoundPieceIndex = board.findIndex(
             (tile) => tile.id === lastSelectedPiece.id
@@ -720,12 +746,12 @@ function Board() {
           );
 
           // If the selected piece is included in the last selected piece's valid moves array.
-          if (lastValidMoves.includes(foundPieceIndex)) {
-            // console.log(foundPieceIndex, lastFoundPieceIndex);
+          if (lastValidMoves.includes(foundPieceIndex) || promotionChoice) {
             movePiece(board, lastFoundPieceIndex, foundPieceIndex);
 
             // Checks for white king side castle and then moves the rook.
             if (
+              board[foundPieceIndex].value === "K" &&
               !castlingRules.hasWhiteKingMoved &&
               !castlingRules.hasWhiteKingRookMoved &&
               foundPieceIndex === 62
@@ -736,6 +762,7 @@ function Board() {
             }
             // Checks for white queen side castle and then moves the rook.
             if (
+              board[foundPieceIndex].value === "K" &&
               !castlingRules.hasWhiteKingMoved &&
               !castlingRules.hasWhiteQueenRookMoved &&
               foundPieceIndex === 58
@@ -746,6 +773,7 @@ function Board() {
             }
             // Checks for black king side castle and then moves the rook.
             if (
+              board[foundPieceIndex].value === "k" &&
               !castlingRules.hasBlackKingMoved &&
               !castlingRules.hasBlackKingRookMoved &&
               foundPieceIndex === 6
@@ -756,6 +784,7 @@ function Board() {
             }
             // Checks for black queen side castle and then moves the rook.
             if (
+              board[foundPieceIndex].value === "k" &&
               !castlingRules.hasBlackKingMoved &&
               !castlingRules.hasBlackQueenRookMoved &&
               foundPieceIndex === 2
@@ -766,11 +795,6 @@ function Board() {
             }
 
             // If white king moves, set hasWhiteKingMoved to true.
-            console.log(
-              board[foundPieceIndex].value,
-              foundPieceIndex,
-              lastFoundPieceIndex
-            );
             if (board[foundPieceIndex].value === "K") {
               castlingRules.hasWhiteKingMoved = true;
               // If white king rook moves, set hasWhiteKingRookMoved to true.
@@ -802,6 +826,25 @@ function Board() {
               castlingRules.hasBlackQueenRookMoved = true;
             }
 
+            // If a white pawn gets to the end of the board, give the user the ability to promote it to another piece.
+            if (board[foundPieceIndex].value === "P" && foundPieceIndex <= 7) {
+              board[foundPieceIndex].isPromoted = true;
+              board[foundPieceIndex].promotionColor = "white";
+            }
+            // If a black pawn gets to the end of the board, give the user the ability to promote it to another piece.
+            if (board[foundPieceIndex].value === "p" && foundPieceIndex >= 56) {
+              board[foundPieceIndex].isPromoted = true;
+              board[foundPieceIndex].promotionColor = "black";
+            }
+
+            if (
+              (promotionChoice && foundPieceIndex <= 7) ||
+              (promotionChoice && foundPieceIndex >= 56)
+            ) {
+              board[foundPieceIndex].value = promotionChoice;
+              board[foundPieceIndex].isPromoted = false;
+              setPromotionChoice(null);
+            }
             console.log("whoseTurn", whoseTurn);
             if (whoseTurn === "white") {
               whoseTurn = "black";
@@ -814,9 +857,21 @@ function Board() {
     }
   }
 
-  console.log("ran", lastSelectedPiece, whoseTurn);
-  console.log(selectedPiece, selectedValidMoves);
+  console.log(
+    "selectedPiece:",
+    selectedPiece,
+    "selectedValidMoves:",
+    selectedValidMoves,
+    "lastSelectedPiece:",
+    lastSelectedPiece,
+    "whoseTurn:",
+    whoseTurn,
+    "promotionChoice:",
+    promotionChoice
+  );
+
   ChessGame(currentBoard);
+  console.log(inCheck(currentBoard, whoseTurn));
 
   return (
     <main className="board">
@@ -829,6 +884,9 @@ function Board() {
             squareColor={tile.squareColor}
             SelectPiece={SelectPiece}
             isValidMove={selectedValidMoves.includes(index)}
+            isPromoted={tile.isPromoted}
+            promotionColor={tile.promotionColor}
+            PromotionOptions={PromotionOptions}
           />
         );
       })}
@@ -837,34 +895,3 @@ function Board() {
 }
 
 export default Board;
-
-// const testRow = [
-//   "R",
-//   "0",
-//   "0",
-//   "K",
-//   "0",
-//   "0",
-//   "0",
-//   "0",
-//   "p",
-//   "0",
-//   "0",
-//   "0",
-//   "0",
-//   "0",
-//   "0",
-//   "0",
-//   "0",
-//   "P",
-//   "0",
-//   "0",
-//   "0",
-//   "0",
-//   "0",
-//   "0",
-// ];
-// console.log(testRow);
-// console.log(selectPiece(testRow, 8, "black"));
-// console.log(testRow);
-// chessGame(testRow);
