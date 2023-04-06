@@ -724,8 +724,6 @@ function Board() {
     }
   }
 
-  console.log(inCheck(currentBoard, whoseTurn));
-
   // Finds the piece the users clicks on and sets selected piece equal to it.
   const SelectPiece = (id) => {
     const foundPiece = currentBoard.find((tile) => tile.id === id);
@@ -896,7 +894,6 @@ function Board() {
   );
 
   ChessGame(currentBoard);
-  console.log("inCheck", inCheck(currentBoard, whoseTurn));
 
   return (
     <main className="board">
