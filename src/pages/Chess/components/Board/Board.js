@@ -603,7 +603,7 @@ function validMoves(board, startIndex, castlingRules, whoseTurn) {
 function inCheck(board, whoseTurn) {
   const kingIndex = findKingIndex(board, whoseTurn);
   let inCheckFlag = false;
-  if (whoseTurn === "white") {
+  if (whoseTurn === "white" && kingIndex !== -1) {
     const rookAttackArray = rookMoves(board, kingIndex);
     rookAttackArray.forEach((tile) => {
       if (board[tile].value === "r" || board[tile].value === "q") {
@@ -629,7 +629,7 @@ function inCheck(board, whoseTurn) {
       }
     });
   }
-  if (whoseTurn === "black") {
+  if (whoseTurn === "black" && kingIndex !== -1) {
     const rookAttackArray = rookMoves(board, kingIndex);
     rookAttackArray.forEach((tile) => {
       if (board[tile].value === "R" || board[tile].value === "Q") {
@@ -666,6 +666,25 @@ function findKingIndex(board, whoseTurn) {
     kingIndex = board.findIndex((tile) => tile.value === "k");
   }
   return kingIndex;
+}
+
+function isGameOver(board, whoseTurn, castlingRules) {
+  let totalValidMovesArray = [];
+  for (let i = 0; i < board.length; i++) {
+    if (whichTeam(board[i].value) === whoseTurn) {
+      console.log(i, whoseTurn);
+      let validMoveArray = validMoves(board, i, castlingRules, whoseTurn);
+      if (validMoveArray.length !== 0) {
+        totalValidMovesArray.push(validMoveArray);
+      }
+    }
+  }
+  console.log(totalValidMovesArray);
+  if (totalValidMovesArray.length === 0) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 function Board() {
@@ -736,6 +755,8 @@ function Board() {
     setPromotionChoice(piece);
     console.log("promotionChoice", piece);
   };
+
+  console.log(isGameOver(currentBoard, whoseTurn, castlingRules));
 
   function ChessGame(board) {
     if (selectedPiece || promotionChoice) {
@@ -894,6 +915,8 @@ function Board() {
   );
 
   ChessGame(currentBoard);
+
+  console.log(isGameOver(currentBoard, whoseTurn, castlingRules));
 
   return (
     <main className="board">
