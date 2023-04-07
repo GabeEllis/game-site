@@ -1,5 +1,6 @@
 import "./Board.scss";
 import Tile from "../Tile/Tile";
+import GameOver from "../GameOver/GameOver";
 import { useState, useEffect, useRef } from "react";
 
 const chessBoard = [
@@ -490,7 +491,10 @@ function pawnMoves(board, startIndex) {
   if (whichTeam(board[startIndex].value) === "white") {
     if (startIndex > 47) {
       const finalIndex = startIndex - 16;
-      if (board[finalIndex].value === "0") {
+      if (
+        board[finalIndex].value === "0" &&
+        board[finalIndex + 8].value === "0"
+      ) {
         validMoveArray.push(finalIndex);
       }
     }
@@ -511,7 +515,10 @@ function pawnMoves(board, startIndex) {
   if (whichTeam(board[startIndex].value) === "black") {
     if (startIndex < 16) {
       const finalIndex = startIndex + 16;
-      if (board[finalIndex].value === "0") {
+      if (
+        board[finalIndex].value === "0" &&
+        board[finalIndex - 8].value === "0"
+      ) {
         validMoveArray.push(finalIndex);
       }
     }
@@ -538,7 +545,13 @@ function validMoves(board, startIndex, castlingRules, whoseTurn) {
   // If piece is a rook.
   if (pieceType === "r" || pieceType === "R") {
     const rookMovesArray = rookMoves(board, startIndex);
-    validMoveArray = rookMovesArray;
+    rookMovesArray.forEach((move) => {
+      const testBoard = JSON.parse(JSON.stringify(board));
+      movePiece(testBoard, startIndex, move);
+      if (!inCheck(testBoard, whoseTurn)) {
+        validMoveArray.push(move);
+      }
+    });
     // If piece is a bishop.
   } else if (pieceType === "b" || pieceType === "B") {
     const bishopMovesArray = bishopMoves(board, startIndex);
@@ -603,7 +616,7 @@ function validMoves(board, startIndex, castlingRules, whoseTurn) {
 function inCheck(board, whoseTurn) {
   const kingIndex = findKingIndex(board, whoseTurn);
   let inCheckFlag = false;
-  if (whoseTurn === "white") {
+  if (whoseTurn === "white" && kingIndex !== -1) {
     const rookAttackArray = rookMoves(board, kingIndex);
     rookAttackArray.forEach((tile) => {
       if (board[tile].value === "r" || board[tile].value === "q") {
@@ -629,7 +642,7 @@ function inCheck(board, whoseTurn) {
       }
     });
   }
-  if (whoseTurn === "black") {
+  if (whoseTurn === "black" && kingIndex !== -1) {
     const rookAttackArray = rookMoves(board, kingIndex);
     rookAttackArray.forEach((tile) => {
       if (board[tile].value === "R" || board[tile].value === "Q") {
@@ -668,7 +681,29 @@ function findKingIndex(board, whoseTurn) {
   return kingIndex;
 }
 
+function isGameOver(board, whoseTurn, castlingRules) {
+  let totalValidMovesArray = [];
+  for (let i = 0; i < board.length; i++) {
+    if (whichTeam(board[i].value) === whoseTurn) {
+      console.log(i, whoseTurn);
+      let validMoveArray = validMoves(board, i, castlingRules, whoseTurn);
+      if (validMoveArray.length !== 0) {
+        totalValidMovesArray.push(validMoveArray);
+      }
+    }
+  }
+  console.log(totalValidMovesArray);
+  if (totalValidMovesArray.length === 0) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 function Board() {
+  // Intializes gameStatus.
+  let gameStatus;
+  let stalemateStatus;
   // Intializes the starting board.
   const startingBoard = [];
   // Intializes state variables.
@@ -895,6 +930,14 @@ function Board() {
 
   ChessGame(currentBoard);
 
+  gameStatus = isGameOver(currentBoard, whoseTurn, castlingRules);
+
+  if (gameStatus) {
+    stalemateStatus = !inCheck(currentBoard, whoseTurn);
+    console.log(stalemateStatus);
+  }
+  console.log(gameStatus);
+
   return (
     <main className="board">
       {currentBoard.map((tile, index) => {
@@ -912,6 +955,11 @@ function Board() {
           />
         );
       })}
+      <GameOver
+        gameStatus={gameStatus}
+        whoseTurn={whoseTurn}
+        stalemateStatus={stalemateStatus}
+      />
     </main>
   );
 }
