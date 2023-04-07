@@ -1,13 +1,15 @@
 import "./GameOver.scss";
 
-function GameOver({ gameStatus, whoseTurn }) {
+function GameOver({ gameStatus, whoseTurn, stalemateStatus }) {
   let gameOverMessage;
 
   if (gameStatus) {
-    if (whoseTurn === "white") {
-      gameOverMessage = "Black wins by checkmate";
+    if (stalemateStatus) {
+      gameOverMessage = "Draw by Stalemate";
+    } else if (whoseTurn === "white") {
+      gameOverMessage = "Black won by checkmate";
     } else if (whoseTurn === "black") {
-      gameOverMessage = "White wins by checkmate";
+      gameOverMessage = "White won by checkmate";
     }
   }
 

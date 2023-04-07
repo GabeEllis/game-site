@@ -491,7 +491,10 @@ function pawnMoves(board, startIndex) {
   if (whichTeam(board[startIndex].value) === "white") {
     if (startIndex > 47) {
       const finalIndex = startIndex - 16;
-      if (board[finalIndex].value === "0") {
+      if (
+        board[finalIndex].value === "0" &&
+        board[finalIndex + 8].value === "0"
+      ) {
         validMoveArray.push(finalIndex);
       }
     }
@@ -512,7 +515,10 @@ function pawnMoves(board, startIndex) {
   if (whichTeam(board[startIndex].value) === "black") {
     if (startIndex < 16) {
       const finalIndex = startIndex + 16;
-      if (board[finalIndex].value === "0") {
+      if (
+        board[finalIndex].value === "0" &&
+        board[finalIndex - 8].value === "0"
+      ) {
         validMoveArray.push(finalIndex);
       }
     }
@@ -695,6 +701,9 @@ function isGameOver(board, whoseTurn, castlingRules) {
 }
 
 function Board() {
+  // Intializes gameStatus.
+  let gameStatus;
+  let stalemateStatus;
   // Intializes the starting board.
   const startingBoard = [];
   // Intializes state variables.
@@ -921,10 +930,10 @@ function Board() {
 
   ChessGame(currentBoard);
 
-  const gameStatus = isGameOver(currentBoard, whoseTurn, castlingRules);
+  gameStatus = isGameOver(currentBoard, whoseTurn, castlingRules);
 
   if (gameStatus) {
-    const stalemateStatus = inCheck(currentBoard, whoseTurn);
+    stalemateStatus = !inCheck(currentBoard, whoseTurn);
     console.log(stalemateStatus);
   }
   console.log(gameStatus);
@@ -946,7 +955,11 @@ function Board() {
           />
         );
       })}
-      <GameOver gameStatus={gameStatus} whoseTurn={whoseTurn} />
+      <GameOver
+        gameStatus={gameStatus}
+        whoseTurn={whoseTurn}
+        stalemateStatus={stalemateStatus}
+      />
     </main>
   );
 }
