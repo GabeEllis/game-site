@@ -1,5 +1,6 @@
 import "./Board.scss";
 import Tile from "../Tile/Tile";
+import GameOver from "../GameOver/GameOver";
 import { useState, useEffect, useRef } from "react";
 
 const chessBoard = [
@@ -538,7 +539,13 @@ function validMoves(board, startIndex, castlingRules, whoseTurn) {
   // If piece is a rook.
   if (pieceType === "r" || pieceType === "R") {
     const rookMovesArray = rookMoves(board, startIndex);
-    validMoveArray = rookMovesArray;
+    rookMovesArray.forEach((move) => {
+      const testBoard = JSON.parse(JSON.stringify(board));
+      movePiece(testBoard, startIndex, move);
+      if (!inCheck(testBoard, whoseTurn)) {
+        validMoveArray.push(move);
+      }
+    });
     // If piece is a bishop.
   } else if (pieceType === "b" || pieceType === "B") {
     const bishopMovesArray = bishopMoves(board, startIndex);
@@ -756,8 +763,6 @@ function Board() {
     console.log("promotionChoice", piece);
   };
 
-  console.log(isGameOver(currentBoard, whoseTurn, castlingRules));
-
   function ChessGame(board) {
     if (selectedPiece || promotionChoice) {
       // Gets the index of the selected piece.
@@ -916,7 +921,13 @@ function Board() {
 
   ChessGame(currentBoard);
 
-  console.log(isGameOver(currentBoard, whoseTurn, castlingRules));
+  const gameStatus = isGameOver(currentBoard, whoseTurn, castlingRules);
+
+  if (gameStatus) {
+    const stalemateStatus = inCheck(currentBoard, whoseTurn);
+    console.log(stalemateStatus);
+  }
+  console.log(gameStatus);
 
   return (
     <main className="board">
@@ -935,6 +946,7 @@ function Board() {
           />
         );
       })}
+      <GameOver gameStatus={gameStatus} whoseTurn={whoseTurn} />
     </main>
   );
 }
