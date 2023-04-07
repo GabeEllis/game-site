@@ -1,0 +1,8 @@
+@use "../../../../styles/partials/global";
+
+.board {
+  width: 100%;
+  background-color: burlywood;
+  display: flex;
+  flex-wrap: wrap;
+}
