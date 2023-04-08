@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import "./Login.scss";
+import "./Signup.scss";
 
 function Signup() {
   const [submitted, setSubmitted] = useState(false);
@@ -10,6 +10,7 @@ function Signup() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   //   Gets email.
   const handleEmail = (event) => {
@@ -19,6 +20,10 @@ function Signup() {
   const handlePassword = (event) => {
     setPassword(event.target.value);
   };
+  //   Gets confirm password.
+  const handleConfirmPassword = (event) => {
+    setConfirmPassword(event.target.value);
+  };
 
   //   When the user clicks submit, run this function.
   const handleSubmit = (event) => {
@@ -26,7 +31,7 @@ function Signup() {
     setError("");
 
     //Validate no empty fields
-    if (!email || !password) {
+    if (!email || !password || !confirmPassword) {
       console.log("One or more required fields are missing");
       setError(
         <div className="error-message">
@@ -57,6 +62,13 @@ function Signup() {
       setError(
         <div className="error-message">"Please enter a valid password."</div>
       );
+    } else if (password !== confirmPassword) {
+      console.log("Please make sure your passwords match.");
+      setError(
+        <div className="error-message">
+          "Please make sure your passwords match."
+        </div>
+      );
     } else {
       setError("");
     }
@@ -69,11 +81,11 @@ function Signup() {
     // Post if no errors
     if (!error) {
       axios
-        .post("http://localhost:8080/users/login", loginData)
+        .post("http://localhost:8080/users/register", loginData)
         .then((response) => {
           console.log(response.data);
           setSubmitted(true);
-          setSuccessMessage("Successfully logged in!");
+          setSuccessMessage("Successfully signed up!");
           window.location.href = "/";
         })
         .catch((error) => {
@@ -84,7 +96,7 @@ function Signup() {
 
   return (
     <article className="login">
-      <h1 className="login__header">Login Page</h1>
+      <h1 className="login__header">Sign up Page</h1>
       <form className="login__form">
         <div className="login__form-field">
           <label className="login__form-label">
@@ -114,19 +126,30 @@ function Signup() {
           </label>
         </div>
 
+        <div className="login__form-field">
+          <label className="login__form-label">
+            confirm password
+            <input
+              type="text"
+              name="confirmPassword"
+              id="confirmPassword"
+              placeholder="confirm password"
+              onChange={(event) => handleConfirmPassword(event)}
+              className="login__form-input"
+            />
+          </label>
+        </div>
+
         <Link className="login__button-container" to="/home">
           <button
             className="login__button"
             type="submit"
             onClick={handleSubmit}
           >
-            Log in
+            Sign up
           </button>
         </Link>
       </form>
-      <Link className="login__button-container" to="/signup">
-        <p>Don't have an account?</p>
-      </Link>
     </article>
   );
 }
