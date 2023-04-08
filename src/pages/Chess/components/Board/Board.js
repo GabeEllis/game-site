@@ -939,27 +939,29 @@ function Board() {
   console.log(gameStatus);
 
   return (
-    <article className="board">
-      {currentBoard.map((tile, index) => {
-        return (
-          <Tile
-            key={tile.id}
-            id={tile.id}
-            value={tile.value}
-            squareColor={tile.squareColor}
-            SelectPiece={SelectPiece}
-            isValidMove={selectedValidMoves.includes(index)}
-            isPromoted={tile.isPromoted}
-            promotionColor={tile.promotionColor}
-            PromotionOptions={PromotionOptions}
-          />
-        );
-      })}
-      <GameOver
-        gameStatus={gameStatus}
-        whoseTurn={whoseTurn}
-        stalemateStatus={stalemateStatus}
-      />
+    <article className="board-container">
+      <section className="board">
+        {currentBoard.map((tile, index) => {
+          return (
+            <Tile
+              key={tile.id}
+              id={tile.id}
+              value={tile.value}
+              squareColor={tile.squareColor}
+              SelectPiece={SelectPiece}
+              isValidMove={selectedValidMoves.includes(index)}
+              isPromoted={tile.isPromoted}
+              promotionColor={tile.promotionColor}
+              PromotionOptions={PromotionOptions}
+            />
+          );
+        })}
+        <GameOver
+          gameStatus={gameStatus}
+          whoseTurn={whoseTurn}
+          stalemateStatus={stalemateStatus}
+        />
+      </section>
     </article>
   );
 }

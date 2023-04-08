@@ -6,12 +6,10 @@ import Navbar from "../Navbar/Navbar";
 
 function Chess() {
   return (
-    <>
-      <main className="chess">
-        <Navbar />
-        <Board />
-      </main>
-    </>
+    <main>
+      <Navbar />
+      <Board />
+    </main>
   );
 }
 
