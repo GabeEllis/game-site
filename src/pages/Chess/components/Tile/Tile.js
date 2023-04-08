@@ -52,6 +52,8 @@ function Tile({
     }
   }
 
+  console.log(isPromoted, value);
+
   return (
     <div
       className={

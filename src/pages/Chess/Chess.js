@@ -7,8 +7,10 @@ import Navbar from "../Navbar/Navbar";
 function Chess() {
   return (
     <>
-      <Navbar />
-      <Board />
+      <main className="chess">
+        <Navbar />
+        <Board />
+      </main>
     </>
   );
 }

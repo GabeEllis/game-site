@@ -939,7 +939,7 @@ function Board() {
   console.log(gameStatus);
 
   return (
-    <main className="board">
+    <article className="board">
       {currentBoard.map((tile, index) => {
         return (
           <Tile
@@ -960,7 +960,7 @@ function Board() {
         whoseTurn={whoseTurn}
         stalemateStatus={stalemateStatus}
       />
-    </main>
+    </article>
   );
 }
 

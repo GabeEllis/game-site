@@ -11,10 +11,13 @@ function Navbar() {
             <NavLink to="/">Home</NavLink>
           </li>
           <li>
-            <NavLink to="/Sudoku">Sudoku</NavLink>
+            <NavLink to="/sudoku">Sudoku</NavLink>
           </li>
           <li>
-            <NavLink to="/Chess">Chess</NavLink>
+            <NavLink to="/chess">Chess</NavLink>
+          </li>
+          <li>
+            <NavLink to="/login">Login</NavLink>
           </li>
         </ul>
       </nav>
