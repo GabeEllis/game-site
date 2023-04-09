@@ -53,9 +53,9 @@ function CapturedPieces({ capturedPiecesArray, team }) {
   console.log(capturedPiecesArray);
   capturedPiecesArray.forEach((piece) => {
     console.log(piece);
-    if (team === "white" && /^[A-Z]+$/.test(piece)) {
+    if (team === "black" && /^[A-Z]+$/.test(piece)) {
       filtedCapturedPieceArray.push(piece);
-    } else if (team === "black" && /^[a-z]+$/.test(piece)) {
+    } else if (team === "white" && /^[a-z]+$/.test(piece)) {
       filtedCapturedPieceArray.push(piece);
     }
   });

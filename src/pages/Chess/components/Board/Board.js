@@ -73,8 +73,13 @@ const chessBoard = [
 
 // Moves a piece, and when it does replace its original location with a 0.
 function movePiece(board, startIndex, finalIndex) {
+  let capturedPiece = board[finalIndex].value;
+
   board[finalIndex].value = board[startIndex].value;
   board[startIndex].value = "0";
+  if (capturedPiece !== "0") {
+    return capturedPiece;
+  }
 }
 
 // Returns which team the input piece is.
@@ -686,14 +691,13 @@ function isGameOver(board, whoseTurn, castlingRules) {
   let totalValidMovesArray = [];
   for (let i = 0; i < board.length; i++) {
     if (whichTeam(board[i].value) === whoseTurn) {
-      console.log(i, whoseTurn);
       let validMoveArray = validMoves(board, i, castlingRules, whoseTurn);
       if (validMoveArray.length !== 0) {
         totalValidMovesArray.push(validMoveArray);
       }
     }
   }
-  console.log(totalValidMovesArray);
+
   if (totalValidMovesArray.length === 0) {
     return true;
   } else {
@@ -711,13 +715,8 @@ function Board({ name, elo }) {
   const [currentBoard, setCurrentBoard] = useState(startingBoard);
   const [selectedPiece, setSelectedPiece] = useState(null);
   const [promotionChoice, setPromotionChoice] = useState(null);
-  const [capturedPiecesArray, setCapturedPiecesArray] = useState([
-    "Q",
-    "q",
-    "p",
-    "N",
-    "b",
-  ]);
+  const [capturedPiecesArray, setCapturedPiecesArray] = useState([]);
+  // let capturedPiecesArray = [];
   // Used to creates the id values for the chess tiles.
   const horizontalLabels = ["a", "b", "c", "d", "e", "f", "g", "h"];
   const verticalLabels = ["8", "7", "6", "5", "4", "3", "2", "1"];
@@ -730,7 +729,6 @@ function Board({ name, elo }) {
 
   useEffect(() => {
     prevPiece.current = selectedPiece;
-    // console.log("useEffect Piece", prevPiece.current);
   }, [selectedPiece]);
 
   // Gets previously selected turn.
@@ -751,7 +749,6 @@ function Board({ name, elo }) {
   useEffect(() => {
     prevTurn.current = whoseTurn;
     prevCastlingRules.current = castlingRules;
-    // console.log("useEffect Turn", prevTurn.current);
   });
 
   // Creates the intial board.
@@ -776,7 +773,6 @@ function Board({ name, elo }) {
   // Finds the piece the users clicks on and sets selected piece equal to it.
   const PromotionOptions = (piece) => {
     setPromotionChoice(piece);
-    console.log("promotionChoice", piece);
   };
 
   // Start of the turn.
@@ -811,15 +807,23 @@ function Board({ name, elo }) {
 
         // If the selected piece is included in the last selected piece's valid moves array.
         if (lastValidMoves.includes(foundPieceIndex) || promotionChoice) {
-          movePiece(currentBoard, lastFoundPieceIndex, foundPieceIndex);
+          const capturedPiece = movePiece(
+            currentBoard,
+            lastFoundPieceIndex,
+            foundPieceIndex
+          );
 
-          // Checks for white king side castle and then moves the rook.
+          // If a piece was captured, add it to the capturedPiecesArray.
+          if (capturedPiece) {
+            setCapturedPiecesArray((original) => [...original, capturedPiece]);
+          }
           if (
             currentBoard[foundPieceIndex].value === "K" &&
             !castlingRules.hasWhiteKingMoved &&
             !castlingRules.hasWhiteKingRookMoved &&
             foundPieceIndex === 62
           ) {
+            // Checks for white king side castle and then moves the rook.
             castlingRules.hasWhiteKingMoved = true;
             castlingRules.hasWhiteKingRookMoved = true;
             movePiece(currentBoard, 63, 61);
@@ -915,7 +919,7 @@ function Board({ name, elo }) {
             currentBoard[foundPieceIndex].isPromoted = false;
             setPromotionChoice(null);
           }
-          console.log("whoseTurn", whoseTurn);
+          // After a move is made, it changes the turn to the opposite team.
           if (whoseTurn === "white") {
             whoseTurn = "black";
           } else if (whoseTurn === "black") {
@@ -926,26 +930,11 @@ function Board({ name, elo }) {
     }
   }
 
-  console.log(
-    "selectedPiece:",
-    selectedPiece,
-    "selectedValidMoves:",
-    selectedValidMoves,
-    "lastSelectedPiece:",
-    lastSelectedPiece,
-    "whoseTurn:",
-    whoseTurn,
-    "promotionChoice:",
-    promotionChoice
-  );
-
   gameStatus = isGameOver(currentBoard, whoseTurn, castlingRules);
 
   if (gameStatus) {
     stalemateStatus = !inCheck(currentBoard, whoseTurn);
-    console.log(stalemateStatus);
   }
-  console.log(gameStatus);
 
   return (
     <article className="board-container">

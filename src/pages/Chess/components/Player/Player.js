@@ -4,7 +4,6 @@ import WhitePawn from "../../../../assets/images/white_pawn.png";
 import BlackPawn from "../../../../assets/images/black_pawn.png";
 
 function Player({ name, elo, team, capturedPiecesArray }) {
-  console.log(typeof number);
   return (
     <section className="player">
       <img
