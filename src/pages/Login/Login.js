@@ -1,6 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import userIcon from "../../assets/icons/user_icon.png";
+import lockIcon from "../../assets/icons/lock_icon.png";
 import "./Login.scss";
 
 function Signup() {
@@ -84,34 +86,31 @@ function Signup() {
 
   return (
     <article className="login">
-      <h1 className="login__header">Login Page</h1>
+      <h1 className="login__header">Login</h1>
       <form className="login__form">
         <div className="login__form-field">
-          <label className="login__form-label">
-            email
-            <input
-              type="text"
-              name="email"
-              id="email"
-              placeholder="email"
-              onChange={(event) => handleEmail(event)}
-              className="login__form-input"
-            />
-          </label>
+          <img src={userIcon} />
+          <input
+            type="text"
+            name="email"
+            id="email"
+            placeholder="email"
+            onChange={(event) => handleEmail(event)}
+            className="login__form-input"
+          />
         </div>
 
         <div className="login__form-field">
-          <label className="login__form-label">
-            password
-            <input
-              type="text"
-              name="password"
-              id="password"
-              placeholder="password"
-              onChange={(event) => handlePassword(event)}
-              className="login__form-input"
-            />
-          </label>
+          <img src={lockIcon} />
+          <input
+            type="password"
+            name="password"
+            id="password"
+            placeholder="password"
+            autoComplete="off"
+            onChange={(event) => handlePassword(event)}
+            className="login__form-input"
+          />
         </div>
 
         <Link className="login__button-container" to="/home">
@@ -124,8 +123,9 @@ function Signup() {
           </button>
         </Link>
       </form>
-      <Link className="login__button-container" to="/signup">
-        <p>Don't have an account?</p>
+      <p className="login__signup-header">Don't have an account?</p>
+      <Link className="login__signup" to="/signup">
+        <p> Sign up </p>
       </Link>
     </article>
   );
