@@ -145,7 +145,7 @@ function Signup() {
             type="submit"
             onClick={handleSubmit}
           >
-            Log in
+            Sign up
           </button>
         </Link>
       </form>

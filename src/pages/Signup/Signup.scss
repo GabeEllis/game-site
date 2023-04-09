@@ -76,7 +76,7 @@ button {
 }
 
 $colors: (
-  login__button: #19bc8b,
+  signup__button: #19bc8b,
 );
 
 @each $button, $color in $colors {
