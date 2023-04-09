@@ -2,38 +2,58 @@
 @use "../../styles/partials/mixins" as *;
 
 .login {
+  @include page-header;
+  padding: 2rem 2rem 4rem 2rem;
+  border-radius: 0.5rem;
+  background-color: darkgray;
   &__header {
+    text-align: center;
+    margin: 0.5rem 0 2rem 0;
   }
   &__form {
     &-field {
-      display: flex;
-      flex-direction: column;
+      width: 100%;
+      position: relative;
+      margin-bottom: 0.75rem;
+      & > img {
+        width: 2rem;
+        height: 2rem;
+        object-fit: contain;
+        position: absolute;
+        top: 50%;
+        left: 0.5rem;
+        transform: translateY(-50%);
+      }
     }
     &-label {
       position: relative;
     }
     &-input {
+      @include body-copy;
+      width: 100%;
+      height: 2.5rem;
       color: grey;
       border: 1px grey solid;
-      border-radius: 0.5rem;
-      margin: 0.2rem 0 1rem 0;
-      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      background-color: #fdfdfd;
+      padding: 0.5rem 1rem 0.5rem 3rem;
       &:focus {
         outline: 1px solid rgb(61, 142, 169);
       }
     }
   }
   &__button {
+    @include section-header;
     width: 100%;
     border: 2px solid;
     border-radius: 0.5rem;
-    color: black;
+    color: #fff;
     transition: 0.25s;
-    border: 2px solid black;
-    background-color: rgb(240, 240, 240);
+    border: 1px solid black;
+    background-color: #e2725b;
     line-height: 1;
-    margin: 0.5em;
     padding: 1em 2em;
+    margin-top: 2rem;
     &-container {
       width: 50%;
       @include tablet {
@@ -49,18 +69,23 @@
     }
   }
   &__signup {
+    @include subheader;
+    color: inherit;
+    text-align: center;
+    & > p {
+      margin: 0;
+    }
+    &-header {
+      @include subheader;
+      text-align: center;
+      margin-bottom: 0.25rem;
+    }
   }
 }
 
 button {
   color: var(--color);
   transition: 0.25s;
-
-  &:hover,
-  &:focus {
-    border-color: var(--hover);
-    color: #fff;
-  }
 }
 
 $colors: (

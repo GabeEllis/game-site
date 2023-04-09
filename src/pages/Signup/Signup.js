@@ -1,6 +1,9 @@
 import { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import userIcon from "../../assets/icons/user_icon.png";
+import lockIcon from "../../assets/icons/lock_icon.png";
+import confirmPasswordIcon from "../../assets/icons/confirm-password-icon.png";
 import "./Signup.scss";
 
 function Signup() {
@@ -96,59 +99,53 @@ function Signup() {
 
   return (
     <article className="signup">
-      <h1 className="signup__header">Sign up Page</h1>
+      <h1 className="signup__header">Sign Up</h1>
       <form className="signup__form">
         <div className="signup__form-field">
-          <label className="signup__form-label">
-            email
-            <input
-              type="text"
-              name="email"
-              id="email"
-              placeholder="email"
-              onChange={(event) => handleEmail(event)}
-              className="signup__form-input"
-            />
-          </label>
+          <img src={userIcon} />
+          <input
+            type="text"
+            name="email"
+            id="email"
+            placeholder="email"
+            onChange={(event) => handleEmail(event)}
+            className="signup__form-input"
+          />
         </div>
 
         <div className="signup__form-field">
-          <label className="signup__form-label">
-            password
-            <input
-              type="password"
-              name="password"
-              id="password"
-              placeholder="password"
-              autoComplete="off"
-              onChange={(event) => handlePassword(event)}
-              className="signup__form-input"
-            />
-          </label>
+          <img src={lockIcon} />
+          <input
+            type="password"
+            name="password"
+            id="password"
+            placeholder="password"
+            autoComplete="off"
+            onChange={(event) => handlePassword(event)}
+            className="login__form-input"
+          />
         </div>
 
         <div className="signup__form-field">
-          <label className="signup__form-label">
-            confirm password
-            <input
-              type="password"
-              name="confirmPassword"
-              id="confirmPassword"
-              autoComplete="off"
-              placeholder="confirm password"
-              onChange={(event) => handleConfirmPassword(event)}
-              className="signup__form-input"
-            />
-          </label>
+          <img src={confirmPasswordIcon} />
+          <input
+            type="password"
+            name="confirmPassword"
+            id="confirmPassword"
+            placeholder="confirm password"
+            autoComplete="off"
+            onChange={(event) => handleConfirmPassword(event)}
+            className="login__form-input"
+          />
         </div>
 
         <Link className="signup__button-container" to="/home">
           <button
             className="signup__button"
-            type="signup"
+            type="submit"
             onClick={handleSubmit}
           >
-            Sign up
+            Log in
           </button>
         </Link>
       </form>
