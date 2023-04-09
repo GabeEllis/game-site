@@ -2,7 +2,10 @@ import "./Board.scss";
 import Tile from "../Tile/Tile";
 import GameOver from "../GameOver/GameOver";
 import Player from "../Player/Player";
+import { getComputerMove } from "../../utilty/getComputerMove";
+import { convertBoardToFen } from "../../utilty/convertBoardToFen";
 import { useState, useEffect, useRef } from "react";
+import { move, status, moves, aiMove, getFen } from "js-chess-engine";
 
 const chessBoard = [
   "r",
@@ -343,10 +346,8 @@ function knightMoves(board, startIndex) {
 function kingMoves(board, startIndex, castlingRules) {
   // Gets castling rules values from object.
   const {
-    hasWhiteKingMoved,
     hasWhiteKingRookMoved,
     hasWhiteQueenRookMoved,
-    hasBlackKingMoved,
     hasBlackKingRookMoved,
     hasBlackQueenRookMoved,
   } = castlingRules;
@@ -435,7 +436,7 @@ function kingMoves(board, startIndex, castlingRules) {
   }
 
   // If the king is white and they haven't castled yet.
-  if (!hasWhiteKingMoved && whichTeam(board[startIndex].value) === "white") {
+  if (whichTeam(board[startIndex].value) === "white") {
     // Checks for king side castling.
     if (!hasWhiteKingRookMoved) {
       let counter = startIndex + 1;
@@ -460,10 +461,7 @@ function kingMoves(board, startIndex, castlingRules) {
     }
 
     // If the king is black and they haven't castled yet.
-  } else if (
-    !hasBlackKingMoved &&
-    whichTeam(board[startIndex].value) === "black"
-  ) {
+  } else if (whichTeam(board[startIndex].value) === "black") {
     // Checks for king side castling.
     if (!hasBlackKingRookMoved) {
       let counter = startIndex + 1;
@@ -739,10 +737,8 @@ function Board({ name, elo }) {
 
   // Gets castling rules values.
   const prevCastlingRules = useRef({
-    hasWhiteKingMoved: false,
     hasWhiteKingRookMoved: false,
     hasWhiteQueenRookMoved: false,
-    hasBlackKingMoved: false,
     hasBlackKingRookMoved: false,
     hasBlackQueenRookMoved: false,
   });
@@ -778,6 +774,17 @@ function Board({ name, elo }) {
   const PromotionOptions = (piece) => {
     setPromotionChoice(piece);
   };
+
+  const currentBoardFen = convertBoardToFen(
+    currentBoard,
+    whoseTurn,
+    castlingRules
+  );
+  let difficulty = 3;
+
+  console.log(currentBoardFen);
+  const computerMove = getComputerMove(currentBoardFen, difficulty);
+  console.log(computerMove);
 
   // Start of the turn.
   // If a piece has been selected or a pawn is in the process of being promoted.
@@ -820,51 +827,44 @@ function Board({ name, elo }) {
           // Checks for white king side castle and then moves the rook.
           if (
             currentBoard[foundPieceIndex].value === "K" &&
-            !castlingRules.hasWhiteKingMoved &&
             !castlingRules.hasWhiteKingRookMoved &&
             foundPieceIndex === 62
           ) {
-            castlingRules.hasWhiteKingMoved = true;
             castlingRules.hasWhiteKingRookMoved = true;
             movePiece(currentBoard, 63, 61);
           }
           // Checks for white queen side castle and then moves the rook.
           if (
             currentBoard[foundPieceIndex].value === "K" &&
-            !castlingRules.hasWhiteKingMoved &&
             !castlingRules.hasWhiteQueenRookMoved &&
             foundPieceIndex === 58
           ) {
-            castlingRules.hasWhiteKingMoved = true;
             castlingRules.hasWhiteQueenRookMoved = true;
             movePiece(currentBoard, 56, 59);
           }
           // Checks for black king side castle and then moves the rook.
           if (
             currentBoard[foundPieceIndex].value === "k" &&
-            !castlingRules.hasBlackKingMoved &&
             !castlingRules.hasBlackKingRookMoved &&
             foundPieceIndex === 6
           ) {
-            castlingRules.hasBlackKingMoved = true;
             castlingRules.hasBlackKingRookMoved = true;
             movePiece(currentBoard, 7, 5);
           }
           // Checks for black queen side castle and then moves the rook.
           if (
             currentBoard[foundPieceIndex].value === "k" &&
-            !castlingRules.hasBlackKingMoved &&
             !castlingRules.hasBlackQueenRookMoved &&
             foundPieceIndex === 2
           ) {
-            castlingRules.hasBlackKingMoved = true;
             castlingRules.hasBlackQueenRookMoved = true;
             movePiece(currentBoard, 0, 3);
           }
 
           // If white king moves, set hasWhiteKingMoved to true.
           if (currentBoard[foundPieceIndex].value === "K") {
-            castlingRules.hasWhiteKingMoved = true;
+            castlingRules.hasWhiteKingRookMoved = true;
+            castlingRules.hasWhiteQueenRookMoved = true;
             // If white king rook moves, set hasWhiteKingRookMoved to true.
           } else if (
             currentBoard[foundPieceIndex].value === "R" &&
@@ -879,7 +879,8 @@ function Board({ name, elo }) {
             castlingRules.hasWhiteQueenRookMoved = true;
             // If black king moves, set hasBlackKingMoved to true.
           } else if (currentBoard[foundPieceIndex].value === "k") {
-            castlingRules.hasBlackKingMoved = true;
+            castlingRules.hasBlackKingRookMoved = true;
+            castlingRules.hasBlackQueenRookMoved = true;
             // If black king rook moves, set hasBlackKingRookMoved to true.
           } else if (
             currentBoard[foundPieceIndex].value === "r" &&
