@@ -8,7 +8,7 @@ function Chess() {
   return (
     <main>
       <Navbar />
-      <Board />
+      <Board name={"Player 1"} elo={"1000"} />
     </main>
   );
 }

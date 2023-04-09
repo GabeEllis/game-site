@@ -1,6 +1,7 @@
 import "./Board.scss";
 import Tile from "../Tile/Tile";
 import GameOver from "../GameOver/GameOver";
+import Player from "../Player/Player";
 import { useState, useEffect, useRef } from "react";
 
 const chessBoard = [
@@ -700,7 +701,7 @@ function isGameOver(board, whoseTurn, castlingRules) {
   }
 }
 
-function Board() {
+function Board({ name, elo }) {
   // Intializes gameStatus.
   let gameStatus;
   let stalemateStatus;
@@ -710,6 +711,13 @@ function Board() {
   const [currentBoard, setCurrentBoard] = useState(startingBoard);
   const [selectedPiece, setSelectedPiece] = useState(null);
   const [promotionChoice, setPromotionChoice] = useState(null);
+  const [capturedPiecesArray, setCapturedPiecesArray] = useState([
+    "Q",
+    "q",
+    "p",
+    "N",
+    "b",
+  ]);
   // Used to creates the id values for the chess tiles.
   const horizontalLabels = ["a", "b", "c", "d", "e", "f", "g", "h"];
   const verticalLabels = ["8", "7", "6", "5", "4", "3", "2", "1"];
@@ -766,149 +774,152 @@ function Board() {
   };
 
   // Finds the piece the users clicks on and sets selected piece equal to it.
-  // Change name.
   const PromotionOptions = (piece) => {
     setPromotionChoice(piece);
     console.log("promotionChoice", piece);
   };
 
-  function ChessGame(board) {
-    if (selectedPiece || promotionChoice) {
-      // Gets the index of the selected piece.
-      const foundPieceIndex = board.findIndex(
-        (tile) => tile.id === selectedPiece.id
-      );
-      // Gets the validMoves array for the selected piece.
-      selectedValidMoves = validMoves(
-        board,
-        foundPieceIndex,
-        castlingRules,
-        whoseTurn
-      );
+  // Start of the turn.
+  // If a piece has been selected or a pawn is in the process of being promoted.
+  if (selectedPiece || promotionChoice) {
+    // Gets the index of the selected piece.
+    const foundPieceIndex = currentBoard.findIndex(
+      (tile) => tile.id === selectedPiece.id
+    );
+    // Gets the validMoves array for the selected piece.
+    selectedValidMoves = validMoves(
+      currentBoard,
+      foundPieceIndex,
+      castlingRules,
+      whoseTurn
+    );
 
-      if (lastSelectedPiece || promotionChoice) {
-        // If last selected piece is the same color as whose turn.
-        if (
-          whichTeam(lastSelectedPiece.value) === whoseTurn ||
-          promotionChoice
-        ) {
-          // Gets the index of the previously selected piece.
-          const lastFoundPieceIndex = board.findIndex(
-            (tile) => tile.id === lastSelectedPiece.id
-          );
-          let lastValidMoves = validMoves(
-            board,
-            lastFoundPieceIndex,
-            castlingRules,
-            whoseTurn
-          );
+    // If a piece has been selected last turn or a pawn is in the process of being promoted.
+    if (lastSelectedPiece || promotionChoice) {
+      // If last selected piece is the same color as whose turn.
+      if (whichTeam(lastSelectedPiece.value) === whoseTurn || promotionChoice) {
+        // Gets the index of the previously selected piece.
+        const lastFoundPieceIndex = currentBoard.findIndex(
+          (tile) => tile.id === lastSelectedPiece.id
+        );
+        let lastValidMoves = validMoves(
+          currentBoard,
+          lastFoundPieceIndex,
+          castlingRules,
+          whoseTurn
+        );
 
-          // If the selected piece is included in the last selected piece's valid moves array.
-          if (lastValidMoves.includes(foundPieceIndex) || promotionChoice) {
-            movePiece(board, lastFoundPieceIndex, foundPieceIndex);
+        // If the selected piece is included in the last selected piece's valid moves array.
+        if (lastValidMoves.includes(foundPieceIndex) || promotionChoice) {
+          movePiece(currentBoard, lastFoundPieceIndex, foundPieceIndex);
 
-            // Checks for white king side castle and then moves the rook.
-            if (
-              board[foundPieceIndex].value === "K" &&
-              !castlingRules.hasWhiteKingMoved &&
-              !castlingRules.hasWhiteKingRookMoved &&
-              foundPieceIndex === 62
-            ) {
-              castlingRules.hasWhiteKingMoved = true;
-              castlingRules.hasWhiteKingRookMoved = true;
-              movePiece(board, 63, 61);
-            }
-            // Checks for white queen side castle and then moves the rook.
-            if (
-              board[foundPieceIndex].value === "K" &&
-              !castlingRules.hasWhiteKingMoved &&
-              !castlingRules.hasWhiteQueenRookMoved &&
-              foundPieceIndex === 58
-            ) {
-              castlingRules.hasWhiteKingMoved = true;
-              castlingRules.hasWhiteQueenRookMoved = true;
-              movePiece(board, 56, 59);
-            }
-            // Checks for black king side castle and then moves the rook.
-            if (
-              board[foundPieceIndex].value === "k" &&
-              !castlingRules.hasBlackKingMoved &&
-              !castlingRules.hasBlackKingRookMoved &&
-              foundPieceIndex === 6
-            ) {
-              castlingRules.hasBlackKingMoved = true;
-              castlingRules.hasBlackKingRookMoved = true;
-              movePiece(board, 7, 5);
-            }
-            // Checks for black queen side castle and then moves the rook.
-            if (
-              board[foundPieceIndex].value === "k" &&
-              !castlingRules.hasBlackKingMoved &&
-              !castlingRules.hasBlackQueenRookMoved &&
-              foundPieceIndex === 2
-            ) {
-              castlingRules.hasBlackKingMoved = true;
-              castlingRules.hasBlackQueenRookMoved = true;
-              movePiece(board, 0, 3);
-            }
+          // Checks for white king side castle and then moves the rook.
+          if (
+            currentBoard[foundPieceIndex].value === "K" &&
+            !castlingRules.hasWhiteKingMoved &&
+            !castlingRules.hasWhiteKingRookMoved &&
+            foundPieceIndex === 62
+          ) {
+            castlingRules.hasWhiteKingMoved = true;
+            castlingRules.hasWhiteKingRookMoved = true;
+            movePiece(currentBoard, 63, 61);
+          }
+          // Checks for white queen side castle and then moves the rook.
+          if (
+            currentBoard[foundPieceIndex].value === "K" &&
+            !castlingRules.hasWhiteKingMoved &&
+            !castlingRules.hasWhiteQueenRookMoved &&
+            foundPieceIndex === 58
+          ) {
+            castlingRules.hasWhiteKingMoved = true;
+            castlingRules.hasWhiteQueenRookMoved = true;
+            movePiece(currentBoard, 56, 59);
+          }
+          // Checks for black king side castle and then moves the rook.
+          if (
+            currentBoard[foundPieceIndex].value === "k" &&
+            !castlingRules.hasBlackKingMoved &&
+            !castlingRules.hasBlackKingRookMoved &&
+            foundPieceIndex === 6
+          ) {
+            castlingRules.hasBlackKingMoved = true;
+            castlingRules.hasBlackKingRookMoved = true;
+            movePiece(currentBoard, 7, 5);
+          }
+          // Checks for black queen side castle and then moves the rook.
+          if (
+            currentBoard[foundPieceIndex].value === "k" &&
+            !castlingRules.hasBlackKingMoved &&
+            !castlingRules.hasBlackQueenRookMoved &&
+            foundPieceIndex === 2
+          ) {
+            castlingRules.hasBlackKingMoved = true;
+            castlingRules.hasBlackQueenRookMoved = true;
+            movePiece(currentBoard, 0, 3);
+          }
 
-            // If white king moves, set hasWhiteKingMoved to true.
-            if (board[foundPieceIndex].value === "K") {
-              castlingRules.hasWhiteKingMoved = true;
-              // If white king rook moves, set hasWhiteKingRookMoved to true.
-            } else if (
-              board[foundPieceIndex].value === "R" &&
-              lastFoundPieceIndex === 63
-            ) {
-              castlingRules.hasWhiteKingRookMoved = true;
-              // If white queen rook moves, set hasWhiteQueenRookMoved to true.
-            } else if (
-              board[foundPieceIndex].value === "R" &&
-              lastFoundPieceIndex === 56
-            ) {
-              castlingRules.hasWhiteQueenRookMoved = true;
-              // If black king moves, set hasBlackKingMoved to true.
-            } else if (board[foundPieceIndex].value === "k") {
-              castlingRules.hasBlackKingMoved = true;
-              // If black king rook moves, set hasBlackKingRookMoved to true.
-            } else if (
-              board[foundPieceIndex].value === "r" &&
-              lastFoundPieceIndex === 7
-            ) {
-              castlingRules.hasBlackKingRookMoved = true;
-              // If black queen rook moves, set hasBlackQueenRookMoved to true.
-            } else if (
-              board[foundPieceIndex].value === "r" &&
-              lastFoundPieceIndex === 0
-            ) {
-              castlingRules.hasBlackQueenRookMoved = true;
-            }
+          // If white king moves, set hasWhiteKingMoved to true.
+          if (currentBoard[foundPieceIndex].value === "K") {
+            castlingRules.hasWhiteKingMoved = true;
+            // If white king rook moves, set hasWhiteKingRookMoved to true.
+          } else if (
+            currentBoard[foundPieceIndex].value === "R" &&
+            lastFoundPieceIndex === 63
+          ) {
+            castlingRules.hasWhiteKingRookMoved = true;
+            // If white queen rook moves, set hasWhiteQueenRookMoved to true.
+          } else if (
+            currentBoard[foundPieceIndex].value === "R" &&
+            lastFoundPieceIndex === 56
+          ) {
+            castlingRules.hasWhiteQueenRookMoved = true;
+            // If black king moves, set hasBlackKingMoved to true.
+          } else if (currentBoard[foundPieceIndex].value === "k") {
+            castlingRules.hasBlackKingMoved = true;
+            // If black king rook moves, set hasBlackKingRookMoved to true.
+          } else if (
+            currentBoard[foundPieceIndex].value === "r" &&
+            lastFoundPieceIndex === 7
+          ) {
+            castlingRules.hasBlackKingRookMoved = true;
+            // If black queen rook moves, set hasBlackQueenRookMoved to true.
+          } else if (
+            currentBoard[foundPieceIndex].value === "r" &&
+            lastFoundPieceIndex === 0
+          ) {
+            castlingRules.hasBlackQueenRookMoved = true;
+          }
 
-            // If a white pawn gets to the end of the board, give the user the ability to promote it to another piece.
-            if (board[foundPieceIndex].value === "P" && foundPieceIndex <= 7) {
-              board[foundPieceIndex].isPromoted = true;
-              board[foundPieceIndex].promotionColor = "white";
-            }
-            // If a black pawn gets to the end of the board, give the user the ability to promote it to another piece.
-            if (board[foundPieceIndex].value === "p" && foundPieceIndex >= 56) {
-              board[foundPieceIndex].isPromoted = true;
-              board[foundPieceIndex].promotionColor = "black";
-            }
+          // If a white pawn gets to the end of the board, give the user the ability to promote it to another piece.
+          if (
+            currentBoard[foundPieceIndex].value === "P" &&
+            foundPieceIndex <= 7
+          ) {
+            currentBoard[foundPieceIndex].isPromoted = true;
+            currentBoard[foundPieceIndex].promotionColor = "white";
+          }
+          // If a black pawn gets to the end of the board, give the user the ability to promote it to another piece.
+          if (
+            currentBoard[foundPieceIndex].value === "p" &&
+            foundPieceIndex >= 56
+          ) {
+            currentBoard[foundPieceIndex].isPromoted = true;
+            currentBoard[foundPieceIndex].promotionColor = "black";
+          }
 
-            if (
-              (promotionChoice && foundPieceIndex <= 7) ||
-              (promotionChoice && foundPieceIndex >= 56)
-            ) {
-              board[foundPieceIndex].value = promotionChoice;
-              board[foundPieceIndex].isPromoted = false;
-              setPromotionChoice(null);
-            }
-            console.log("whoseTurn", whoseTurn);
-            if (whoseTurn === "white") {
-              whoseTurn = "black";
-            } else if (whoseTurn === "black") {
-              whoseTurn = "white";
-            }
+          if (
+            (promotionChoice && foundPieceIndex <= 7) ||
+            (promotionChoice && foundPieceIndex >= 56)
+          ) {
+            currentBoard[foundPieceIndex].value = promotionChoice;
+            currentBoard[foundPieceIndex].isPromoted = false;
+            setPromotionChoice(null);
+          }
+          console.log("whoseTurn", whoseTurn);
+          if (whoseTurn === "white") {
+            whoseTurn = "black";
+          } else if (whoseTurn === "black") {
+            whoseTurn = "white";
           }
         }
       }
@@ -928,8 +939,6 @@ function Board() {
     promotionChoice
   );
 
-  ChessGame(currentBoard);
-
   gameStatus = isGameOver(currentBoard, whoseTurn, castlingRules);
 
   if (gameStatus) {
@@ -940,6 +949,12 @@ function Board() {
 
   return (
     <article className="board-container">
+      <Player
+        name={"Player 2"}
+        elo={"1000"}
+        team={"black"}
+        capturedPiecesArray={capturedPiecesArray}
+      />
       <section className="board">
         {currentBoard.map((tile, index) => {
           return (
@@ -956,12 +971,18 @@ function Board() {
             />
           );
         })}
-        <GameOver
-          gameStatus={gameStatus}
-          whoseTurn={whoseTurn}
-          stalemateStatus={stalemateStatus}
-        />
       </section>
+      <Player
+        name={name}
+        elo={elo}
+        team={"white"}
+        capturedPiecesArray={capturedPiecesArray}
+      />
+      <GameOver
+        gameStatus={gameStatus}
+        whoseTurn={whoseTurn}
+        stalemateStatus={stalemateStatus}
+      />
     </article>
   );
 }
