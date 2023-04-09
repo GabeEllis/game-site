@@ -4,10 +4,11 @@
 .player {
   display: flex;
   flex-direction: row;
-  margin: 0.5rem 0;
+  margin: 1rem 0;
+  position: relative;
   & > img {
-    width: 2rem;
-    height: 2rem;
+    width: 2.25rem;
+    height: 2.25rem;
     background-color: lightcoral;
     border: 1px solid black;
   }

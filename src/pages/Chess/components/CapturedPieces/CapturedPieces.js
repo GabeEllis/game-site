@@ -1,5 +1,9 @@
 import "./CapturedPieces.scss";
 import { useState } from "react";
+import {
+  sortCapturedPieces,
+  findTotalPoints,
+} from "../../utilty/sortCapturedPieces";
 import WhiteRook from "../../../../assets/images/white_rook.png";
 import WhiteKnight from "../../../../assets/images/white_knight.png";
 import WhiteBishop from "../../../../assets/images/white_bishop.png";
@@ -58,13 +62,16 @@ function CapturedPieces({ capturedPiecesArray, team }) {
     }
   });
 
+  const sortedCapturedPieceArray = sortCapturedPieces(filtedCapturedPieceArray);
+
   return (
     <ul className="captured-pieces">
-      {filtedCapturedPieceArray.map((piece) => {
+      {sortedCapturedPieceArray.map((piece) => {
+        console.log(piece);
         return (
           <img
-            src={getPieceImage(piece)}
-            alt={piece}
+            src={getPieceImage(piece.piece)}
+            alt={piece.piece}
             className="captured-pieces__piece"
           />
         );
