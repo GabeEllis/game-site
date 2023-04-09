@@ -73,7 +73,7 @@ const chessBoard = [
 
 // Moves a piece, and when it does replace its original location with a 0.
 function movePiece(board, startIndex, finalIndex) {
-  let capturedPiece = board[finalIndex].value;
+  const capturedPiece = board[finalIndex].value;
 
   board[finalIndex].value = board[startIndex].value;
   board[startIndex].value = "0";
@@ -709,19 +709,16 @@ function Board({ name, elo }) {
   // Intializes gameStatus.
   let gameStatus;
   let stalemateStatus;
+  let selectedValidMoves = [];
   // Intializes the starting board.
   const startingBoard = [];
   // Intializes state variables.
   const [currentBoard, setCurrentBoard] = useState(startingBoard);
   const [selectedPiece, setSelectedPiece] = useState(null);
   const [promotionChoice, setPromotionChoice] = useState(null);
-  const [capturedPiecesArray, setCapturedPiecesArray] = useState([]);
-  // let capturedPiecesArray = [];
   // Used to creates the id values for the chess tiles.
   const horizontalLabels = ["a", "b", "c", "d", "e", "f", "g", "h"];
   const verticalLabels = ["8", "7", "6", "5", "4", "3", "2", "1"];
-  // const [whoseTurn, useWhoseTurn] = useState("white");
-  let selectedValidMoves = [];
 
   // Gets previously selected piece.
   const prevPiece = useRef("");
@@ -734,6 +731,11 @@ function Board({ name, elo }) {
   // Gets previously selected turn.
   const prevTurn = useRef("white");
   let whoseTurn = prevTurn.current;
+  console.log(whoseTurn);
+
+  // Gets previously selected capturedPiece.
+  const prevCapture = useRef([]);
+  let capturedPiecesArray = prevCapture.current;
 
   // Gets castling rules values.
   const prevCastlingRules = useRef({
@@ -748,7 +750,9 @@ function Board({ name, elo }) {
 
   useEffect(() => {
     prevTurn.current = whoseTurn;
+    prevCapture.current = capturedPiecesArray;
     prevCastlingRules.current = castlingRules;
+    console.log("useEffect", whoseTurn, capturedPiecesArray);
   });
 
   // Creates the intial board.
@@ -813,17 +817,13 @@ function Board({ name, elo }) {
             foundPieceIndex
           );
 
-          // If a piece was captured, add it to the capturedPiecesArray.
-          if (capturedPiece) {
-            setCapturedPiecesArray((original) => [...original, capturedPiece]);
-          }
+          // Checks for white king side castle and then moves the rook.
           if (
             currentBoard[foundPieceIndex].value === "K" &&
             !castlingRules.hasWhiteKingMoved &&
             !castlingRules.hasWhiteKingRookMoved &&
             foundPieceIndex === 62
           ) {
-            // Checks for white king side castle and then moves the rook.
             castlingRules.hasWhiteKingMoved = true;
             castlingRules.hasWhiteKingRookMoved = true;
             movePiece(currentBoard, 63, 61);
@@ -924,6 +924,10 @@ function Board({ name, elo }) {
             whoseTurn = "black";
           } else if (whoseTurn === "black") {
             whoseTurn = "white";
+          }
+          // If a piece was captured, add it to the capturedPiecesArray.
+          if (capturedPiece) {
+            capturedPiecesArray.push(capturedPiece);
           }
         }
       }
