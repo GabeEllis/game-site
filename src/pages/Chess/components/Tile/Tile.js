@@ -52,10 +52,8 @@ function Tile({
     }
   }
 
-  console.log(isPromoted, value);
-
   return (
-    <tile
+    <div
       className={
         squareColor % 2 === 0
           ? "tile tile__light-square"
@@ -115,7 +113,7 @@ function Tile({
           }
         />
       </section>
-    </tile>
+    </div>
   );
 }
 

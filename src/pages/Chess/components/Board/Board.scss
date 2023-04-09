@@ -2,15 +2,14 @@
 @use "../../../../styles/partials/mixins" as *;
 
 .board {
-  width: 100%;
-  height: 100%;
+  width: calc(100vw - 4rem);
+  height: calc(100vw - 4rem);
   padding: 1rem;
-  background-color: burlywood;
+  background-color: rgb(180, 140, 100);
+  border-radius: 0.25rem;
   display: flex;
   flex-wrap: wrap;
   &-container {
-    width: 100vw;
-    height: 100vw;
     padding: 2rem;
   }
 }
