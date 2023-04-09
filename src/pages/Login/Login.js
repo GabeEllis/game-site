@@ -6,10 +6,7 @@ import lockIcon from "../../assets/icons/lock_icon.png";
 import "./Login.scss";
 
 function Signup() {
-  const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -29,7 +26,6 @@ function Signup() {
 
     //Validate no empty fields
     if (!email || !password) {
-      console.log("One or more required fields are missing");
       setError(
         <div className="error-message">
           Missing one or more required fields.
@@ -55,7 +51,6 @@ function Signup() {
     else if (
       !/^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/.test(password)
     ) {
-      console.log("Please enter a valid password.");
       setError(
         <div className="error-message">"Please enter a valid password."</div>
       );
@@ -73,16 +68,14 @@ function Signup() {
       axios
         .post("http://localhost:8080/users/login", loginData)
         .then((response) => {
-          console.log(response.data);
-          setSubmitted(true);
-          setSuccessMessage("Successfully logged in!");
-          window.location.href = "/";
+          localStorage.authToken = response.data.token;
+          window.location.href = "/chess";
         })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+        .catch((error) => {});
     }
   };
+
+  const authToken = localStorage.authToken;
 
   return (
     <article className="login">
