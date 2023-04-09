@@ -95,11 +95,11 @@ function Signup() {
   };
 
   return (
-    <article className="login">
-      <h1 className="login__header">Sign up Page</h1>
-      <form className="login__form">
-        <div className="login__form-field">
-          <label className="login__form-label">
+    <article className="signup">
+      <h1 className="signup__header">Sign up Page</h1>
+      <form className="signup__form">
+        <div className="signup__form-field">
+          <label className="signup__form-label">
             email
             <input
               type="text"
@@ -107,43 +107,45 @@ function Signup() {
               id="email"
               placeholder="email"
               onChange={(event) => handleEmail(event)}
-              className="login__form-input"
+              className="signup__form-input"
             />
           </label>
         </div>
 
-        <div className="login__form-field">
-          <label className="login__form-label">
+        <div className="signup__form-field">
+          <label className="signup__form-label">
             password
             <input
-              type="text"
+              type="password"
               name="password"
               id="password"
               placeholder="password"
+              autoComplete="off"
               onChange={(event) => handlePassword(event)}
-              className="login__form-input"
+              className="signup__form-input"
             />
           </label>
         </div>
 
-        <div className="login__form-field">
-          <label className="login__form-label">
+        <div className="signup__form-field">
+          <label className="signup__form-label">
             confirm password
             <input
-              type="text"
+              type="password"
               name="confirmPassword"
               id="confirmPassword"
+              autoComplete="off"
               placeholder="confirm password"
               onChange={(event) => handleConfirmPassword(event)}
-              className="login__form-input"
+              className="signup__form-input"
             />
           </label>
         </div>
 
-        <Link className="login__button-container" to="/home">
+        <Link className="signup__button-container" to="/home">
           <button
-            className="login__button"
-            type="submit"
+            className="signup__button"
+            type="signup"
             onClick={handleSubmit}
           >
             Sign up

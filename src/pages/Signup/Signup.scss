@@ -1,0 +1,19 @@
+@use "../../styles/partials/global" as *;
+@use "../../styles/partials/mixins" as *;
+
+.signup {
+  &__header {
+  }
+  &__form {
+    &-field {
+    }
+    &-label {
+    }
+    &-input {
+    }
+  }
+  &__button {
+    &-container {
+    }
+  }
+}

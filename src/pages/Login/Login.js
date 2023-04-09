@@ -87,31 +87,28 @@ function Signup() {
       <h1 className="login__header">Login Page</h1>
       <form className="login__form">
         <div className="login__form-field">
-          <label className="login__form-label">
-            email
-            <input
-              type="text"
-              name="email"
-              id="email"
-              placeholder="email"
-              onChange={(event) => handleEmail(event)}
-              className="login__form-input"
-            />
-          </label>
+          <label className="login__form-label">email</label>
+          <input
+            type="text"
+            name="email"
+            id="email"
+            placeholder="email"
+            onChange={(event) => handleEmail(event)}
+            className="login__form-input"
+          />
         </div>
 
         <div className="login__form-field">
-          <label className="login__form-label">
-            password
-            <input
-              type="text"
-              name="password"
-              id="password"
-              placeholder="password"
-              onChange={(event) => handlePassword(event)}
-              className="login__form-input"
-            />
-          </label>
+          <label className="login__form-label">password</label>
+          <input
+            type="password"
+            name="password"
+            id="password"
+            placeholder="password"
+            autoComplete="off"
+            onChange={(event) => handlePassword(event)}
+            className="login__form-input"
+          />
         </div>
 
         <Link className="login__button-container" to="/home">
@@ -124,7 +121,7 @@ function Signup() {
           </button>
         </Link>
       </form>
-      <Link className="login__button-container" to="/signup">
+      <Link className="login__signup" to="/signup">
         <p>Don't have an account?</p>
       </Link>
     </article>
