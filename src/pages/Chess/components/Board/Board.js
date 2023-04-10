@@ -644,6 +644,14 @@ function Board({ name, elo, theme }) {
   let stalemateStatus;
   let selectedValidMoves = [];
   let isComputer = true;
+  // Gets information for player 2.
+  let player2Name = "Player 2";
+  let difficulty = 1;
+  let player2Elo = "1000";
+  if (isComputer) {
+    player2Name = "Computer";
+    player2Elo = `difficulty ${difficulty}`;
+  }
   let boardAfterMove = [];
   // Intializes state variables.
   const [currentBoard, setCurrentBoard] = useState(startingBoard);
@@ -838,8 +846,6 @@ function Board({ name, elo, theme }) {
         castlingRules
       );
 
-      const difficulty = 1;
-
       const rawComputerMove = getComputerMove(currentBoardFen, difficulty);
       const [startingIndex, computerMove] = formatComputerMove(
         rawComputerMove,
@@ -938,8 +944,8 @@ function Board({ name, elo, theme }) {
   return (
     <article className="board-container">
       <Player
-        name={"Player 2"}
-        elo={"1000"}
+        name={player2Name}
+        elo={player2Elo}
         team={"black"}
         capturedPiecesArray={capturedPiecesArray}
       />

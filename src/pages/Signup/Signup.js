@@ -6,6 +6,7 @@ import lockIcon from "../../assets/icons/lock_icon.png";
 import whiteKing from "../../assets/images/white_king.png";
 import blackPawn from "../../assets/images/black_pawn.png";
 import confirmPasswordIcon from "../../assets/icons/confirm-password-icon.png";
+import Navbar from "../Navbar/Navbar";
 import "./Signup.scss";
 
 function Signup() {
@@ -89,87 +90,90 @@ function Signup() {
   const authToken = localStorage.authToken;
 
   return (
-    <article className="signup">
-      <h1 className="signup__header">Sign Up</h1>
-      <form className="signup__form">
-        <h2 className="signup__form-header">Login Information</h2>
-        <div className="signup__form-field">
-          <img src={userIcon} />
-          <input
-            type="text"
-            name="email"
-            id="email"
-            placeholder="email"
-            onChange={(event) => handleEmail(event)}
-            className="signup__form-input"
-          />
-        </div>
+    <>
+      <Navbar />
+      <article className="signup">
+        <h1 className="signup__header">Sign Up</h1>
+        <form className="signup__form">
+          <h2 className="signup__form-header">Login Information</h2>
+          <div className="signup__form-field">
+            <img src={userIcon} />
+            <input
+              type="text"
+              name="email"
+              id="email"
+              placeholder="email"
+              onChange={(event) => handleEmail(event)}
+              className="signup__form-input"
+            />
+          </div>
 
-        <div className="signup__form-field">
-          <img src={lockIcon} />
-          <input
-            type="password"
-            name="password"
-            id="password"
-            placeholder="password"
-            autoComplete="off"
-            onChange={(event) => handlePassword(event)}
-            className="login__form-input"
-          />
-        </div>
+          <div className="signup__form-field">
+            <img src={lockIcon} />
+            <input
+              type="password"
+              name="password"
+              id="password"
+              placeholder="password"
+              autoComplete="off"
+              onChange={(event) => handlePassword(event)}
+              className="login__form-input"
+            />
+          </div>
 
-        <div className="signup__form-field">
-          <img src={confirmPasswordIcon} />
-          <input
-            type="password"
-            name="confirmPassword"
-            id="confirmPassword"
-            placeholder="confirm password"
-            autoComplete="off"
-            onChange={(event) => handleConfirmPassword(event)}
-            className="login__form-input"
-          />
-        </div>
+          <div className="signup__form-field">
+            <img src={confirmPasswordIcon} />
+            <input
+              type="password"
+              name="confirmPassword"
+              id="confirmPassword"
+              placeholder="confirm password"
+              autoComplete="off"
+              onChange={(event) => handleConfirmPassword(event)}
+              className="login__form-input"
+            />
+          </div>
 
-        <h2 className="signup__form-header">Account Info</h2>
+          <h2 className="signup__form-header">Account Info</h2>
 
-        <div className="signup__form-field">
-          <img src={whiteKing} />
-          <input
-            type="text"
-            name="name"
-            id="name"
-            placeholder="display name"
-            autoComplete="off"
-            onChange={(event) => handleName(event)}
-            className="login__form-input"
-          />
-        </div>
+          <div className="signup__form-field">
+            <img src={whiteKing} />
+            <input
+              type="text"
+              name="name"
+              id="name"
+              placeholder="display name"
+              autoComplete="off"
+              onChange={(event) => handleName(event)}
+              className="login__form-input"
+            />
+          </div>
 
-        <div className="signup__form-field">
-          <img src={blackPawn} />
-          <input
-            type="text"
-            name="elo"
-            id="elo"
-            placeholder="estimated starting elo"
-            autoComplete="off"
-            onChange={(event) => handleElo(event)}
-            className="login__form-input"
-          />
-        </div>
+          <div className="signup__form-field">
+            <img src={blackPawn} />
+            <input
+              type="text"
+              name="elo"
+              id="elo"
+              placeholder="estimated starting elo"
+              autoComplete="off"
+              onChange={(event) => handleElo(event)}
+              className="login__form-input"
+            />
+          </div>
 
-        <Link className="signup__button-container" to="/home">
-          <button
-            className="signup__button"
-            type="submit"
-            onClick={handleSubmit}
-          >
-            Sign up
-          </button>
-        </Link>
-      </form>
-    </article>
+          <Link className="signup__button-container" to="/home">
+            <button
+              className="signup__button"
+              type="submit"
+              onClick={handleSubmit}
+            >
+              Sign up
+            </button>
+          </Link>
+        </form>
+      </article>
+    </>
   );
 }
 
