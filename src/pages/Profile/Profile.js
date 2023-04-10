@@ -83,13 +83,11 @@ function Profile() {
               value={name}
               onChange={(e) => handleName(e)}
             ></input>
-            <div
+            <span
               className={!name ? "profile__error" : "profile__error--hidden"}
             >
-              <span className="profile__error-message">
-                This field is required
-              </span>
-            </div>
+              This field is required
+            </span>
           </section>
 
           <section className="profile__elo-container">
@@ -114,13 +112,6 @@ function Profile() {
                 );
               })}
             </select>
-            <div
-              className={!theme ? "profile__error" : "profile__error--hidden"}
-            >
-              <span className="profile__error-message">
-                This field is required
-              </span>
-            </div>
           </section>
 
           <section className="board">

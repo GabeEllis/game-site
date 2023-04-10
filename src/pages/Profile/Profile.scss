@@ -11,46 +11,27 @@
     margin: 0.5rem 0 2rem 0;
   }
   &__error {
-    display: flex;
-    align-items: center;
-    &-message {
-      @include body-copy;
-      color: rgb(220, 20, 20);
-    }
+    @include body-copy;
+    color: rgb(220, 20, 20);
+    margin-left: 1rem;
     &--hidden {
-      visibility: hidden;
+      display: none;
     }
   }
-  &__form {
-    &-field {
-      width: 100%;
-      position: relative;
-      margin-bottom: 0.75rem;
-      & > img {
-        width: 2rem;
-        height: 2rem;
-        object-fit: contain;
-        position: absolute;
-        top: 50%;
-        left: 0.5rem;
-        transform: translateY(-50%);
-      }
+  &__input {
+    &-dropdown {
+      margin-bottom: 2rem;
     }
-    &-label {
-      position: relative;
-    }
-    &-input {
-      @include body-copy;
-      width: 100%;
-      height: 2.5rem;
-      color: grey;
-      border: 1px grey solid;
-      border-radius: 0.25rem;
-      background-color: #fdfdfd;
-      padding: 0.5rem 1rem 0.5rem 3rem;
-      &:focus {
-        outline: 1px solid rgb(61, 142, 169);
-      }
+  }
+  &__label {
+    @include subheader;
+    font-weight: 600;
+  }
+  &__elo-container {
+    & > p {
+      @include subheader;
+      font-weight: 600;
+      margin: 0.5rem 0 0 0;
     }
   }
   &__button {
