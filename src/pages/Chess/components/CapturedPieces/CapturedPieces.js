@@ -18,6 +18,7 @@ import BlackKing from "../../../../assets/images/black_king.png";
 import BlackPawn from "../../../../assets/images/black_pawn.png";
 
 function CapturedPieces({ capturedPiecesArray, team }) {
+  console.log(capturedPiecesArray);
   let filtedCapturedPieceArray = [];
 
   function getPieceImage(value) {
@@ -67,7 +68,6 @@ function CapturedPieces({ capturedPiecesArray, team }) {
   return (
     <ul className="captured-pieces">
       {sortedCapturedPieceArray.map((piece) => {
-        console.log(piece);
         return (
           <img
             src={getPieceImage(piece.piece)}

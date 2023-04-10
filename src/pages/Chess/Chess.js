@@ -28,9 +28,6 @@ function Chess() {
       .catch((error) => {});
   }, [authToken]);
 
-  // if (!name) {
-  //   return <h1>Loading...</h1>;
-  // }
   return (
     <main>
       <Navbar />

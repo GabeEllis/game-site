@@ -639,11 +639,16 @@ function isGameOver(board, whoseTurn, castlingRules) {
 }
 
 function Board({ name, elo, theme }) {
+  // Intializes state variables.
+  const [currentBoard, setCurrentBoard] = useState(startingBoard);
+  const [selectedPiece, setSelectedPiece] = useState(null);
+  const [promotionChoice, setPromotionChoice] = useState(null);
+  const [isComputer, setIsComputer] = useState(true);
+
   // Intializes gameStatus.
   let gameStatus;
   let stalemateStatus;
   let selectedValidMoves = [];
-  let isComputer = true;
   // Gets information for player 2.
   let player2Name = "Player 2";
   let difficulty = 1;
@@ -653,10 +658,6 @@ function Board({ name, elo, theme }) {
     player2Elo = `difficulty ${difficulty}`;
   }
   let boardAfterMove = [];
-  // Intializes state variables.
-  const [currentBoard, setCurrentBoard] = useState(startingBoard);
-  const [selectedPiece, setSelectedPiece] = useState(null);
-  const [promotionChoice, setPromotionChoice] = useState(null);
 
   // Gets previously selected piece.
   const prevPiece = useRef("");
@@ -934,6 +935,22 @@ function Board({ name, elo, theme }) {
     }
   });
 
+  // Resets the game if the user clicks a button.
+  const copponentHandler = (option) => {
+    gameStatus = null;
+    prevCapture.current = [];
+    castlingRules = {
+      hasWhiteKingRookMoved: false,
+      hasWhiteQueenRookMoved: false,
+      hasBlackKingRookMoved: false,
+      hasBlackQueenRookMoved: false,
+    };
+    lastSelectedPiece = null;
+    setSelectedPiece(null);
+    setCurrentBoard(startingBoard);
+    setIsComputer(option);
+  };
+
   // Checks to see if the game is over.
   gameStatus = isGameOver(currentBoard, whoseTurn, castlingRules);
   if (gameStatus) {
@@ -966,17 +983,18 @@ function Board({ name, elo, theme }) {
             />
           );
         })}
+        <GameOver
+          gameStatus={gameStatus}
+          whoseTurn={whoseTurn}
+          stalemateStatus={stalemateStatus}
+          copponentHandler={copponentHandler}
+        />
       </section>
       <Player
         name={name}
         elo={elo}
         team={"white"}
         capturedPiecesArray={capturedPiecesArray}
-      />
-      <GameOver
-        gameStatus={gameStatus}
-        whoseTurn={whoseTurn}
-        stalemateStatus={stalemateStatus}
       />
     </article>
   );
