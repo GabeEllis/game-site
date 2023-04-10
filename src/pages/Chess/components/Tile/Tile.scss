@@ -9,10 +9,38 @@
   align-items: center;
   position: relative;
   &__light-square {
-    background-color: white;
+    &--option1 {
+      background-color: white;
+    }
+    &--option2 {
+      background-color: salmon;
+    }
+    &--option3 {
+      background-color: beige;
+    }
+    &--option4 {
+      background-color: cornflowerblue;
+    }
+    &--option5 {
+      background-color: goldenrod;
+    }
   }
   &__dark-square {
-    background-color: grey;
+    &--option1 {
+      background-color: grey;
+    }
+    &--option2 {
+      background-color: lightblue;
+    }
+    &--option3 {
+      background-color: brown;
+    }
+    &--option4 {
+      background-color: darkolivegreen;
+    }
+    &--option5 {
+      background-color: royalblue;
+    }
   }
   &__piece-image {
     width: 100%;

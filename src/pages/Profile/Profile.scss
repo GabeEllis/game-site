@@ -1,0 +1,92 @@
+@use "../../styles/partials/global" as *;
+@use "../../styles/partials/mixins" as *;
+
+.profile {
+  @include page-header;
+  padding: 2rem 2rem 4rem 2rem;
+  border-radius: 0.5rem;
+  background-color: darkgray;
+  &__header {
+    text-align: center;
+    margin: 0.5rem 0 2rem 0;
+  }
+  &__error {
+    @include body-copy;
+    color: rgb(220, 20, 20);
+    margin-left: 1rem;
+    &--hidden {
+      display: none;
+    }
+  }
+  &__input {
+    &-dropdown {
+      margin-bottom: 2rem;
+    }
+  }
+  &__label {
+    @include subheader;
+    font-weight: 600;
+  }
+  &__elo-container {
+    & > p {
+      @include subheader;
+      font-weight: 600;
+      margin: 0.5rem 0 0 0;
+    }
+  }
+  &__button {
+    @include section-header;
+    width: 100%;
+    border: 2px solid;
+    border-radius: 0.5rem;
+    color: #fff;
+    transition: 0.25s;
+    border: 1px solid black;
+    background-color: #e2725b;
+    line-height: 1;
+    padding: 1em 2em;
+    margin-top: 2rem;
+    &-container {
+      width: 50%;
+      @include tablet {
+        width: 10%;
+      }
+      @include desktop {
+        width: 7.5%;
+      }
+    }
+    &:hover,
+    &:focus {
+      box-shadow: inset calc(100vw - 2rem) 0 0 0 var(--hover);
+    }
+  }
+  &__signup {
+    @include subheader;
+    color: inherit;
+    text-align: center;
+    & > p {
+      margin: 0;
+    }
+    &-header {
+      @include subheader;
+      text-align: center;
+      margin-bottom: 0.25rem;
+    }
+  }
+}
+
+button {
+  color: var(--color);
+  transition: 0.25s;
+}
+
+$colors: (
+  profile__button: #19bc8b,
+);
+
+@each $button, $color in $colors {
+  .#{$button} {
+    --color: #{$color};
+    --hover: #{$color};
+  }
+}

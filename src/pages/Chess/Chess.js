@@ -12,7 +12,6 @@ function Chess() {
   const [theme, setTheme] = useState("option1");
 
   const authToken = localStorage.authToken;
-  console.log(authToken);
 
   useEffect(() => {
     axios

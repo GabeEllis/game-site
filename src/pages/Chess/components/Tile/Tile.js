@@ -21,7 +21,11 @@ function Tile({
   isPromoted,
   promotionColor,
   PromotionOptions,
+  theme,
 }) {
+  let dark = "";
+  let light = "";
+
   function getPieceImage(value) {
     if (value === "R") {
       return WhiteRook;
@@ -52,14 +56,27 @@ function Tile({
     }
   }
 
+  // theme === "option1" "tile__light-square--option1"
+
+  if (theme === "option1") {
+    light = "tile__light-square--option1";
+    dark = "tile__dark-square--option1";
+  } else if (theme === "option2") {
+    light = "tile__light-square--option2";
+    dark = "tile__dark-square--option2";
+  } else if (theme === "option3") {
+    light = "tile__light-square--option3";
+    dark = "tile__dark-square--option3";
+  } else if (theme === "option4") {
+    light = "tile__light-square--option4";
+    dark = "tile__dark-square--option4";
+  } else if (theme === "option5") {
+    light = "tile__light-square--option5";
+    dark = "tile__dark-square--option5";
+  }
+
   return (
-    <div
-      className={
-        squareColor % 2 === 0
-          ? "tile tile__light-square"
-          : "tile tile__dark-square"
-      }
-    >
+    <div className={squareColor % 2 === 0 ? `tile ${light}` : `tile ${dark}`}>
       <section
         className={
           isPromoted ? "tile__piece-image--hidden" : "tile__piece-image"
