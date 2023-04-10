@@ -4,6 +4,7 @@ import GameOver from "../GameOver/GameOver";
 import Player from "../Player/Player";
 import { getComputerMove } from "../../utilty/getComputerMove";
 import { convertBoardToFen } from "../../utilty/convertBoardToFen";
+import { formatComputerMove } from "../../utilty/formatComputerMove";
 import { useState, useEffect, useRef } from "react";
 import { move, status, moves, aiMove, getFen } from "js-chess-engine";
 
@@ -708,6 +709,8 @@ function Board({ name, elo }) {
   let gameStatus;
   let stalemateStatus;
   let selectedValidMoves = [];
+  let capturedPiece;
+  let isComputer = true;
   // Intializes the starting board.
   const startingBoard = [];
   // Intializes state variables.
@@ -775,17 +778,30 @@ function Board({ name, elo }) {
     setPromotionChoice(piece);
   };
 
-  const currentBoardFen = convertBoardToFen(
-    currentBoard,
-    whoseTurn,
-    castlingRules
-  );
-  let difficulty = 3;
+  if (whoseTurn === "black") {
+    const currentBoardFen = convertBoardToFen(
+      currentBoard,
+      whoseTurn,
+      castlingRules
+    );
 
-  console.log(currentBoardFen);
-  const computerMove = getComputerMove(currentBoardFen, difficulty);
-  console.log(computerMove);
+    const difficulty = 1;
 
+    const rawComputerMove = getComputerMove(currentBoardFen, difficulty);
+    const computerMove = formatComputerMove(rawComputerMove, currentBoard);
+
+    capturedPiece = movePiece(currentBoard, computerMove[0], computerMove[1]);
+    // After a move is made, it changes the turn to the opposite team.
+    if (whoseTurn === "white") {
+      whoseTurn = "black";
+    } else if (whoseTurn === "black") {
+      whoseTurn = "white";
+    }
+    // If a piece was captured, add it to the capturedPiecesArray.
+    if (capturedPiece) {
+      capturedPiecesArray.push(capturedPiece);
+    }
+  }
   // Start of the turn.
   // If a piece has been selected or a pawn is in the process of being promoted.
   if (selectedPiece || promotionChoice) {
@@ -818,7 +834,7 @@ function Board({ name, elo }) {
 
         // If the selected piece is included in the last selected piece's valid moves array.
         if (lastValidMoves.includes(foundPieceIndex) || promotionChoice) {
-          const capturedPiece = movePiece(
+          capturedPiece = movePiece(
             currentBoard,
             lastFoundPieceIndex,
             foundPieceIndex

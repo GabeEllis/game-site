@@ -12,14 +12,16 @@ export function convertBoardToFen(board, whoseTurn, castlingRules) {
   } = castlingRules;
 
   for (let i = 0; i < board.length; i++) {
-    if (board[i].value === "0" && zeroInARow < 8) {
+    if (board[i].value === "0") {
       zeroInARow++;
-      if (zeroInARow === 8) {
+      if ((i + 1) % 8 === 0) {
+        console.log("Add all zeros");
         boardFen += zeroInARow;
         zeroInARow = 0;
       }
     } else if (board[i].value !== "0" && zeroInARow > 0) {
-      boardFen += zeroInARow;
+      console.log("Add 1 zero");
+      boardFen += zeroInARow + board[i].value;
       zeroInARow = 0;
     } else {
       boardFen += board[i].value;
