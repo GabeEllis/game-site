@@ -1,0 +1,32 @@
+@use "../../../../styles/partials/global" as *;
+@use "../../../../styles/partials/mixins" as *;
+
+.player {
+  display: flex;
+  flex-direction: row;
+  margin: 1rem 0;
+  position: relative;
+  & > img {
+    width: 2.25rem;
+    height: 2.25rem;
+    background-color: lightcoral;
+    border: 1px solid black;
+  }
+  & > div {
+    display: flex;
+    flex-direction: column;
+    margin: 0 0 0 0.5rem;
+  }
+  &__data-container {
+    display: flex;
+  }
+  &__name {
+    @include subheader;
+    font-weight: 600;
+    margin: 0;
+  }
+  &__elo {
+    @include subheader;
+    margin: 0;
+  }
+}

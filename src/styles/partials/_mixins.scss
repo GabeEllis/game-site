@@ -1,1 +1,45 @@
 @use "./breakpoints" as *;
+
+@mixin tablet {
+  @media (min-width: $breakpoint-tablet) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: $breakpoint-desktop) {
+    @content;
+  }
+}
+
+@mixin page-header {
+  font-size: 1.5rem;
+  font-weight: 700;
+  @include tablet {
+    font-size: 2rem;
+  }
+}
+
+@mixin section-header {
+  font-size: 1rem;
+  font-weight: 700;
+  @include tablet {
+    font-size: 1.25rem;
+  }
+}
+
+@mixin subheader {
+  font-size: 1rem;
+  font-weight: 400;
+  @include tablet {
+    font-size: 1.25rem;
+  }
+}
+
+@mixin body-copy {
+  font-size: 0.8125rem;
+  font-weight: 400;
+  @include tablet {
+    font-size: 0.875rem;
+  }
+}

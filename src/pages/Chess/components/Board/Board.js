@@ -1,79 +1,23 @@
 import "./Board.scss";
 import Tile from "../Tile/Tile";
 import GameOver from "../GameOver/GameOver";
+import Player from "../Player/Player";
+import startingBoard from "../../utilty/startingBoard.json";
+import { getComputerMove } from "../../utilty/getComputerMove";
+import { convertBoardToFen } from "../../utilty/convertBoardToFen";
+import { formatComputerMove } from "../../utilty/formatComputerMove";
 import { useState, useEffect, useRef } from "react";
-
-const chessBoard = [
-  "r",
-  "n",
-  "b",
-  "q",
-  "k",
-  "b",
-  "n",
-  "r",
-  "p",
-  "p",
-  "p",
-  "p",
-  "p",
-  "p",
-  "p",
-  "p",
-  "0",
-  "0",
-  "0",
-  "0",
-  "0",
-  "0",
-  "0",
-  "0",
-  "0",
-  "0",
-  "0",
-  "0",
-  "0",
-  "0",
-  "0",
-  "0",
-  "0",
-  "0",
-  "0",
-  "0",
-  "0",
-  "0",
-  "0",
-  "0",
-  "0",
-  "0",
-  "0",
-  "0",
-  "0",
-  "0",
-  "0",
-  "0",
-  "P",
-  "P",
-  "P",
-  "P",
-  "P",
-  "P",
-  "P",
-  "P",
-  "R",
-  "N",
-  "B",
-  "Q",
-  "K",
-  "B",
-  "N",
-  "R",
-];
+import { move, status, moves, aiMove, getFen } from "js-chess-engine";
 
 // Moves a piece, and when it does replace its original location with a 0.
-function movePiece(board, startIndex, finalIndex) {
-  board[finalIndex].value = board[startIndex].value;
-  board[startIndex].value = "0";
+export function movePiece(board, startIndex, finalIndex) {
+  const boardAfterMove = JSON.parse(JSON.stringify(board));
+  const capturedPiece = boardAfterMove[finalIndex].value;
+
+  boardAfterMove[finalIndex].value = boardAfterMove[startIndex].value;
+  boardAfterMove[startIndex].value = "0";
+
+  return [boardAfterMove, capturedPiece];
 }
 
 // Returns which team the input piece is.
@@ -337,10 +281,8 @@ function knightMoves(board, startIndex) {
 function kingMoves(board, startIndex, castlingRules) {
   // Gets castling rules values from object.
   const {
-    hasWhiteKingMoved,
     hasWhiteKingRookMoved,
     hasWhiteQueenRookMoved,
-    hasBlackKingMoved,
     hasBlackKingRookMoved,
     hasBlackQueenRookMoved,
   } = castlingRules;
@@ -429,7 +371,7 @@ function kingMoves(board, startIndex, castlingRules) {
   }
 
   // If the king is white and they haven't castled yet.
-  if (!hasWhiteKingMoved && whichTeam(board[startIndex].value) === "white") {
+  if (whichTeam(board[startIndex].value) === "white") {
     // Checks for king side castling.
     if (!hasWhiteKingRookMoved) {
       let counter = startIndex + 1;
@@ -454,10 +396,7 @@ function kingMoves(board, startIndex, castlingRules) {
     }
 
     // If the king is black and they haven't castled yet.
-  } else if (
-    !hasBlackKingMoved &&
-    whichTeam(board[startIndex].value) === "black"
-  ) {
+  } else if (whichTeam(board[startIndex].value) === "black") {
     // Checks for king side castling.
     if (!hasBlackKingRookMoved) {
       let counter = startIndex + 1;
@@ -546,8 +485,8 @@ function validMoves(board, startIndex, castlingRules, whoseTurn) {
   if (pieceType === "r" || pieceType === "R") {
     const rookMovesArray = rookMoves(board, startIndex);
     rookMovesArray.forEach((move) => {
-      const testBoard = JSON.parse(JSON.stringify(board));
-      movePiece(testBoard, startIndex, move);
+      const boardAfterMove = movePiece(board, startIndex, move);
+      const testBoard = boardAfterMove[0];
       if (!inCheck(testBoard, whoseTurn)) {
         validMoveArray.push(move);
       }
@@ -556,8 +495,8 @@ function validMoves(board, startIndex, castlingRules, whoseTurn) {
   } else if (pieceType === "b" || pieceType === "B") {
     const bishopMovesArray = bishopMoves(board, startIndex);
     bishopMovesArray.forEach((move) => {
-      const testBoard = JSON.parse(JSON.stringify(board));
-      movePiece(testBoard, startIndex, move);
+      const boardAfterMove = movePiece(board, startIndex, move);
+      const testBoard = boardAfterMove[0];
       if (!inCheck(testBoard, whoseTurn)) {
         validMoveArray.push(move);
       }
@@ -566,8 +505,8 @@ function validMoves(board, startIndex, castlingRules, whoseTurn) {
   } else if (pieceType === "n" || pieceType === "N") {
     const knightMovesArray = knightMoves(board, startIndex);
     knightMovesArray.forEach((move) => {
-      const testBoard = JSON.parse(JSON.stringify(board));
-      movePiece(testBoard, startIndex, move);
+      const boardAfterMove = movePiece(board, startIndex, move);
+      const testBoard = boardAfterMove[0];
       if (!inCheck(testBoard, whoseTurn)) {
         validMoveArray.push(move);
       }
@@ -579,8 +518,8 @@ function validMoves(board, startIndex, castlingRules, whoseTurn) {
       bishopMoves(board, startIndex)
     );
     queenMovesArray.forEach((move) => {
-      const testBoard = JSON.parse(JSON.stringify(board));
-      movePiece(testBoard, startIndex, move);
+      const boardAfterMove = movePiece(board, startIndex, move);
+      const testBoard = boardAfterMove[0];
       if (!inCheck(testBoard, whoseTurn)) {
         validMoveArray.push(move);
       }
@@ -589,8 +528,8 @@ function validMoves(board, startIndex, castlingRules, whoseTurn) {
   } else if (pieceType === "k" || pieceType === "K") {
     const kingMovesArray = kingMoves(board, startIndex, castlingRules);
     kingMovesArray.forEach((move) => {
-      const testBoard = JSON.parse(JSON.stringify(board));
-      movePiece(testBoard, startIndex, move);
+      const boardAfterMove = movePiece(board, startIndex, move);
+      const testBoard = boardAfterMove[0];
       if (!inCheck(testBoard, whoseTurn)) {
         validMoveArray.push(move);
       }
@@ -599,8 +538,8 @@ function validMoves(board, startIndex, castlingRules, whoseTurn) {
   } else if (pieceType === "p" || pieceType === "P") {
     const pawnMovesArray = pawnMoves(board, startIndex);
     pawnMovesArray.forEach((move) => {
-      const testBoard = JSON.parse(JSON.stringify(board));
-      movePiece(testBoard, startIndex, move);
+      const boardAfterMove = movePiece(board, startIndex, move);
+      const testBoard = boardAfterMove[0];
       if (!inCheck(testBoard, whoseTurn)) {
         validMoveArray.push(move);
       }
@@ -685,14 +624,13 @@ function isGameOver(board, whoseTurn, castlingRules) {
   let totalValidMovesArray = [];
   for (let i = 0; i < board.length; i++) {
     if (whichTeam(board[i].value) === whoseTurn) {
-      console.log(i, whoseTurn);
       let validMoveArray = validMoves(board, i, castlingRules, whoseTurn);
       if (validMoveArray.length !== 0) {
         totalValidMovesArray.push(validMoveArray);
       }
     }
   }
-  console.log(totalValidMovesArray);
+
   if (totalValidMovesArray.length === 0) {
     return true;
   } else {
@@ -700,21 +638,18 @@ function isGameOver(board, whoseTurn, castlingRules) {
   }
 }
 
-function Board() {
+function Board({ name, elo }) {
   // Intializes gameStatus.
   let gameStatus;
   let stalemateStatus;
-  // Intializes the starting board.
-  const startingBoard = [];
+  let selectedValidMoves = [];
+  let capturedPiece;
+  let isComputer = false;
+  let boardAfterMove = [];
   // Intializes state variables.
   const [currentBoard, setCurrentBoard] = useState(startingBoard);
   const [selectedPiece, setSelectedPiece] = useState(null);
   const [promotionChoice, setPromotionChoice] = useState(null);
-  // Used to creates the id values for the chess tiles.
-  const horizontalLabels = ["a", "b", "c", "d", "e", "f", "g", "h"];
-  const verticalLabels = ["8", "7", "6", "5", "4", "3", "2", "1"];
-  // const [whoseTurn, useWhoseTurn] = useState("white");
-  let selectedValidMoves = [];
 
   // Gets previously selected piece.
   const prevPiece = useRef("");
@@ -722,42 +657,24 @@ function Board() {
 
   useEffect(() => {
     prevPiece.current = selectedPiece;
-    // console.log("useEffect Piece", prevPiece.current);
   }, [selectedPiece]);
 
   // Gets previously selected turn.
   const prevTurn = useRef("white");
   let whoseTurn = prevTurn.current;
 
+  // Gets previously selected capturedPiece.
+  const prevCapture = useRef([]);
+  let capturedPiecesArray = prevCapture.current;
+
   // Gets castling rules values.
   const prevCastlingRules = useRef({
-    hasWhiteKingMoved: false,
     hasWhiteKingRookMoved: false,
     hasWhiteQueenRookMoved: false,
-    hasBlackKingMoved: false,
     hasBlackKingRookMoved: false,
     hasBlackQueenRookMoved: false,
   });
   let castlingRules = prevCastlingRules.current;
-
-  useEffect(() => {
-    prevTurn.current = whoseTurn;
-    prevCastlingRules.current = castlingRules;
-    // console.log("useEffect Turn", prevTurn.current);
-  });
-
-  // Creates the intial board.
-  for (var i = 0; i < 8; i++) {
-    for (var j = 0; j < 8; j++) {
-      startingBoard.push({
-        id: `${horizontalLabels[j]}${verticalLabels[i]}`,
-        value: chessBoard[8 * i + j],
-        squareColor: j + i,
-        isPromoted: false,
-        promotionColor: "white",
-      });
-    }
-  }
 
   // Finds the piece the users clicks on and sets selected piece equal to it.
   const SelectPiece = (id) => {
@@ -766,26 +683,27 @@ function Board() {
   };
 
   // Finds the piece the users clicks on and sets selected piece equal to it.
-  // Change name.
   const PromotionOptions = (piece) => {
     setPromotionChoice(piece);
-    console.log("promotionChoice", piece);
   };
 
-  function ChessGame(board) {
+  // Start of the turn.
+  // If a piece has been selected or a pawn is in the process of being promoted.
+  if (!isComputer || whoseTurn === "white") {
     if (selectedPiece || promotionChoice) {
       // Gets the index of the selected piece.
-      const foundPieceIndex = board.findIndex(
+      const foundPieceIndex = currentBoard.findIndex(
         (tile) => tile.id === selectedPiece.id
       );
       // Gets the validMoves array for the selected piece.
       selectedValidMoves = validMoves(
-        board,
+        currentBoard,
         foundPieceIndex,
         castlingRules,
         whoseTurn
       );
 
+      // If a piece has been selected last turn or a pawn is in the process of being promoted.
       if (lastSelectedPiece || promotionChoice) {
         // If last selected piece is the same color as whose turn.
         if (
@@ -793,11 +711,11 @@ function Board() {
           promotionChoice
         ) {
           // Gets the index of the previously selected piece.
-          const lastFoundPieceIndex = board.findIndex(
+          const lastFoundPieceIndex = currentBoard.findIndex(
             (tile) => tile.id === lastSelectedPiece.id
           );
           let lastValidMoves = validMoves(
-            board,
+            currentBoard,
             lastFoundPieceIndex,
             castlingRules,
             whoseTurn
@@ -805,109 +723,107 @@ function Board() {
 
           // If the selected piece is included in the last selected piece's valid moves array.
           if (lastValidMoves.includes(foundPieceIndex) || promotionChoice) {
-            movePiece(board, lastFoundPieceIndex, foundPieceIndex);
+            boardAfterMove = movePiece(
+              currentBoard,
+              lastFoundPieceIndex,
+              foundPieceIndex
+            );
 
             // Checks for white king side castle and then moves the rook.
             if (
-              board[foundPieceIndex].value === "K" &&
-              !castlingRules.hasWhiteKingMoved &&
+              currentBoard[lastFoundPieceIndex].value === "K" &&
               !castlingRules.hasWhiteKingRookMoved &&
               foundPieceIndex === 62
             ) {
-              castlingRules.hasWhiteKingMoved = true;
               castlingRules.hasWhiteKingRookMoved = true;
-              movePiece(board, 63, 61);
+              boardAfterMove = movePiece(boardAfterMove[0], 63, 61);
             }
             // Checks for white queen side castle and then moves the rook.
             if (
-              board[foundPieceIndex].value === "K" &&
-              !castlingRules.hasWhiteKingMoved &&
+              currentBoard[lastFoundPieceIndex].value === "K" &&
               !castlingRules.hasWhiteQueenRookMoved &&
               foundPieceIndex === 58
             ) {
-              castlingRules.hasWhiteKingMoved = true;
               castlingRules.hasWhiteQueenRookMoved = true;
-              movePiece(board, 56, 59);
+              boardAfterMove = movePiece(boardAfterMove[0], 56, 59);
             }
             // Checks for black king side castle and then moves the rook.
             if (
-              board[foundPieceIndex].value === "k" &&
-              !castlingRules.hasBlackKingMoved &&
+              currentBoard[lastFoundPieceIndex].value === "k" &&
               !castlingRules.hasBlackKingRookMoved &&
               foundPieceIndex === 6
             ) {
-              castlingRules.hasBlackKingMoved = true;
               castlingRules.hasBlackKingRookMoved = true;
-              movePiece(board, 7, 5);
+              boardAfterMove = movePiece(boardAfterMove[0], 7, 5);
             }
             // Checks for black queen side castle and then moves the rook.
             if (
-              board[foundPieceIndex].value === "k" &&
-              !castlingRules.hasBlackKingMoved &&
+              currentBoard[lastFoundPieceIndex].value === "k" &&
               !castlingRules.hasBlackQueenRookMoved &&
               foundPieceIndex === 2
             ) {
-              castlingRules.hasBlackKingMoved = true;
               castlingRules.hasBlackQueenRookMoved = true;
-              movePiece(board, 0, 3);
+              boardAfterMove = movePiece(boardAfterMove[0], 0, 3);
             }
 
             // If white king moves, set hasWhiteKingMoved to true.
-            if (board[foundPieceIndex].value === "K") {
-              castlingRules.hasWhiteKingMoved = true;
+            if (currentBoard[lastFoundPieceIndex].value === "K") {
+              castlingRules.hasWhiteKingRookMoved = true;
+              castlingRules.hasWhiteQueenRookMoved = true;
               // If white king rook moves, set hasWhiteKingRookMoved to true.
             } else if (
-              board[foundPieceIndex].value === "R" &&
+              currentBoard[lastFoundPieceIndex].value === "R" &&
               lastFoundPieceIndex === 63
             ) {
               castlingRules.hasWhiteKingRookMoved = true;
               // If white queen rook moves, set hasWhiteQueenRookMoved to true.
             } else if (
-              board[foundPieceIndex].value === "R" &&
+              currentBoard[lastFoundPieceIndex].value === "R" &&
               lastFoundPieceIndex === 56
             ) {
               castlingRules.hasWhiteQueenRookMoved = true;
               // If black king moves, set hasBlackKingMoved to true.
-            } else if (board[foundPieceIndex].value === "k") {
-              castlingRules.hasBlackKingMoved = true;
+            } else if (currentBoard[lastFoundPieceIndex].value === "k") {
+              castlingRules.hasBlackKingRookMoved = true;
+              castlingRules.hasBlackQueenRookMoved = true;
               // If black king rook moves, set hasBlackKingRookMoved to true.
             } else if (
-              board[foundPieceIndex].value === "r" &&
+              currentBoard[lastFoundPieceIndex].value === "r" &&
               lastFoundPieceIndex === 7
             ) {
               castlingRules.hasBlackKingRookMoved = true;
               // If black queen rook moves, set hasBlackQueenRookMoved to true.
             } else if (
-              board[foundPieceIndex].value === "r" &&
+              currentBoard[lastFoundPieceIndex].value === "r" &&
               lastFoundPieceIndex === 0
             ) {
               castlingRules.hasBlackQueenRookMoved = true;
             }
 
             // If a white pawn gets to the end of the board, give the user the ability to promote it to another piece.
-            if (board[foundPieceIndex].value === "P" && foundPieceIndex <= 7) {
-              board[foundPieceIndex].isPromoted = true;
-              board[foundPieceIndex].promotionColor = "white";
+            if (
+              currentBoard[foundPieceIndex].value === "P" &&
+              foundPieceIndex <= 7
+            ) {
+              currentBoard[foundPieceIndex].isPromoted = true;
+              currentBoard[foundPieceIndex].promotionColor = "white";
             }
             // If a black pawn gets to the end of the board, give the user the ability to promote it to another piece.
-            if (board[foundPieceIndex].value === "p" && foundPieceIndex >= 56) {
-              board[foundPieceIndex].isPromoted = true;
-              board[foundPieceIndex].promotionColor = "black";
+            if (
+              currentBoard[foundPieceIndex].value === "p" &&
+              foundPieceIndex >= 56
+            ) {
+              currentBoard[foundPieceIndex].isPromoted = true;
+              currentBoard[foundPieceIndex].promotionColor = "black";
             }
 
             if (
               (promotionChoice && foundPieceIndex <= 7) ||
               (promotionChoice && foundPieceIndex >= 56)
             ) {
-              board[foundPieceIndex].value = promotionChoice;
-              board[foundPieceIndex].isPromoted = false;
+              currentBoard[foundPieceIndex].value = promotionChoice;
+              currentBoard[foundPieceIndex].isPromoted = false;
               setPromotionChoice(null);
-            }
-            console.log("whoseTurn", whoseTurn);
-            if (whoseTurn === "white") {
-              whoseTurn = "black";
-            } else if (whoseTurn === "black") {
-              whoseTurn = "white";
             }
           }
         }
@@ -915,52 +831,143 @@ function Board() {
     }
   }
 
-  console.log(
-    "selectedPiece:",
-    selectedPiece,
-    "selectedValidMoves:",
-    selectedValidMoves,
-    "lastSelectedPiece:",
-    lastSelectedPiece,
-    "whoseTurn:",
-    whoseTurn,
-    "promotionChoice:",
-    promotionChoice
-  );
+  useEffect(() => {
+    if (whoseTurn === "black" && isComputer) {
+      const currentBoardFen = convertBoardToFen(
+        currentBoard,
+        whoseTurn,
+        castlingRules
+      );
 
-  ChessGame(currentBoard);
+      const difficulty = 1;
 
+      const rawComputerMove = getComputerMove(currentBoardFen, difficulty);
+      const [startingIndex, computerMove] = formatComputerMove(
+        rawComputerMove,
+        currentBoard
+      );
+
+      let [computerBoard, computerCapturedPiece] = movePiece(
+        currentBoard,
+        startingIndex,
+        computerMove
+      );
+
+      // Checks for black king side castle and then moves the rook.
+      if (
+        computerBoard[computerMove].value === "k" &&
+        !castlingRules.hasBlackKingRookMoved &&
+        computerMove === 6
+      ) {
+        castlingRules.hasBlackKingRookMoved = true;
+        [computerBoard, computerCapturedPiece] = movePiece(computerBoard, 7, 5);
+      }
+      // Checks for black queen side castle and then moves the rook.
+      if (
+        computerBoard[computerMove].value === "k" &&
+        !castlingRules.hasBlackQueenRookMoved &&
+        computerMove === 2
+      ) {
+        castlingRules.hasBlackQueenRookMoved = true;
+        [computerBoard, computerCapturedPiece] = movePiece(computerBoard, 0, 3);
+      }
+
+      // If black king moves, set hasBlackKingMoved to true.
+      if (computerBoard[computerMove].value === "k") {
+        castlingRules.hasBlackKingRookMoved = true;
+        castlingRules.hasBlackQueenRookMoved = true;
+        // If black king rook moves, set hasBlackKingRookMoved to true.
+      } else if (
+        computerBoard[computerMove].value === "r" &&
+        startingIndex === 7
+      ) {
+        castlingRules.hasBlackKingRookMoved = true;
+        // If black queen rook moves, set hasBlackQueenRookMoved to true.
+      } else if (
+        computerBoard[computerMove].value === "r" &&
+        startingIndex === 0
+      ) {
+        castlingRules.hasBlackQueenRookMoved = true;
+      }
+
+      prevCastlingRules.current = castlingRules;
+
+      // If a piece was captured, add it to the capturedPiecesArray.
+      if (computerCapturedPiece) {
+        capturedPiecesArray.push(computerCapturedPiece);
+      }
+
+      // Changes the next turn to be white.
+      whoseTurn = "white";
+      prevTurn.current = whoseTurn;
+
+      // Updates the board state based on computer's move.
+      setCurrentBoard(computerBoard);
+      // If a user move was made.
+    } else if (boardAfterMove.length !== 0) {
+      // After a move is made, it changes the turn to the opposite team.
+      if (whoseTurn === "white") {
+        prevTurn.current = "black";
+      } else if (whoseTurn === "black") {
+        prevTurn.current = "white";
+      }
+
+      // If a piece was captured, add it to the capturedPiecesArray.
+      if (boardAfterMove[1]) {
+        capturedPiecesArray.push(boardAfterMove[1]);
+      }
+
+      prevCastlingRules.current = castlingRules;
+
+      // Updates the board state based on player's move.
+      setCurrentBoard(boardAfterMove[0]);
+    }
+  });
+
+  // Checks to see if the game is over.
   gameStatus = isGameOver(currentBoard, whoseTurn, castlingRules);
-
   if (gameStatus) {
+    // When the game has ended, decides if it was stalemate of checkmate.
     stalemateStatus = !inCheck(currentBoard, whoseTurn);
-    console.log(stalemateStatus);
   }
-  console.log(gameStatus);
 
   return (
-    <main className="board">
-      {currentBoard.map((tile, index) => {
-        return (
-          <Tile
-            key={tile.id}
-            id={tile.id}
-            value={tile.value}
-            squareColor={tile.squareColor}
-            SelectPiece={SelectPiece}
-            isValidMove={selectedValidMoves.includes(index)}
-            isPromoted={tile.isPromoted}
-            promotionColor={tile.promotionColor}
-            PromotionOptions={PromotionOptions}
-          />
-        );
-      })}
+    <article className="board-container">
+      <Player
+        name={"Player 2"}
+        elo={"1000"}
+        team={"black"}
+        capturedPiecesArray={capturedPiecesArray}
+      />
+      <section className="board">
+        {currentBoard.map((tile, index) => {
+          return (
+            <Tile
+              key={tile.id}
+              id={tile.id}
+              value={tile.value}
+              squareColor={tile.squareColor}
+              SelectPiece={SelectPiece}
+              isValidMove={selectedValidMoves.includes(index)}
+              isPromoted={tile.isPromoted}
+              promotionColor={tile.promotionColor}
+              PromotionOptions={PromotionOptions}
+            />
+          );
+        })}
+      </section>
+      <Player
+        name={name}
+        elo={elo}
+        team={"white"}
+        capturedPiecesArray={capturedPiecesArray}
+      />
       <GameOver
         gameStatus={gameStatus}
         whoseTurn={whoseTurn}
         stalemateStatus={stalemateStatus}
       />
-    </main>
+    </article>
   );
 }
 

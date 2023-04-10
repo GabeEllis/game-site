@@ -60,14 +60,20 @@ function Tile({
           : "tile tile__dark-square"
       }
     >
-      <div
+      <section
         className={
           isPromoted ? "tile__piece-image--hidden" : "tile__piece-image"
         }
         style={{ backgroundImage: `url(${getPieceImage(value)})` }}
         onClick={() => SelectPiece(id)}
-      ></div>
-      <div
+      >
+        <div
+          className={
+            isValidMove ? "tile__valid-moves" : "tile__valid-moves--hidden"
+          }
+        ></div>
+      </section>
+      <section
         className={
           isPromoted
             ? "tile__promotion-options"
@@ -106,12 +112,7 @@ function Tile({
               : () => PromotionOptions("b")
           }
         />
-      </div>
-      <div
-        className={
-          isValidMove ? "tile__valid-moves" : "tile__valid-moves--none"
-        }
-      ></div>
+      </section>
     </div>
   );
 }
