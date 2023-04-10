@@ -3,6 +3,8 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import userIcon from "../../assets/icons/user_icon.png";
 import lockIcon from "../../assets/icons/lock_icon.png";
+import whiteKing from "../../assets/images/white_king.png";
+import blackPawn from "../../assets/images/black_pawn.png";
 import confirmPasswordIcon from "../../assets/icons/confirm-password-icon.png";
 import "./Signup.scss";
 
@@ -11,6 +13,8 @@ function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [name, setName] = useState("");
+  const [elo, setElo] = useState("");
 
   //   Gets email.
   const handleEmail = (event) => {
@@ -24,13 +28,21 @@ function Signup() {
   const handleConfirmPassword = (event) => {
     setConfirmPassword(event.target.value);
   };
+  //   Gets name.
+  const handleName = (event) => {
+    setName(event.target.value);
+  };
+  //   Gets elo.
+  const handleElo = (event) => {
+    setElo(event.target.value);
+  };
 
   //   When the user clicks submit, run this function.
   const handleSubmit = (event) => {
     event.preventDefault();
 
     //Validate no empty fields
-    if (!email || !password || !confirmPassword) {
+    if (!email || !password || !confirmPassword || !name || !elo) {
       return;
     }
 
@@ -56,6 +68,8 @@ function Signup() {
     const loginData = {
       email: email,
       password: password,
+      name: name,
+      elo: elo,
     };
 
     // Post if no errors
@@ -78,6 +92,7 @@ function Signup() {
     <article className="signup">
       <h1 className="signup__header">Sign Up</h1>
       <form className="signup__form">
+        <h2 className="signup__form-header">Login Information</h2>
         <div className="signup__form-field">
           <img src={userIcon} />
           <input
@@ -112,6 +127,34 @@ function Signup() {
             placeholder="confirm password"
             autoComplete="off"
             onChange={(event) => handleConfirmPassword(event)}
+            className="login__form-input"
+          />
+        </div>
+
+        <h2 className="signup__form-header">Account Info</h2>
+
+        <div className="signup__form-field">
+          <img src={whiteKing} />
+          <input
+            type="text"
+            name="name"
+            id="name"
+            placeholder="display name"
+            autoComplete="off"
+            onChange={(event) => handleName(event)}
+            className="login__form-input"
+          />
+        </div>
+
+        <div className="signup__form-field">
+          <img src={blackPawn} />
+          <input
+            type="text"
+            name="elo"
+            id="elo"
+            placeholder="estimated starting elo"
+            autoComplete="off"
+            onChange={(event) => handleElo(event)}
             className="login__form-input"
           />
         </div>
