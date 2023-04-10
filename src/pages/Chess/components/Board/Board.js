@@ -643,7 +643,6 @@ function Board({ name, elo, theme }) {
   let gameStatus;
   let stalemateStatus;
   let selectedValidMoves = [];
-  let capturedPiece;
   let isComputer = true;
   let boardAfterMove = [];
   // Intializes state variables.
@@ -802,19 +801,19 @@ function Board({ name, elo, theme }) {
 
             // If a white pawn gets to the end of the board, give the user the ability to promote it to another piece.
             if (
-              currentBoard[foundPieceIndex].value === "P" &&
+              currentBoard[lastFoundPieceIndex].value === "P" &&
               foundPieceIndex <= 7
             ) {
-              currentBoard[foundPieceIndex].isPromoted = true;
-              currentBoard[foundPieceIndex].promotionColor = "white";
+              boardAfterMove[0][foundPieceIndex].isPromoted = true;
+              boardAfterMove[0][foundPieceIndex].promotionColor = "white";
             }
             // If a black pawn gets to the end of the board, give the user the ability to promote it to another piece.
             if (
-              currentBoard[foundPieceIndex].value === "p" &&
+              currentBoard[lastFoundPieceIndex].value === "p" &&
               foundPieceIndex >= 56
             ) {
-              currentBoard[foundPieceIndex].isPromoted = true;
-              currentBoard[foundPieceIndex].promotionColor = "black";
+              boardAfterMove[0][foundPieceIndex].isPromoted = true;
+              boardAfterMove[0][foundPieceIndex].promotionColor = "black";
             }
 
             if (
@@ -888,6 +887,11 @@ function Board({ name, elo, theme }) {
         startingIndex === 0
       ) {
         castlingRules.hasBlackQueenRookMoved = true;
+      }
+
+      // If the computers gets a pawn to the end of the board.
+      if (computerBoard[computerMove].value === "p" && computerMove >= 56) {
+        computerBoard[computerMove].value = "q";
       }
 
       prevCastlingRules.current = castlingRules;
