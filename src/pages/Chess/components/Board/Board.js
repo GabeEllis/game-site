@@ -644,7 +644,7 @@ function Board({ name, elo }) {
   let stalemateStatus;
   let selectedValidMoves = [];
   let capturedPiece;
-  let isComputer = true;
+  let isComputer = false;
   let boardAfterMove = [];
   // Intializes state variables.
   const [currentBoard, setCurrentBoard] = useState(startingBoard);
@@ -675,11 +675,6 @@ function Board({ name, elo }) {
     hasBlackQueenRookMoved: false,
   });
   let castlingRules = prevCastlingRules.current;
-
-  useEffect(() => {
-    prevCastlingRules.current = castlingRules;
-    console.log("useEffect", whoseTurn, capturedPiecesArray);
-  });
 
   // Finds the piece the users clicks on and sets selected piece equal to it.
   const SelectPiece = (id) => {
@@ -772,34 +767,34 @@ function Board({ name, elo }) {
             }
 
             // If white king moves, set hasWhiteKingMoved to true.
-            if (currentBoard[foundPieceIndex].value === "K") {
+            if (currentBoard[lastFoundPieceIndex].value === "K") {
               castlingRules.hasWhiteKingRookMoved = true;
               castlingRules.hasWhiteQueenRookMoved = true;
               // If white king rook moves, set hasWhiteKingRookMoved to true.
             } else if (
-              currentBoard[foundPieceIndex].value === "R" &&
+              currentBoard[lastFoundPieceIndex].value === "R" &&
               lastFoundPieceIndex === 63
             ) {
               castlingRules.hasWhiteKingRookMoved = true;
               // If white queen rook moves, set hasWhiteQueenRookMoved to true.
             } else if (
-              currentBoard[foundPieceIndex].value === "R" &&
+              currentBoard[lastFoundPieceIndex].value === "R" &&
               lastFoundPieceIndex === 56
             ) {
               castlingRules.hasWhiteQueenRookMoved = true;
               // If black king moves, set hasBlackKingMoved to true.
-            } else if (currentBoard[foundPieceIndex].value === "k") {
+            } else if (currentBoard[lastFoundPieceIndex].value === "k") {
               castlingRules.hasBlackKingRookMoved = true;
               castlingRules.hasBlackQueenRookMoved = true;
               // If black king rook moves, set hasBlackKingRookMoved to true.
             } else if (
-              currentBoard[foundPieceIndex].value === "r" &&
+              currentBoard[lastFoundPieceIndex].value === "r" &&
               lastFoundPieceIndex === 7
             ) {
               castlingRules.hasBlackKingRookMoved = true;
               // If black queen rook moves, set hasBlackQueenRookMoved to true.
             } else if (
-              currentBoard[foundPieceIndex].value === "r" &&
+              currentBoard[lastFoundPieceIndex].value === "r" &&
               lastFoundPieceIndex === 0
             ) {
               castlingRules.hasBlackQueenRookMoved = true;
@@ -895,6 +890,8 @@ function Board({ name, elo }) {
         castlingRules.hasBlackQueenRookMoved = true;
       }
 
+      prevCastlingRules.current = castlingRules;
+
       // If a piece was captured, add it to the capturedPiecesArray.
       if (computerCapturedPiece) {
         capturedPiecesArray.push(computerCapturedPiece);
@@ -919,6 +916,8 @@ function Board({ name, elo }) {
       if (boardAfterMove[1]) {
         capturedPiecesArray.push(boardAfterMove[1]);
       }
+
+      prevCastlingRules.current = castlingRules;
 
       // Updates the board state based on player's move.
       setCurrentBoard(boardAfterMove[0]);
