@@ -1,0 +1,18 @@
+@use "../../styles/partials/global" as *;
+@use "../../styles/partials/mixins" as *;
+
+.sign-out {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  &__message {
+    @include page-header;
+  }
+  &__icon {
+    width: calc(80vw - 2rem);
+    height: calc(80vw - 2rem);
+    object-fit: contain;
+  }
+}
