@@ -678,7 +678,6 @@ function Board({ name, elo }) {
   let castlingRules = prevCastlingRules.current;
 
   useEffect(() => {
-    prevCapture.current = capturedPiecesArray;
     prevCastlingRules.current = castlingRules;
     console.log("useEffect", whoseTurn, capturedPiecesArray);
   });
@@ -841,10 +840,6 @@ function Board({ name, elo }) {
               currentBoard[foundPieceIndex].isPromoted = false;
               setPromotionChoice(null);
             }
-            // If a piece was captured, add it to the capturedPiecesArray.
-            if (capturedPiece) {
-              capturedPiecesArray.push(capturedPiece);
-            }
           }
         }
       }
@@ -866,7 +861,7 @@ function Board({ name, elo }) {
       const computerMove = formatComputerMove(rawComputerMove, currentBoard);
 
       // If a piece was captured, add it to the capturedPiecesArray.
-      if (capturedPiece) {
+      if (computerMove[1]) {
         capturedPiecesArray.push(computerMove[1]);
       }
 
@@ -876,12 +871,18 @@ function Board({ name, elo }) {
 
       // Updates the board state based on computer's move.
       setCurrentBoard(computerMove[0]);
+      // If a user move was made.
     } else if (boardAfterMove.length !== 0) {
       // After a move is made, it changes the turn to the opposite team.
       if (whoseTurn === "white") {
         prevTurn.current = "black";
       } else if (whoseTurn === "black") {
         prevTurn.current = "white";
+      }
+
+      // If a piece was captured, add it to the capturedPiecesArray.
+      if (boardAfterMove[1]) {
+        capturedPiecesArray.push(boardAfterMove[1]);
       }
 
       // Updates the board state based on player's move.
