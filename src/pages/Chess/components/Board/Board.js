@@ -644,7 +644,7 @@ function Board({ name, elo }) {
   let stalemateStatus;
   let selectedValidMoves = [];
   let capturedPiece;
-  let isComputer = false;
+  let isComputer = true;
   let boardAfterMove = [];
   // Intializes state variables.
   const [currentBoard, setCurrentBoard] = useState(startingBoard);

@@ -22,15 +22,10 @@ function Signup() {
   //   When the user clicks submit, run this function.
   const handleSubmit = (event) => {
     event.preventDefault();
-    setError("");
 
     //Validate no empty fields
     if (!email || !password) {
-      setError(
-        <div className="error-message">
-          Missing one or more required fields.
-        </div>
-      );
+      return;
     }
 
     // Email validation
@@ -39,11 +34,7 @@ function Signup() {
         email
       )
     ) {
-      setError(
-        <div className="error-message">
-          "Please enter a valid email address."
-        </div>
-      );
+      return;
     }
 
     // Password validation
@@ -51,11 +42,7 @@ function Signup() {
     else if (
       !/^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/.test(password)
     ) {
-      setError(
-        <div className="error-message">"Please enter a valid password."</div>
-      );
-    } else {
-      setError("");
+      return;
     }
 
     const loginData = {
@@ -106,7 +93,7 @@ function Signup() {
           />
         </div>
 
-        <Link className="login__button-container" to="/home">
+        <Link className="login__button-container" to="/chess">
           <button
             className="login__button"
             type="submit"
