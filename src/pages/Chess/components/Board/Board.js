@@ -638,7 +638,7 @@ function isGameOver(board, whoseTurn, castlingRules) {
   }
 }
 
-function Board({ name, elo }) {
+function Board({ name, elo, theme }) {
   // Intializes gameStatus.
   let gameStatus;
   let stalemateStatus;
@@ -952,6 +952,7 @@ function Board({ name, elo }) {
               isPromoted={tile.isPromoted}
               promotionColor={tile.promotionColor}
               PromotionOptions={PromotionOptions}
+              theme={theme}
             />
           );
         })}

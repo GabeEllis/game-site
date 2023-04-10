@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Navbar from "../Navbar/Navbar";
+import Tile from "../Chess/components/Tile/Tile";
+import startingBoard from "../Chess/utilty/startingBoard.json";
 
 function Profile() {
   const [id, setId] = useState("");
@@ -63,6 +65,8 @@ function Profile() {
       .catch((error) => {});
   };
 
+  console.log(startingBoard);
+
   return (
     <>
       <Navbar />
@@ -117,6 +121,20 @@ function Profile() {
                 This field is required
               </span>
             </div>
+          </section>
+
+          <section className="board">
+            {startingBoard.map((tile, index) => {
+              return (
+                <Tile
+                  key={tile.id}
+                  id={tile.id}
+                  value={tile.value}
+                  squareColor={tile.squareColor}
+                  theme={theme}
+                />
+              );
+            })}
           </section>
 
           <Link className="profile__button-container" to="/chess">

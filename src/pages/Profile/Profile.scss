@@ -100,7 +100,7 @@ button {
 }
 
 $colors: (
-  login__button: #19bc8b,
+  profile__button: #19bc8b,
 );
 
 @each $button, $color in $colors {
