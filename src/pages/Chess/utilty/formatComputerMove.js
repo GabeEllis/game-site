@@ -15,8 +15,8 @@ export function formatComputerMove(object, board) {
   const finalIndex = board.findIndex((tile) => tile.id === formatString[1]);
 
   const finalBoard = JSON.parse(JSON.stringify(board));
-  const boardAfterMove = movePiece(finalBoard, startingIndex, finalIndex);
 
-  console.log(startingIndex, finalIndex, boardAfterMove);
-  return [boardAfterMove[0], boardAfterMove[1]];
+  // console.log(startingIndex, finalIndex, boardAfterMove);
+  // return [boardAfterMove[0], boardAfterMove[1]];
+  return [startingIndex, finalIndex];
 }

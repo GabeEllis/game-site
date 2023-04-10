@@ -662,7 +662,6 @@ function Board({ name, elo }) {
   // Gets previously selected turn.
   const prevTurn = useRef("white");
   let whoseTurn = prevTurn.current;
-  console.log(whoseTurn);
 
   // Gets previously selected capturedPiece.
   const prevCapture = useRef([]);
@@ -716,7 +715,6 @@ function Board({ name, elo }) {
           whichTeam(lastSelectedPiece.value) === whoseTurn ||
           promotionChoice
         ) {
-          console.log("same team");
           // Gets the index of the previously selected piece.
           const lastFoundPieceIndex = currentBoard.findIndex(
             (tile) => tile.id === lastSelectedPiece.id
@@ -735,50 +733,42 @@ function Board({ name, elo }) {
               lastFoundPieceIndex,
               foundPieceIndex
             );
-            let newBoard = boardAfterMove[0];
-            let capturedPiece = boardAfterMove[1];
-
-            console.log(boardAfterMove);
 
             // Checks for white king side castle and then moves the rook.
             if (
-              currentBoard[foundPieceIndex].value === "K" &&
+              currentBoard[lastFoundPieceIndex].value === "K" &&
               !castlingRules.hasWhiteKingRookMoved &&
               foundPieceIndex === 62
             ) {
               castlingRules.hasWhiteKingRookMoved = true;
-              boardAfterMove = movePiece(currentBoard, 63, 61);
-              newBoard = boardAfterMove[0];
+              boardAfterMove = movePiece(boardAfterMove[0], 63, 61);
             }
             // Checks for white queen side castle and then moves the rook.
             if (
-              currentBoard[foundPieceIndex].value === "K" &&
+              currentBoard[lastFoundPieceIndex].value === "K" &&
               !castlingRules.hasWhiteQueenRookMoved &&
               foundPieceIndex === 58
             ) {
               castlingRules.hasWhiteQueenRookMoved = true;
-              boardAfterMove = movePiece(currentBoard, 56, 59);
-              newBoard = boardAfterMove[0];
+              boardAfterMove = movePiece(boardAfterMove[0], 56, 59);
             }
             // Checks for black king side castle and then moves the rook.
             if (
-              currentBoard[foundPieceIndex].value === "k" &&
+              currentBoard[lastFoundPieceIndex].value === "k" &&
               !castlingRules.hasBlackKingRookMoved &&
               foundPieceIndex === 6
             ) {
               castlingRules.hasBlackKingRookMoved = true;
-              boardAfterMove = movePiece(currentBoard, 7, 5);
-              newBoard = boardAfterMove[0];
+              boardAfterMove = movePiece(boardAfterMove[0], 7, 5);
             }
             // Checks for black queen side castle and then moves the rook.
             if (
-              currentBoard[foundPieceIndex].value === "k" &&
+              currentBoard[lastFoundPieceIndex].value === "k" &&
               !castlingRules.hasBlackQueenRookMoved &&
               foundPieceIndex === 2
             ) {
               castlingRules.hasBlackQueenRookMoved = true;
-              boardAfterMove = movePiece(currentBoard, 0, 3);
-              newBoard = boardAfterMove[0];
+              boardAfterMove = movePiece(boardAfterMove[0], 0, 3);
             }
 
             // If white king moves, set hasWhiteKingMoved to true.
@@ -848,7 +838,6 @@ function Board({ name, elo }) {
 
   useEffect(() => {
     if (whoseTurn === "black" && isComputer) {
-      console.log("computer move");
       const currentBoardFen = convertBoardToFen(
         currentBoard,
         whoseTurn,
@@ -858,11 +847,57 @@ function Board({ name, elo }) {
       const difficulty = 1;
 
       const rawComputerMove = getComputerMove(currentBoardFen, difficulty);
-      const computerMove = formatComputerMove(rawComputerMove, currentBoard);
+      const [startingIndex, computerMove] = formatComputerMove(
+        rawComputerMove,
+        currentBoard
+      );
+
+      let [computerBoard, computerCapturedPiece] = movePiece(
+        currentBoard,
+        startingIndex,
+        computerMove
+      );
+
+      // Checks for black king side castle and then moves the rook.
+      if (
+        computerBoard[computerMove].value === "k" &&
+        !castlingRules.hasBlackKingRookMoved &&
+        computerMove === 6
+      ) {
+        castlingRules.hasBlackKingRookMoved = true;
+        [computerBoard, computerCapturedPiece] = movePiece(computerBoard, 7, 5);
+      }
+      // Checks for black queen side castle and then moves the rook.
+      if (
+        computerBoard[computerMove].value === "k" &&
+        !castlingRules.hasBlackQueenRookMoved &&
+        computerMove === 2
+      ) {
+        castlingRules.hasBlackQueenRookMoved = true;
+        [computerBoard, computerCapturedPiece] = movePiece(computerBoard, 0, 3);
+      }
+
+      // If black king moves, set hasBlackKingMoved to true.
+      if (computerBoard[computerMove].value === "k") {
+        castlingRules.hasBlackKingRookMoved = true;
+        castlingRules.hasBlackQueenRookMoved = true;
+        // If black king rook moves, set hasBlackKingRookMoved to true.
+      } else if (
+        computerBoard[computerMove].value === "r" &&
+        startingIndex === 7
+      ) {
+        castlingRules.hasBlackKingRookMoved = true;
+        // If black queen rook moves, set hasBlackQueenRookMoved to true.
+      } else if (
+        computerBoard[computerMove].value === "r" &&
+        startingIndex === 0
+      ) {
+        castlingRules.hasBlackQueenRookMoved = true;
+      }
 
       // If a piece was captured, add it to the capturedPiecesArray.
-      if (computerMove[1]) {
-        capturedPiecesArray.push(computerMove[1]);
+      if (computerCapturedPiece) {
+        capturedPiecesArray.push(computerCapturedPiece);
       }
 
       // Changes the next turn to be white.
@@ -870,7 +905,7 @@ function Board({ name, elo }) {
       prevTurn.current = whoseTurn;
 
       // Updates the board state based on computer's move.
-      setCurrentBoard(computerMove[0]);
+      setCurrentBoard(computerBoard);
       // If a user move was made.
     } else if (boardAfterMove.length !== 0) {
       // After a move is made, it changes the turn to the opposite team.
