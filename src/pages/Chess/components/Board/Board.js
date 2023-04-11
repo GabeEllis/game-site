@@ -840,7 +840,7 @@ function Board({ name, elo, theme }) {
   }
 
   useEffect(() => {
-    if (whoseTurn === "black" && isComputer) {
+    if (whoseTurn === "black" && isComputer && !gameStatus) {
       const currentBoardFen = convertBoardToFen(
         currentBoard,
         whoseTurn,
@@ -848,10 +848,12 @@ function Board({ name, elo, theme }) {
       );
 
       const rawComputerMove = getComputerMove(currentBoardFen, difficulty);
+      console.log(rawComputerMove);
       const [startingIndex, computerMove] = formatComputerMove(
         rawComputerMove,
         currentBoard
       );
+      console.log(startingIndex, computerMove);
 
       let [computerBoard, computerCapturedPiece] = movePiece(
         currentBoard,
@@ -946,6 +948,7 @@ function Board({ name, elo, theme }) {
       hasBlackQueenRookMoved: false,
     };
     lastSelectedPiece = null;
+    prevTurn.current = "white";
     setSelectedPiece(null);
     setCurrentBoard(startingBoard);
     setIsComputer(option);
@@ -953,9 +956,11 @@ function Board({ name, elo, theme }) {
 
   // Checks to see if the game is over.
   gameStatus = isGameOver(currentBoard, whoseTurn, castlingRules);
+  console.log(gameStatus);
   if (gameStatus) {
     // When the game has ended, decides if it was stalemate of checkmate.
     stalemateStatus = !inCheck(currentBoard, whoseTurn);
+    console.log(stalemateStatus);
   }
 
   return (
