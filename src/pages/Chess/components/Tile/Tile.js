@@ -73,6 +73,9 @@ function Tile({
   } else if (theme === "option5") {
     light = "tile__light-square--option5";
     dark = "tile__dark-square--option5";
+  } else {
+    light = "tile__light-square--option1";
+    dark = "tile__dark-square--option1";
   }
 
   return (

@@ -2,13 +2,18 @@
 @use "../../styles/partials/mixins" as *;
 
 .profile {
-  @include page-header;
   padding: 2rem 2rem 4rem 2rem;
   border-radius: 0.5rem;
   background-color: darkgray;
   &__header {
+    @include page-header;
+    width: 50%;
     text-align: center;
-    margin: 0.5rem 0 2rem 0;
+    border-bottom: 2px solid black;
+    margin-top: 0.5rem;
+    margin-bottom: 2.5rem;
+    margin-left: auto;
+    margin-right: auto;
   }
   &__error {
     @include body-copy;
@@ -19,7 +24,18 @@
     }
   }
   &__input {
+    @include body-copy;
+    border: 1px grey solid;
+    border-radius: 0.25rem;
+    background-color: #fdfdfd;
+    &:focus {
+      outline: 1px solid rgb(61, 142, 169);
+    }
     &-dropdown {
+      @include body-copy;
+      border: 1px grey solid;
+      border-radius: 0.25rem;
+      background-color: #fdfdfd;
       margin-bottom: 2rem;
     }
   }
