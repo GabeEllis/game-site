@@ -1,2 +1,22 @@
 @use "../../styles/partials/global" as *;
 @use "../../styles/partials/mixins" as *;
+
+.no-page {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  &__header {
+    @include page-header;
+    width: 100%;
+    text-align: center;
+    border-bottom: 2px solid black;
+    margin-top: 0.5rem;
+    margin-bottom: 2.5rem;
+  }
+  &__image {
+    width: 50vw;
+    object-fit: contain;
+  }
+}

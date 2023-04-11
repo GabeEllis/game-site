@@ -1,2 +1,32 @@
 @use "../../styles/partials/global" as *;
 @use "../../styles/partials/mixins" as *;
+
+.home {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  &__header {
+    @include page-header;
+    text-align: center;
+    border-bottom: 2px solid black;
+    margin-top: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+  &__section-header {
+    @include section-header;
+    border-bottom: 2px solid black;
+    margin: 1rem 0 0 0;
+  }
+  &__text {
+    @include body-copy;
+  }
+  &__list {
+    width: 100%;
+    &-item {
+      @include body-copy;
+      margin: 0 0 0.5rem 0;
+    }
+  }
+}
