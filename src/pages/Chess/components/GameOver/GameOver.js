@@ -6,9 +6,9 @@ function GameOver({
   stalemateStatus,
   copponentHandler,
 }) {
+  console.log(gameStatus);
   let gameOverMessage = "Message";
 
-  console.log(gameStatus);
   if (gameStatus) {
     if (stalemateStatus) {
       gameOverMessage = "Draw by Stalemate";
@@ -16,6 +16,8 @@ function GameOver({
       gameOverMessage = "Black won by checkmate";
     } else if (whoseTurn === "black") {
       gameOverMessage = "White won by checkmate";
+    } else {
+      gameOverMessage = stalemateStatus;
     }
   }
 

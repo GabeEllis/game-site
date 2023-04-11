@@ -23,8 +23,8 @@ function Tile({
   PromotionOptions,
   theme,
 }) {
-  let dark = "";
-  let light = "";
+  let light = "tile__light-square";
+  let dark = "tile__dark-square";
 
   function getPieceImage(value) {
     if (value === "R") {
@@ -58,24 +58,27 @@ function Tile({
 
   // theme === "option1" "tile__light-square--option1"
 
-  if (theme === "option1") {
-    light = "tile__light-square--option1";
-    dark = "tile__dark-square--option1";
-  } else if (theme === "option2") {
-    light = "tile__light-square--option2";
-    dark = "tile__dark-square--option2";
-  } else if (theme === "option3") {
-    light = "tile__light-square--option3";
-    dark = "tile__dark-square--option3";
-  } else if (theme === "option4") {
-    light = "tile__light-square--option4";
-    dark = "tile__dark-square--option4";
-  } else if (theme === "option5") {
-    light = "tile__light-square--option5";
-    dark = "tile__dark-square--option5";
+  if (theme === "green") {
+    light += "--option2";
+    dark += "--option2";
+  } else if (theme === "rust") {
+    light += "--option3";
+    dark += "--option3";
+  } else if (theme === "sandcastle") {
+    light += "--option4";
+    dark += "--option4";
+  } else if (theme === "marine") {
+    light += "--option5";
+    dark += "--option5";
+  } else if (theme === "dusk") {
+    light += "--option6";
+    dark += "--option6";
+  } else if (theme === "coral") {
+    light += "--option7";
+    dark += "--option7";
   } else {
-    light = "tile__light-square--option1";
-    dark = "tile__dark-square--option1";
+    light += "--option1";
+    dark += "--option1";
   }
 
   return (

@@ -12,7 +12,15 @@ function Profile() {
   const [elo, setElo] = useState("");
   const [theme, setTheme] = useState("");
 
-  const themeArray = ["option1", "option2", "option3", "option4", "option5"];
+  const themeArray = [
+    "default",
+    "green",
+    "rust",
+    "sandcastle",
+    "marine",
+    "dusk",
+    "coral",
+  ];
 
   const authToken = localStorage.authToken;
 

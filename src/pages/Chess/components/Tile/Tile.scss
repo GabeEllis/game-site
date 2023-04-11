@@ -13,16 +13,22 @@
       background-color: white;
     }
     &--option2 {
-      background-color: salmon;
+      background-color: #eeeed2;
     }
     &--option3 {
-      background-color: beige;
+      background-color: #ffffff;
     }
     &--option4 {
-      background-color: cornflowerblue;
+      background-color: rgb(227, 193, 111);
     }
     &--option5 {
-      background-color: goldenrod;
+      background-color: rgb(157, 172, 255);
+    }
+    &--option6 {
+      background-color: rgb(204, 183, 174);
+    }
+    &--option7 {
+      background-color: rgb(177, 228, 185);
     }
   }
   &__dark-square {
@@ -30,16 +36,22 @@
       background-color: grey;
     }
     &--option2 {
-      background-color: lightblue;
+      background-color: #769656;
     }
     &--option3 {
-      background-color: brown;
+      background-color: #964d37;
     }
     &--option4 {
-      background-color: darkolivegreen;
+      background-color: rgb(184, 139, 74);
     }
     &--option5 {
-      background-color: royalblue;
+      background-color: rgb(111, 115, 210);
+    }
+    &--option6 {
+      background-color: rgb(112, 102, 119);
+    }
+    &--option7 {
+      background-color: rgb(112, 162, 163);
     }
   }
   &__piece-image {

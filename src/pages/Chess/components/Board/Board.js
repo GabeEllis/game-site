@@ -644,11 +644,19 @@ function Board({ name, elo, theme }) {
   const [selectedPiece, setSelectedPiece] = useState(null);
   const [promotionChoice, setPromotionChoice] = useState(null);
   const [isComputer, setIsComputer] = useState(true);
-
   // Intializes gameStatus.
-  let gameStatus;
-  let stalemateStatus;
+  let gameStarted = false;
+  let gameStatus = false;
+  let stalemateStatus = false;
   let selectedValidMoves = [];
+
+  console.log("inital", gameStarted);
+
+  useEffect(() => {
+    gameStarted = true;
+    stalemateStatus = "New Game";
+    console.log("start gameStarted", gameStarted);
+  }, []);
   // Gets information for player 2.
   let player2Name = "Player 2";
   let difficulty = 1;
@@ -949,19 +957,30 @@ function Board({ name, elo, theme }) {
     };
     lastSelectedPiece = null;
     prevTurn.current = "white";
+    gameStarted = false;
     setSelectedPiece(null);
     setCurrentBoard(startingBoard);
     setIsComputer(option);
   };
 
-  // Checks to see if the game is over.
-  gameStatus = isGameOver(currentBoard, whoseTurn, castlingRules);
-  console.log(gameStatus);
-  if (gameStatus) {
-    // When the game has ended, decides if it was stalemate of checkmate.
-    stalemateStatus = !inCheck(currentBoard, whoseTurn);
-    console.log(stalemateStatus);
+  console.log("gameStarted", gameStarted);
+  if (!gameStarted) {
+    // Checks to see if the game is over.
+    gameStatus = isGameOver(currentBoard, whoseTurn, castlingRules);
+    if (gameStatus) {
+      // When the game has ended, decides if it was stalemate of checkmate.
+      stalemateStatus = !inCheck(currentBoard, whoseTurn);
+      console.log(stalemateStatus);
+    }
+  } else {
+    gameStatus = true;
+    stalemateStatus = false;
+    gameStarted = false;
+
+    console.log(gameStarted);
   }
+
+  console.log("end", gameStarted);
 
   return (
     <article className="board-container">
