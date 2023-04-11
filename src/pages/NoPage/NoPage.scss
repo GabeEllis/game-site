@@ -10,6 +10,7 @@
   &__header {
     @include page-header;
     width: 100%;
+    text-align: center;
     border-bottom: 2px solid black;
     margin-top: 0.5rem;
     margin-bottom: 2.5rem;
