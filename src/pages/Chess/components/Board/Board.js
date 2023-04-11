@@ -638,18 +638,34 @@ function isGameOver(board, whoseTurn, castlingRules) {
   }
 }
 
-function Board({ name, elo }) {
-  // Intializes gameStatus.
-  let gameStatus;
-  let stalemateStatus;
-  let selectedValidMoves = [];
-  let capturedPiece;
-  let isComputer = false;
-  let boardAfterMove = [];
+function Board({ name, elo, theme }) {
   // Intializes state variables.
   const [currentBoard, setCurrentBoard] = useState(startingBoard);
   const [selectedPiece, setSelectedPiece] = useState(null);
   const [promotionChoice, setPromotionChoice] = useState(null);
+  const [isComputer, setIsComputer] = useState(true);
+  // Intializes gameStatus.
+  let gameStarted = false;
+  let gameStatus = false;
+  let stalemateStatus = false;
+  let selectedValidMoves = [];
+
+  console.log("inital", gameStarted);
+
+  useEffect(() => {
+    gameStarted = true;
+    stalemateStatus = "New Game";
+    console.log("start gameStarted", gameStarted);
+  }, []);
+  // Gets information for player 2.
+  let player2Name = "Player 2";
+  let difficulty = 1;
+  let player2Elo = "1000";
+  if (isComputer) {
+    player2Name = "Computer";
+    player2Elo = `difficulty ${difficulty}`;
+  }
+  let boardAfterMove = [];
 
   // Gets previously selected piece.
   const prevPiece = useRef("");
@@ -802,19 +818,19 @@ function Board({ name, elo }) {
 
             // If a white pawn gets to the end of the board, give the user the ability to promote it to another piece.
             if (
-              currentBoard[foundPieceIndex].value === "P" &&
+              currentBoard[lastFoundPieceIndex].value === "P" &&
               foundPieceIndex <= 7
             ) {
-              currentBoard[foundPieceIndex].isPromoted = true;
-              currentBoard[foundPieceIndex].promotionColor = "white";
+              boardAfterMove[0][foundPieceIndex].isPromoted = true;
+              boardAfterMove[0][foundPieceIndex].promotionColor = "white";
             }
             // If a black pawn gets to the end of the board, give the user the ability to promote it to another piece.
             if (
-              currentBoard[foundPieceIndex].value === "p" &&
+              currentBoard[lastFoundPieceIndex].value === "p" &&
               foundPieceIndex >= 56
             ) {
-              currentBoard[foundPieceIndex].isPromoted = true;
-              currentBoard[foundPieceIndex].promotionColor = "black";
+              boardAfterMove[0][foundPieceIndex].isPromoted = true;
+              boardAfterMove[0][foundPieceIndex].promotionColor = "black";
             }
 
             if (
@@ -832,20 +848,20 @@ function Board({ name, elo }) {
   }
 
   useEffect(() => {
-    if (whoseTurn === "black" && isComputer) {
+    if (whoseTurn === "black" && isComputer && !gameStatus) {
       const currentBoardFen = convertBoardToFen(
         currentBoard,
         whoseTurn,
         castlingRules
       );
 
-      const difficulty = 1;
-
       const rawComputerMove = getComputerMove(currentBoardFen, difficulty);
+      console.log(rawComputerMove);
       const [startingIndex, computerMove] = formatComputerMove(
         rawComputerMove,
         currentBoard
       );
+      console.log(startingIndex, computerMove);
 
       let [computerBoard, computerCapturedPiece] = movePiece(
         currentBoard,
@@ -890,6 +906,11 @@ function Board({ name, elo }) {
         castlingRules.hasBlackQueenRookMoved = true;
       }
 
+      // If the computers gets a pawn to the end of the board.
+      if (computerBoard[computerMove].value === "p" && computerMove >= 56) {
+        computerBoard[computerMove].value = "q";
+      }
+
       prevCastlingRules.current = castlingRules;
 
       // If a piece was captured, add it to the capturedPiecesArray.
@@ -924,18 +945,48 @@ function Board({ name, elo }) {
     }
   });
 
-  // Checks to see if the game is over.
-  gameStatus = isGameOver(currentBoard, whoseTurn, castlingRules);
-  if (gameStatus) {
-    // When the game has ended, decides if it was stalemate of checkmate.
-    stalemateStatus = !inCheck(currentBoard, whoseTurn);
+  // Resets the game if the user clicks a button.
+  const copponentHandler = (option) => {
+    gameStatus = null;
+    prevCapture.current = [];
+    castlingRules = {
+      hasWhiteKingRookMoved: false,
+      hasWhiteQueenRookMoved: false,
+      hasBlackKingRookMoved: false,
+      hasBlackQueenRookMoved: false,
+    };
+    lastSelectedPiece = null;
+    prevTurn.current = "white";
+    gameStarted = false;
+    setSelectedPiece(null);
+    setCurrentBoard(startingBoard);
+    setIsComputer(option);
+  };
+
+  console.log("gameStarted", gameStarted);
+  if (!gameStarted) {
+    // Checks to see if the game is over.
+    gameStatus = isGameOver(currentBoard, whoseTurn, castlingRules);
+    if (gameStatus) {
+      // When the game has ended, decides if it was stalemate of checkmate.
+      stalemateStatus = !inCheck(currentBoard, whoseTurn);
+      console.log(stalemateStatus);
+    }
+  } else {
+    gameStatus = true;
+    stalemateStatus = false;
+    gameStarted = false;
+
+    console.log(gameStarted);
   }
+
+  console.log("end", gameStarted);
 
   return (
     <article className="board-container">
       <Player
-        name={"Player 2"}
-        elo={"1000"}
+        name={player2Name}
+        elo={player2Elo}
         team={"black"}
         capturedPiecesArray={capturedPiecesArray}
       />
@@ -952,20 +1003,22 @@ function Board({ name, elo }) {
               isPromoted={tile.isPromoted}
               promotionColor={tile.promotionColor}
               PromotionOptions={PromotionOptions}
+              theme={theme}
             />
           );
         })}
+        <GameOver
+          gameStatus={gameStatus}
+          whoseTurn={whoseTurn}
+          stalemateStatus={stalemateStatus}
+          copponentHandler={copponentHandler}
+        />
       </section>
       <Player
         name={name}
         elo={elo}
         team={"white"}
         capturedPiecesArray={capturedPiecesArray}
-      />
-      <GameOver
-        gameStatus={gameStatus}
-        whoseTurn={whoseTurn}
-        stalemateStatus={stalemateStatus}
       />
     </article>
   );

@@ -3,6 +3,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import userIcon from "../../assets/icons/user_icon.png";
 import lockIcon from "../../assets/icons/lock_icon.png";
+import Navbar from "../Navbar/Navbar";
 import "./Login.scss";
 
 function Signup() {
@@ -22,15 +23,10 @@ function Signup() {
   //   When the user clicks submit, run this function.
   const handleSubmit = (event) => {
     event.preventDefault();
-    setError("");
 
     //Validate no empty fields
     if (!email || !password) {
-      setError(
-        <div className="error-message">
-          Missing one or more required fields.
-        </div>
-      );
+      return;
     }
 
     // Email validation
@@ -39,11 +35,7 @@ function Signup() {
         email
       )
     ) {
-      setError(
-        <div className="error-message">
-          "Please enter a valid email address."
-        </div>
-      );
+      return;
     }
 
     // Password validation
@@ -51,11 +43,7 @@ function Signup() {
     else if (
       !/^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/.test(password)
     ) {
-      setError(
-        <div className="error-message">"Please enter a valid password."</div>
-      );
-    } else {
-      setError("");
+      return;
     }
 
     const loginData = {
@@ -78,49 +66,52 @@ function Signup() {
   const authToken = localStorage.authToken;
 
   return (
-    <article className="login">
-      <h1 className="login__header">Login</h1>
-      <form className="login__form">
-        <div className="login__form-field">
-          <img src={userIcon} />
-          <input
-            type="text"
-            name="email"
-            id="email"
-            placeholder="email"
-            onChange={(event) => handleEmail(event)}
-            className="login__form-input"
-          />
-        </div>
+    <>
+      <Navbar />
+      <article className="login">
+        <h1 className="login__header">Login</h1>
+        <form className="login__form">
+          <div className="login__form-field">
+            <img src={userIcon} />
+            <input
+              type="text"
+              name="email"
+              id="email"
+              placeholder="email"
+              onChange={(event) => handleEmail(event)}
+              className="login__form-input"
+            />
+          </div>
 
-        <div className="login__form-field">
-          <img src={lockIcon} />
-          <input
-            type="password"
-            name="password"
-            id="password"
-            placeholder="password"
-            autoComplete="off"
-            onChange={(event) => handlePassword(event)}
-            className="login__form-input"
-          />
-        </div>
+          <div className="login__form-field">
+            <img src={lockIcon} />
+            <input
+              type="password"
+              name="password"
+              id="password"
+              placeholder="password"
+              autoComplete="off"
+              onChange={(event) => handlePassword(event)}
+              className="login__form-input"
+            />
+          </div>
 
-        <Link className="login__button-container" to="/home">
-          <button
-            className="login__button"
-            type="submit"
-            onClick={handleSubmit}
-          >
-            Log in
-          </button>
+          <Link className="login__button-container" to="/chess">
+            <button
+              className="login__button"
+              type="submit"
+              onClick={handleSubmit}
+            >
+              Log in
+            </button>
+          </Link>
+        </form>
+        <p className="login__signup-header">Don't have an account?</p>
+        <Link className="login__signup" to="/signup">
+          <p> Sign up </p>
         </Link>
-      </form>
-      <p className="login__signup-header">Don't have an account?</p>
-      <Link className="login__signup" to="/signup">
-        <p> Sign up </p>
-      </Link>
-    </article>
+      </article>
+    </>
   );
 }
 

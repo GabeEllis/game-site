@@ -12,7 +12,6 @@ function Chess() {
   const [theme, setTheme] = useState("option1");
 
   const authToken = localStorage.authToken;
-  console.log(authToken);
 
   useEffect(() => {
     axios
@@ -29,9 +28,6 @@ function Chess() {
       .catch((error) => {});
   }, [authToken]);
 
-  // if (!name) {
-  //   return <h1>Loading...</h1>;
-  // }
   return (
     <main>
       <Navbar />
