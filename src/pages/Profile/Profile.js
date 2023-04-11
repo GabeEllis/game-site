@@ -32,7 +32,7 @@ function Profile() {
         },
       })
       .then((response) => {
-        setId(response.data[0].id);
+        setId(response.data[0].user_id);
         setName(response.data[0].name);
         setElo(response.data[0].elo);
         setTheme(response.data[0].theme);
@@ -72,8 +72,6 @@ function Profile() {
       })
       .catch((error) => {});
   };
-
-  console.log(startingBoard);
 
   return (
     <>
