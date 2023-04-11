@@ -56,8 +56,6 @@ function Tile({
     }
   }
 
-  // theme === "option1" "tile__light-square--option1"
-
   if (theme === "green") {
     light += "--option2";
     dark += "--option2";
@@ -80,6 +78,8 @@ function Tile({
     light += "--option1";
     dark += "--option1";
   }
+
+  console.log(theme);
 
   return (
     <div className={squareColor % 2 === 0 ? `tile ${light}` : `tile ${dark}`}>
