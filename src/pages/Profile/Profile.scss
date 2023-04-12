@@ -50,6 +50,12 @@
       margin: 0.5rem 0 0 0;
     }
   }
+  &__new-theme {
+    margin: 0;
+    &--hidden {
+      display: none;
+    }
+  }
   &__button {
     @include section-header;
     width: 100%;

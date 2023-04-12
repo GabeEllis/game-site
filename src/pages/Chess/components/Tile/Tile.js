@@ -56,7 +56,13 @@ function Tile({
     }
   }
 
-  if (theme === "green") {
+  let darkColor = "";
+  let lightColor = "";
+
+  if (theme === "default") {
+    light += "--option1";
+    dark += "--option1";
+  } else if (theme === "green") {
     light += "--option2";
     dark += "--option2";
   } else if (theme === "rust") {
@@ -75,14 +81,19 @@ function Tile({
     light += "--option7";
     dark += "--option7";
   } else {
-    light += "--option1";
-    dark += "--option1";
+    darkColor += "lightcoral";
+    lightColor += "lightblue";
   }
 
-  console.log(theme);
-
   return (
-    <div className={squareColor % 2 === 0 ? `tile ${light}` : `tile ${dark}`}>
+    <div
+      className={squareColor % 2 === 0 ? `tile ${light}` : `tile ${dark}`}
+      style={
+        squareColor % 2 === 0
+          ? { backgroundColor: darkColor }
+          : { backgroundColor: lightColor }
+      }
+    >
       <section
         className={
           isPromoted ? "tile__piece-image--hidden" : "tile__piece-image"
