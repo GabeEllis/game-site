@@ -11,6 +11,8 @@ import BlackBishop from "../../../../assets/images/black_bishop.png";
 import BlackQueen from "../../../../assets/images/black_queen.png";
 import BlackKing from "../../../../assets/images/black_king.png";
 import BlackPawn from "../../../../assets/images/black_pawn.png";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 function Tile({
   id,
@@ -23,8 +25,8 @@ function Tile({
   PromotionOptions,
   theme,
 }) {
-  let light = "tile__light-square";
-  let dark = "tile__dark-square";
+  const [lightColor, setLightColor] = useState("white");
+  const [darkColor, setDarkColor] = useState("grey");
 
   function getPieceImage(value) {
     if (value === "R") {
@@ -56,42 +58,27 @@ function Tile({
     }
   }
 
-  let darkColor = "";
-  let lightColor = "";
+  useEffect(() => {
+    axios.get("http://localhost:8080/themes").then((response) => {
+      const themeList = response.data;
+      const filteredTheme = themeList.filter((themeItem) => {
+        return themeItem.name === theme;
+      });
 
-  if (theme === "default") {
-    light += "--option1";
-    dark += "--option1";
-  } else if (theme === "green") {
-    light += "--option2";
-    dark += "--option2";
-  } else if (theme === "rust") {
-    light += "--option3";
-    dark += "--option3";
-  } else if (theme === "sandcastle") {
-    light += "--option4";
-    dark += "--option4";
-  } else if (theme === "marine") {
-    light += "--option5";
-    dark += "--option5";
-  } else if (theme === "dusk") {
-    light += "--option6";
-    dark += "--option6";
-  } else if (theme === "coral") {
-    light += "--option7";
-    dark += "--option7";
-  } else {
-    darkColor += "lightcoral";
-    lightColor += "lightblue";
-  }
+      if (filteredTheme[0].light && filteredTheme[0].dark) {
+        setLightColor(filteredTheme[0].light);
+        setDarkColor(filteredTheme[0].dark);
+      }
+    });
+  }, [theme]);
 
   return (
     <div
-      className={squareColor % 2 === 0 ? `tile ${light}` : `tile ${dark}`}
+      className="tile"
       style={
         squareColor % 2 === 0
-          ? { backgroundColor: darkColor }
-          : { backgroundColor: lightColor }
+          ? { backgroundColor: lightColor }
+          : { backgroundColor: darkColor }
       }
     >
       <section
