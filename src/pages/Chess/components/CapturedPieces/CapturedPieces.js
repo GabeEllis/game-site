@@ -18,7 +18,6 @@ import BlackKing from "../../../../assets/images/black_king.png";
 import BlackPawn from "../../../../assets/images/black_pawn.png";
 
 function CapturedPieces({ capturedPiecesArray, team }) {
-  console.log(capturedPiecesArray);
   let filtedCapturedPieceArray = [];
 
   function getPieceImage(value) {

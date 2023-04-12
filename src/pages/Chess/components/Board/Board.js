@@ -643,19 +643,16 @@ function Board({ name, elo, theme }) {
   const [currentBoard, setCurrentBoard] = useState(startingBoard);
   const [selectedPiece, setSelectedPiece] = useState(null);
   const [promotionChoice, setPromotionChoice] = useState(null);
-  const [isComputer, setIsComputer] = useState(true);
+  const [isComputer, setIsComputer] = useState(false);
   // Intializes gameStatus.
   let gameStarted = false;
   let gameStatus = false;
   let stalemateStatus = false;
   let selectedValidMoves = [];
 
-  console.log("inital", gameStarted);
-
   useEffect(() => {
     gameStarted = true;
     stalemateStatus = "New Game";
-    console.log("start gameStarted", gameStarted);
   }, []);
   // Gets information for player 2.
   let player2Name = "Player 2";
@@ -679,6 +676,8 @@ function Board({ name, elo, theme }) {
   const prevTurn = useRef("white");
   let whoseTurn = prevTurn.current;
 
+  console.log(whoseTurn);
+
   // Gets previously selected capturedPiece.
   const prevCapture = useRef([]);
   let capturedPiecesArray = prevCapture.current;
@@ -700,6 +699,7 @@ function Board({ name, elo, theme }) {
 
   // Finds the piece the users clicks on and sets selected piece equal to it.
   const PromotionOptions = (piece) => {
+    console.log(piece);
     setPromotionChoice(piece);
   };
 
@@ -816,10 +816,21 @@ function Board({ name, elo, theme }) {
               castlingRules.hasBlackQueenRookMoved = true;
             }
 
+            console.log(
+              currentBoard[foundPieceIndex].value,
+              foundPieceIndex,
+              currentBoard[lastFoundPieceIndex].value,
+              lastFoundPieceIndex,
+              boardAfterMove[0][foundPieceIndex].value,
+              boardAfterMove[0][lastFoundPieceIndex].value,
+              promotionChoice,
+              whoseTurn
+            );
             // If a white pawn gets to the end of the board, give the user the ability to promote it to another piece.
             if (
-              currentBoard[lastFoundPieceIndex].value === "P" &&
-              foundPieceIndex <= 7
+              boardAfterMove[0][foundPieceIndex].value === "P" &&
+              foundPieceIndex <= 7 &&
+              whoseTurn === "white"
             ) {
               boardAfterMove[0][foundPieceIndex].isPromoted = true;
               boardAfterMove[0][foundPieceIndex].promotionColor = "white";
@@ -827,16 +838,19 @@ function Board({ name, elo, theme }) {
             // If a black pawn gets to the end of the board, give the user the ability to promote it to another piece.
             if (
               currentBoard[lastFoundPieceIndex].value === "p" &&
-              foundPieceIndex >= 56
+              foundPieceIndex >= 56 &&
+              whoseTurn === "black"
             ) {
               boardAfterMove[0][foundPieceIndex].isPromoted = true;
               boardAfterMove[0][foundPieceIndex].promotionColor = "black";
             }
 
-            if (
-              (promotionChoice && foundPieceIndex <= 7) ||
-              (promotionChoice && foundPieceIndex >= 56)
-            ) {
+            if (promotionChoice && foundPieceIndex <= 7) {
+              currentBoard[foundPieceIndex].value = promotionChoice;
+              currentBoard[foundPieceIndex].isPromoted = false;
+              setPromotionChoice(null);
+            }
+            if (promotionChoice && foundPieceIndex >= 56) {
               currentBoard[foundPieceIndex].value = promotionChoice;
               currentBoard[foundPieceIndex].isPromoted = false;
               setPromotionChoice(null);
@@ -856,12 +870,10 @@ function Board({ name, elo, theme }) {
       );
 
       const rawComputerMove = getComputerMove(currentBoardFen, difficulty);
-      console.log(rawComputerMove);
       const [startingIndex, computerMove] = formatComputerMove(
         rawComputerMove,
         currentBoard
       );
-      console.log(startingIndex, computerMove);
 
       let [computerBoard, computerCapturedPiece] = movePiece(
         currentBoard,
@@ -927,11 +939,13 @@ function Board({ name, elo, theme }) {
       // If a user move was made.
     } else if (boardAfterMove.length !== 0) {
       // After a move is made, it changes the turn to the opposite team.
+      console.log("before swap", whoseTurn, prevTurn.current);
       if (whoseTurn === "white") {
         prevTurn.current = "black";
       } else if (whoseTurn === "black") {
         prevTurn.current = "white";
       }
+      console.log("after swap", whoseTurn, prevTurn.current);
 
       // If a piece was captured, add it to the capturedPiecesArray.
       if (boardAfterMove[1]) {
@@ -963,24 +977,18 @@ function Board({ name, elo, theme }) {
     setIsComputer(option);
   };
 
-  console.log("gameStarted", gameStarted);
   if (!gameStarted) {
     // Checks to see if the game is over.
     gameStatus = isGameOver(currentBoard, whoseTurn, castlingRules);
     if (gameStatus) {
       // When the game has ended, decides if it was stalemate of checkmate.
       stalemateStatus = !inCheck(currentBoard, whoseTurn);
-      console.log(stalemateStatus);
     }
   } else {
     gameStatus = true;
     stalemateStatus = false;
     gameStarted = false;
-
-    console.log(gameStarted);
   }
-
-  console.log("end", gameStarted);
 
   return (
     <article className="board-container">
