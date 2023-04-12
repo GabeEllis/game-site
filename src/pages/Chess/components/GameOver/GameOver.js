@@ -6,7 +6,6 @@ function GameOver({
   stalemateStatus,
   copponentHandler,
 }) {
-  console.log(gameStatus);
   let gameOverMessage = "Message";
 
   if (gameStatus) {
