@@ -1,48 +1,100 @@
 import "./GameOver.scss";
+import { useState } from "react";
 
 function GameOver({
+  gameStarted,
   gameStatus,
   whoseTurn,
   stalemateStatus,
-  copponentHandler,
+  opponentHandler,
 }) {
-  // Intialize game over message.
-  let gameOverMessage;
+  // Intializes the status of if the user chose to play against a computer.
+  const [pickedComputer, setPickedComputer] = useState(false);
 
-  // If the game is over.
-  if (gameStatus) {
-    // If the game is over and it always was a stalemate.
-    if (stalemateStatus) {
-      gameOverMessage = "Draw by Stalemate";
-      // If the game ended and the next turn is white, black won.
-    } else if (whoseTurn === "white") {
-      gameOverMessage = "Black won by checkmate";
-      // If the game ended and the next turn is black, white won.
-    } else if (whoseTurn === "black") {
-      gameOverMessage = "White won by checkmate";
+  // Intialize game over message.
+  let gameResult;
+  let gameOverMessage = "Play again?";
+
+  if (!gameStarted) {
+    // If the game is over.
+    if (gameStatus) {
+      // If the game is over and it always was a stalemate.
+      if (stalemateStatus) {
+        gameResult = "Draw by Stalemate";
+        // If the game ended and the next turn is white, black won.
+      } else if (whoseTurn === "white") {
+        gameResult = "Black won by checkmate";
+        // If the game ended and the next turn is black, white won.
+      } else if (whoseTurn === "black") {
+        gameResult = "White won by checkmate";
+      }
     }
+  } else {
+    gameResult = "Start New Game";
+    gameOverMessage = "Choose your opponent";
+  }
+
+  //   Changes the value of picked computer to true.
+  function handlePickedComputer() {
+    setPickedComputer(true);
   }
 
   // If the game is still going, return nothing.
-  if (!gameStatus) {
+  if (!gameStatus && !gameStarted) {
     return;
+  }
+
+  if (pickedComputer) {
+    return (
+      <article className="gameover-container">
+        <section className="gameover">
+          <h2 className="gameover__difficulty-header">Choose Difficulty</h2>
+          <div className="gameover__difficulty-button-container">
+            <button
+              className="gameover__difficulty-button"
+              onClick={() => opponentHandler(true, 0)}
+            >
+              Beginner
+            </button>
+            <button
+              className="gameover__difficulty-button"
+              onClick={() => opponentHandler(true, 1)}
+            >
+              Easy
+            </button>
+            <button
+              className="gameover__difficulty-button"
+              onClick={() => opponentHandler(true, 2)}
+            >
+              Medium
+            </button>
+            <button
+              className="gameover__difficulty-button"
+              onClick={() => opponentHandler(true, 3)}
+            >
+              Hard
+            </button>
+          </div>
+        </section>
+      </article>
+    );
   }
 
   return (
     <article className="gameover-container">
       <section className="gameover">
-        <h2 className="gameover__result">{gameOverMessage}</h2>
-        <h3 className="gameover__message">Play again?</h3>
+        <h2 className="gameover__result">{gameResult}</h2>
+        <h3 className="gameover__message">{gameOverMessage}</h3>
         <div className="gameover__button-container">
           <button
             className="gameover__button"
-            onClick={() => copponentHandler(false)}
+            onClick={() => opponentHandler(false)}
           >
             Play opponent
           </button>
           <button
             className="gameover__button"
-            onClick={() => copponentHandler(true)}
+            onClick={() => handlePickedComputer()}
           >
             Play computer
           </button>
