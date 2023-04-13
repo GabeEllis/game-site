@@ -692,6 +692,7 @@ function Board({ name, elo, theme }) {
   // Finds the piece the users clicks on and sets selected piece equal to it.
   const SelectPiece = (id) => {
     const foundPiece = currentBoard.find((tile) => tile.id === id);
+    console.log(foundPiece);
     setSelectedPiece(foundPiece);
   };
 

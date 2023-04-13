@@ -6,20 +6,24 @@ function GameOver({
   stalemateStatus,
   copponentHandler,
 }) {
-  let gameOverMessage = "Message";
+  // Intialize game over message.
+  let gameOverMessage;
 
+  // If the game is over.
   if (gameStatus) {
+    // If the game is over and it always was a stalemate.
     if (stalemateStatus) {
       gameOverMessage = "Draw by Stalemate";
+      // If the game ended and the next turn is white, black won.
     } else if (whoseTurn === "white") {
       gameOverMessage = "Black won by checkmate";
+      // If the game ended and the next turn is black, white won.
     } else if (whoseTurn === "black") {
       gameOverMessage = "White won by checkmate";
-    } else {
-      gameOverMessage = stalemateStatus;
     }
   }
 
+  // If the game is still going, return nothing.
   if (!gameStatus) {
     return;
   }
