@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Navbar from "../Navbar/Navbar";
 import Tile from "../Chess/components/Tile/Tile";
-import startingBoard from "../Chess/utilty/startingBoard.json";
+import startingBoard from "../Chess/data/startingBoard.json";
 
 function Profile() {
   // State variables created for profile pref data.

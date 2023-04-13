@@ -2,7 +2,7 @@ import "./Board.scss";
 import Tile from "../Tile/Tile";
 import GameOver from "../GameOver/GameOver";
 import Player from "../Player/Player";
-import startingBoard from "../../utilty/startingBoard.json";
+import startingBoard from "../../data/startingBoard.json";
 import { convertBoardToFen } from "../../utilty/convertBoardToFen";
 import { getComputerMove } from "../../utilty/getComputerMove";
 import { formatComputerMove } from "../../utilty/formatComputerMove";
