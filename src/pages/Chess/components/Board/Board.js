@@ -676,8 +676,6 @@ function Board({ name, elo, theme }) {
   const prevTurn = useRef("white");
   let whoseTurn = prevTurn.current;
 
-  console.log(whoseTurn);
-
   // Gets previously selected capturedPiece.
   const prevCapture = useRef([]);
   let capturedPiecesArray = prevCapture.current;
@@ -699,7 +697,6 @@ function Board({ name, elo, theme }) {
 
   // Finds the piece the users clicks on and sets selected piece equal to it.
   const PromotionOptions = (piece) => {
-    console.log(piece);
     setPromotionChoice(piece);
   };
 
@@ -816,16 +813,6 @@ function Board({ name, elo, theme }) {
               castlingRules.hasBlackQueenRookMoved = true;
             }
 
-            console.log(
-              currentBoard[foundPieceIndex].value,
-              foundPieceIndex,
-              currentBoard[lastFoundPieceIndex].value,
-              lastFoundPieceIndex,
-              boardAfterMove[0][foundPieceIndex].value,
-              boardAfterMove[0][lastFoundPieceIndex].value,
-              promotionChoice,
-              whoseTurn
-            );
             // If a white pawn gets to the end of the board, give the user the ability to promote it to another piece.
             if (
               boardAfterMove[0][foundPieceIndex].value === "P" &&
@@ -939,13 +926,11 @@ function Board({ name, elo, theme }) {
       // If a user move was made.
     } else if (boardAfterMove.length !== 0) {
       // After a move is made, it changes the turn to the opposite team.
-      console.log("before swap", whoseTurn, prevTurn.current);
       if (whoseTurn === "white") {
         prevTurn.current = "black";
       } else if (whoseTurn === "black") {
         prevTurn.current = "white";
       }
-      console.log("after swap", whoseTurn, prevTurn.current);
 
       // If a piece was captured, add it to the capturedPiecesArray.
       if (boardAfterMove[1]) {

@@ -65,7 +65,7 @@ function Tile({
         return themeItem.name === theme;
       });
 
-      if (filteredTheme[0].light && filteredTheme[0].dark) {
+      if (filteredTheme[0] && filteredTheme[0].light && filteredTheme[0].dark) {
         setLightColor(filteredTheme[0].light);
         setDarkColor(filteredTheme[0].dark);
       }
