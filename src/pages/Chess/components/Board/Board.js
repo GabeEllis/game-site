@@ -15,27 +15,32 @@ import { useState, useEffect, useRef } from "react";
 
 function Board({ name, elo, theme }) {
   // Intializes state variables.
+  const [gameStarted, setGameStarted] = useState(true);
   const [currentBoard, setCurrentBoard] = useState(startingBoard);
   const [selectedPiece, setSelectedPiece] = useState(null);
   const [promotionChoice, setPromotionChoice] = useState(null);
   const [isComputer, setIsComputer] = useState(false);
+  const [difficulty, setDifficulty] = useState(0);
+
   // Intializes gameStatus.
-  let gameStarted = false;
   let gameStatus = false;
   let stalemateStatus = false;
   let selectedValidMoves = [];
 
-  useEffect(() => {
-    gameStarted = true;
-    stalemateStatus = "New Game";
-  }, []);
   // Gets information for player 2.
   let player2Name = "Player 2";
-  let difficulty = 1;
   let player2Elo = "1000";
   if (isComputer) {
     player2Name = "Computer";
-    player2Elo = `difficulty ${difficulty}`;
+    if (difficulty === 0) {
+      player2Elo = "Beginner";
+    } else if (difficulty === 1) {
+      player2Elo = "Easy";
+    } else if (difficulty === 2) {
+      player2Elo = "Medium";
+    } else if (difficulty === 3) {
+      player2Elo = "Hard";
+    }
   }
   let boardAfterMove = [];
 
@@ -67,7 +72,6 @@ function Board({ name, elo, theme }) {
   // Finds the piece the users clicks on and sets selected piece equal to it.
   const SelectPiece = (id) => {
     const foundPiece = currentBoard.find((tile) => tile.id === id);
-    console.log(foundPiece);
     setSelectedPiece(foundPiece);
   };
 
@@ -317,11 +321,12 @@ function Board({ name, elo, theme }) {
 
       // Updates the board state based on player's move.
       setCurrentBoard(boardAfterMove[0]);
+      setGameStarted(false);
     }
   });
 
   // Resets the game if the user clicks a button.
-  const copponentHandler = (option) => {
+  const opponentHandler = (option, difficulty) => {
     gameStatus = null;
     prevCapture.current = [];
     castlingRules = {
@@ -332,23 +337,18 @@ function Board({ name, elo, theme }) {
     };
     lastSelectedPiece = null;
     prevTurn.current = "white";
-    gameStarted = false;
+    setGameStarted(false);
     setSelectedPiece(null);
     setCurrentBoard(startingBoard);
     setIsComputer(option);
+    setDifficulty(difficulty);
   };
 
-  if (!gameStarted) {
-    // Checks to see if the game is over.
-    gameStatus = isGameOver(currentBoard, whoseTurn, castlingRules);
-    if (gameStatus) {
-      // When the game has ended, decides if it was stalemate of checkmate.
-      stalemateStatus = !inCheck(currentBoard, whoseTurn);
-    }
-  } else {
-    gameStatus = true;
-    stalemateStatus = false;
-    gameStarted = false;
+  // Checks to see if the game is over.
+  gameStatus = isGameOver(currentBoard, whoseTurn, castlingRules);
+  if (gameStatus) {
+    // When the game has ended, decides if it was stalemate of checkmate.
+    stalemateStatus = !inCheck(currentBoard, whoseTurn);
   }
 
   return (
@@ -377,10 +377,11 @@ function Board({ name, elo, theme }) {
           );
         })}
         <GameOver
+          gameStarted={gameStarted}
           gameStatus={gameStatus}
           whoseTurn={whoseTurn}
           stalemateStatus={stalemateStatus}
-          copponentHandler={copponentHandler}
+          opponentHandler={opponentHandler}
         />
       </section>
       <Player
