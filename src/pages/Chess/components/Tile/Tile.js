@@ -25,9 +25,11 @@ function Tile({
   PromotionOptions,
   theme,
 }) {
+  // Intializes the state variables for dark and light color squares.
   const [lightColor, setLightColor] = useState("white");
   const [darkColor, setDarkColor] = useState("grey");
 
+  // Converts a board array value into a nice looking image of its corresponding chess piece.
   function getPieceImage(value) {
     if (value === "R") {
       return WhiteRook;
@@ -58,6 +60,7 @@ function Tile({
     }
   }
 
+  // Finds the information for the light and dark square color values based on the theme name.
   useEffect(() => {
     axios.get("http://localhost:8080/themes").then((response) => {
       const themeList = response.data;
@@ -65,7 +68,8 @@ function Tile({
         return themeItem.name === theme;
       });
 
-      if (filteredTheme[0].light && filteredTheme[0].dark) {
+      if (filteredTheme[0] && filteredTheme[0].light && filteredTheme[0].dark) {
+        // Sets the light and dark square color to match the applied theme.
         setLightColor(filteredTheme[0].light);
         setDarkColor(filteredTheme[0].dark);
       }

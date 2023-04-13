@@ -7,24 +7,39 @@ import Tile from "../Chess/components/Tile/Tile";
 import startingBoard from "../Chess/utilty/startingBoard.json";
 
 function Profile() {
+  // State variables created for profile pref data.
   const [id, setId] = useState("");
   const [name, setName] = useState("");
   const [elo, setElo] = useState("");
   const [theme, setTheme] = useState("");
   const [themeArray, setThemeArray] = useState([]);
 
+  // State variables for user created custom theme.
   const [newThemeName, setNewThemeName] = useState("");
   const [newThemeLight, setNewThemeLight] = useState("");
   const [newThemeDark, setNewThemeDark] = useState("");
 
+  // Gets the data for the theme optons from the database.
   useEffect(() => {
     axios.get("http://localhost:8080/themes").then((response) => {
-      setThemeArray(response.data);
+      // Gets the intialized list of themes, then sorts so that new is last.
+      setThemeArray(sortThemeArray(response.data));
     });
   }, []);
 
+  // Sorts the theme array so that the new theme option is always at the bottom.
+  function sortThemeArray(themeOptions) {
+    const sortedThemeArray = themeOptions.sort((a, b) => {
+      if (b.name === "new") {
+        return -1;
+      }
+    });
+    return sortedThemeArray;
+  }
+
   const authToken = localStorage.authToken;
 
+  // Gets the users pref data using their authToken.
   useEffect(() => {
     axios
       .get("http://localhost:8080/preferences", {
@@ -33,7 +48,7 @@ function Profile() {
         },
       })
       .then((response) => {
-        console.log(response.data);
+        // Sets the user profile pref data from the user's stored values in the database.
         setId(response.data[0].user_id);
         setName(response.data[0].name);
         setElo(response.data[0].elo);
@@ -72,14 +87,17 @@ function Profile() {
       return;
     }
 
+    // Intializes the body data for changing user pref data.
     let prefData = {
       name: name,
       elo: elo,
       theme: theme,
     };
 
+    // Intializes the body data for custom theme data.
     let newThemeData;
 
+    // If the user tried to create a new custom theme, change the data in the requests.
     if (newThemeName) {
       prefData = {
         name: name,
@@ -97,19 +115,19 @@ function Profile() {
     axios
       .put(`http://localhost:8080/preferences/${id}`, prefData)
       .then((response) => {
+        // Takes the user back to chess after they update their profile.
         window.location.href = "/chess";
         if (newThemeName) {
           axios
             .post("http://localhost:8080/themes", newThemeData)
             .then((response) => {
-              setThemeArray(response.data);
+              // Get the updated list of themes after a new one is made. Then sorts so that new is last.
+              setThemeArray(sortThemeArray(response.data));
             });
         }
       })
       .catch((error) => {});
   };
-
-  console.log(themeArray);
 
   return (
     <>
@@ -182,7 +200,7 @@ function Profile() {
               <input
                 className="profile__input"
                 autoComplete="off"
-                type="text"
+                type="color"
                 name="name"
                 placeholder="new theme name"
                 onChange={(e) => handleNewThemeLight(e)}
@@ -194,7 +212,7 @@ function Profile() {
               <input
                 className="profile__input"
                 autoComplete="off"
-                type="text"
+                type="color"
                 name="name"
                 placeholder="new theme name"
                 onChange={(e) => handleNewThemeDark(e)}
