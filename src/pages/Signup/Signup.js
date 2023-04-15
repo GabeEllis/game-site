@@ -87,8 +87,6 @@ function Signup() {
     }
   };
 
-  const authToken = localStorage.authToken;
-
   return (
     <>
       <Navbar />
