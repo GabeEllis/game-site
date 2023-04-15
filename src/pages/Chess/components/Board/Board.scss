@@ -30,7 +30,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: #d2d2d2;
+    background-color: darkgrey;
 
     @include tablet {
       width: calc(75vw + 4rem);

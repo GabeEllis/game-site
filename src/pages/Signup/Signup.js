@@ -117,7 +117,7 @@ function Signup() {
               placeholder="password"
               autoComplete="off"
               onChange={(event) => handlePassword(event)}
-              className="login__form-input"
+              className="signup__form-input"
             />
           </div>
 
@@ -130,7 +130,7 @@ function Signup() {
               placeholder="confirm password"
               autoComplete="off"
               onChange={(event) => handleConfirmPassword(event)}
-              className="login__form-input"
+              className="signup__form-input"
             />
           </div>
 
@@ -145,7 +145,7 @@ function Signup() {
               placeholder="display name"
               autoComplete="off"
               onChange={(event) => handleName(event)}
-              className="login__form-input"
+              className="signup__form-input"
             />
           </div>
 
@@ -158,7 +158,7 @@ function Signup() {
               placeholder="estimated starting elo"
               autoComplete="off"
               onChange={(event) => handleElo(event)}
-              className="login__form-input"
+              className="signup__form-input"
             />
           </div>
 

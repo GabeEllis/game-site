@@ -2,10 +2,10 @@
 @use "../../styles/partials/mixins" as *;
 
 .home {
+  height: 100vh;
   padding: 2rem;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   background-color: #d2d2d2;
   &__header {
