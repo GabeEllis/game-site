@@ -97,10 +97,7 @@
     text-align: center;
 
     @include tablet {
-      margin: 2rem 0 2rem 0;
-    }
-    @include desktop {
-      margin: 3rem 0 3rem 0;
+      margin: 0.5rem 0 1.5rem 0;
     }
   }
   &__difficulty-button {
@@ -124,7 +121,6 @@
       max-width: 16rem;
       height: 4.5rem;
       max-height: 6rem;
-      margin-bottom: 2rem;
     }
     &-container {
       width: 50%;
@@ -138,9 +134,6 @@
 
       @include tablet {
         margin-bottom: 1rem;
-      }
-      @include desktop {
-        margin-bottom: 3rem;
       }
     }
     &:nth-child(2) {
