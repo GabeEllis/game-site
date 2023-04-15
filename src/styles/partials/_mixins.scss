@@ -18,6 +18,9 @@
   @include tablet {
     font-size: 4rem;
   }
+  @include desktop() {
+    font-size: 6rem;
+  }
 }
 
 @mixin section-header {
@@ -25,6 +28,9 @@
   font-weight: 700;
   @include tablet {
     font-size: 2rem;
+  }
+  @include desktop() {
+    font-size: 3rem;
   }
 }
 
@@ -34,6 +40,9 @@
   @include tablet {
     font-size: 1.25rem;
   }
+  @include desktop() {
+    font-size: 2rem;
+  }
 }
 
 @mixin body-copy {
@@ -41,5 +50,19 @@
   font-weight: 400;
   @include tablet {
     font-size: 1rem;
+  }
+  @include desktop() {
+    font-size: 1.5rem;
+  }
+}
+
+@mixin button {
+  font-size: 0.75rem;
+  font-weight: 400;
+  @include tablet {
+    font-size: 0.875rem;
+  }
+  @include desktop() {
+    font-size: 1.25rem;
   }
 }
