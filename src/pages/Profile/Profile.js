@@ -220,7 +220,7 @@ function Profile() {
             </div>
           </section>
 
-          <section className="board">
+          <section className="profile__board">
             {startingBoard.map((tile, index) => {
               return (
                 <Tile

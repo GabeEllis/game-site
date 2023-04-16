@@ -1,2 +1,16 @@
 @use "../../styles/partials/global" as *;
 @use "../../styles/partials/mixins" as *;
+
+.chess {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgb(70, 70, 70);
+
+  @include tablet {
+    padding: 0 1rem;
+  }
+  @include desktop {
+    margin: 0 10rem;
+  }
+}
