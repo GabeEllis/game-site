@@ -2,17 +2,35 @@
 @use "../../styles/partials/mixins" as *;
 
 .sign-out {
+  height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  padding: 1rem;
+  padding: 2rem;
+  color: white;
+
+  @include tablet {
+    padding: 2rem 4rem;
+  }
+  @include desktop {
+    padding: 2rem 8rem;
+  }
   &__message {
     @include page-header;
   }
   &__icon {
-    width: calc(80vw - 2rem);
-    height: calc(80vw - 2rem);
+    width: 66vw;
+    height: 66vw;
     object-fit: contain;
+
+    @include tablet {
+      width: 50vw;
+      height: 50vw;
+    }
+
+    @include desktop {
+      width: 33vw;
+      height: 33vw;
+    }
   }
 }

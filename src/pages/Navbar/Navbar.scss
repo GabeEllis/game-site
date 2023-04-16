@@ -2,21 +2,30 @@
 @use "../../styles/partials/mixins" as *;
 
 .navbar {
-  width: 100%;
+  width: 100vw;
   background-color: rgb(40, 40, 40);
+
   & > ul {
+    height: 100%;
     display: flex;
     list-style: none;
     justify-content: space-between;
     padding: 0;
     margin: 0;
     & > li {
+      @include subheader;
+      height: 100%;
       padding: 1rem 0;
       background-color: rgb(40, 40, 40);
       display: flex;
       justify-content: center;
       align-items: center;
       flex-grow: 1;
+
+      @include tablet {
+        padding: 2rem 0;
+      }
+
       &:last-child {
         border: none;
       }

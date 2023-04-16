@@ -29,7 +29,7 @@ function Chess() {
   }, [authToken]);
 
   return (
-    <main>
+    <main className="chess">
       <Navbar />
       <Board name={name} elo={elo} theme={theme} />
     </main>

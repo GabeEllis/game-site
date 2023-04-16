@@ -2,24 +2,47 @@
 @use "../../styles/partials/mixins" as *;
 
 .login {
+  height: 100vh;
   padding: 2rem 2rem 4rem 2rem;
-  border-radius: 0.5rem;
+  margin: auto;
   background-color: darkgray;
+
+  @include tablet {
+    padding: 4rem 4rem 6rem 4rem;
+    width: 66vw;
+  }
+  @include desktop {
+    width: 40vw;
+  }
   &__header {
     @include page-header;
-    width: 50%;
+    width: 60%;
     text-align: center;
     border-bottom: 2px solid black;
-    margin-top: 0.5rem;
+    margin-top: 0;
     margin-bottom: 2.5rem;
     margin-left: auto;
     margin-right: auto;
+
+    @include tablet {
+      margin-bottom: 4rem;
+    }
+    @include desktop {
+      margin-bottom: 6rem;
+    }
   }
   &__form {
     &-field {
       width: 100%;
       position: relative;
       margin-bottom: 0.75rem;
+
+      @include tablet {
+        margin-bottom: 1.25rem;
+      }
+      @include desktop {
+        margin-bottom: 1.25rem;
+      }
       & > img {
         width: 2rem;
         height: 2rem;
@@ -36,12 +59,13 @@
     &-input {
       @include body-copy;
       width: 100%;
-      height: 2.5rem;
+      height: 3rem;
       color: grey;
       border: 1px grey solid;
       border-radius: 0.25rem;
       background-color: #fdfdfd;
       padding: 0.5rem 1rem 0.5rem 3rem;
+
       &:focus {
         outline: 1px solid rgb(61, 142, 169);
       }
@@ -57,16 +81,16 @@
     border: 1px solid black;
     background-color: #e2725b;
     line-height: 1;
-    padding: 1em 2em;
+    padding: 1.25rem 2rem;
     margin-top: 2rem;
-    &-container {
-      width: 50%;
-      @include tablet {
-        width: 10%;
-      }
-      @include desktop {
-        width: 7.5%;
-      }
+
+    @include tablet {
+      margin-top: 3rem;
+      padding: 1.5rem 2rem;
+    }
+    @include desktop {
+      margin-top: 4rem;
+      padding: 2rem 2rem;
     }
     &:hover,
     &:focus {
@@ -84,6 +108,13 @@
       @include subheader;
       text-align: center;
       margin-bottom: 0.25rem;
+
+      @include tablet {
+        margin-top: 1.5rem;
+      }
+      @include tablet {
+        margin-top: 2rem;
+      }
     }
   }
 }
