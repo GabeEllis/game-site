@@ -15,7 +15,7 @@ function Chess() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8080/preferences", {
+      .get("https://game-site-server.onrender.com/preferences", {
         headers: {
           authorization: `Bearer ${authToken}`,
         },

@@ -21,10 +21,12 @@ function Profile() {
 
   // Gets the data for the theme optons from the database.
   useEffect(() => {
-    axios.get("http://localhost:8080/themes").then((response) => {
-      // Gets the intialized list of themes, then sorts so that new is last.
-      setThemeArray(sortThemeArray(response.data));
-    });
+    axios
+      .get("https://game-site-server.onrender.com/themes")
+      .then((response) => {
+        // Gets the intialized list of themes, then sorts so that new is last.
+        setThemeArray(sortThemeArray(response.data));
+      });
   }, []);
 
   // Sorts the theme array so that the new theme option is always at the bottom.
@@ -42,7 +44,7 @@ function Profile() {
   // Gets the users pref data using their authToken.
   useEffect(() => {
     axios
-      .get("http://localhost:8080/preferences", {
+      .get("https://game-site-server.onrender.com/preferences", {
         headers: {
           authorization: `Bearer ${authToken}`,
         },
@@ -113,13 +115,13 @@ function Profile() {
 
     // Put if no errors
     axios
-      .put(`http://localhost:8080/preferences/${id}`, prefData)
+      .put(`https://game-site-server.onrender.com/preferences/${id}`, prefData)
       .then((response) => {
         // Takes the user back to chess after they update their profile.
         window.location.href = "/chess";
         if (newThemeName) {
           axios
-            .post("http://localhost:8080/themes", newThemeData)
+            .post("https://game-site-server.onrender.com/themes", newThemeData)
             .then((response) => {
               // Get the updated list of themes after a new one is made. Then sorts so that new is last.
               setThemeArray(sortThemeArray(response.data));

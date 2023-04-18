@@ -76,7 +76,7 @@ function Signup() {
     // Post if no errors
     if (!error) {
       axios
-        .post("http://localhost:8080/users/register", loginData)
+        .post("https://game-site-server.onrender.com/users/register", loginData)
         .then((response) => {
           localStorage.authToken = response.data.token;
           window.location.href = "/chess";
