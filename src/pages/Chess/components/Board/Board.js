@@ -13,7 +13,7 @@ import { inCheck } from "../../utilty/inCheck";
 import { isGameOver } from "../../utilty/isGameOver";
 import { useState, useEffect, useRef } from "react";
 
-function Board({ name, elo, theme }) {
+function Board({ name, elo, lightColor, darkColor }) {
   // Intializes state variables.
   const [gameStarted, setGameStarted] = useState(true);
   const [currentBoard, setCurrentBoard] = useState(startingBoard);
@@ -372,7 +372,8 @@ function Board({ name, elo, theme }) {
               isPromoted={tile.isPromoted}
               promotionColor={tile.promotionColor}
               PromotionOptions={PromotionOptions}
-              theme={theme}
+              lightColor={lightColor}
+              darkColor={darkColor}
             />
           );
         })}
