@@ -14,10 +14,14 @@ function Profile() {
   const [theme, setTheme] = useState("");
   const [themeArray, setThemeArray] = useState([]);
 
+  // Intializes the state variables for dark and light color squares.
+  const [lightColor, setLightColor] = useState("white");
+  const [darkColor, setDarkColor] = useState("grey");
+
   // State variables for user created custom theme.
   const [newThemeName, setNewThemeName] = useState("");
-  const [newThemeLight, setNewThemeLight] = useState("");
-  const [newThemeDark, setNewThemeDark] = useState("");
+  const [newThemeLight, setNewThemeLight] = useState("white");
+  const [newThemeDark, setNewThemeDark] = useState("grey");
 
   // Gets the data for the theme optons from the database.
   useEffect(() => {
@@ -55,6 +59,20 @@ function Profile() {
         setName(response.data[0].name);
         setElo(response.data[0].elo);
         setTheme(response.data[0].theme);
+
+        axios
+          .get("https://game-site-server.onrender.com/themes")
+          .then((res) => {
+            // Gets a list of all themes and filters based on the matching theme name.
+            const themeList = res.data;
+            const filteredTheme = themeList.filter((themeItem) => {
+              return themeItem.name === response.data[0].theme;
+            });
+
+            // Sets the light and dark square color to match the applied theme.
+            setLightColor(filteredTheme[0].light);
+            setDarkColor(filteredTheme[0].dark);
+          });
       })
       .catch((error) => {});
   }, [authToken]);
@@ -63,21 +81,47 @@ function Profile() {
   const handleName = (e) => {
     setName(e.target.value);
   };
-  //   Changes the value of theme when the user types.
+  //   Changes the value of theme when the user selects a new.
   const handleTheme = (e) => {
     setTheme(e.target.value);
+
+    if (e.target.value !== "new") {
+      axios
+        .get("https://game-site-server.onrender.com/themes")
+        .then((response) => {
+          // Gets a list of all themes and filters based on the matching theme name.
+          const themeList = response.data;
+          const filteredTheme = themeList.filter((themeItem) => {
+            return themeItem.name === e.target.value;
+          });
+
+          // Sets the light and dark square color to match the applied theme.
+          setLightColor(filteredTheme[0].light);
+          setDarkColor(filteredTheme[0].dark);
+        });
+    }
   };
-  //   Changes the value of new theme name when the user types.
+  //   Changes the value of new theme name when the user types the name.
   const handleNewThemeName = (e) => {
     setNewThemeName(e.target.value);
   };
-  //   Changes the value of new theme light square color when the user types.
+  //   Changes the value of new theme light square color when the user changes the color.
   const handleNewThemeLight = (e) => {
     setNewThemeLight(e.target.value);
+
+    // Sets the light square color to match the new theme if a value has been selected.
+    if (e.target.value) {
+      setLightColor(e.target.value);
+    }
   };
-  //   Changes the value of new theme dark square color when the user types.
+  //   Changes the value of new theme dark square color when the user changes the color.
   const handleNewThemeDark = (e) => {
     setNewThemeDark(e.target.value);
+
+    // Sets the dark square color to match the new theme if a value has been selected.
+    if (e.target.value) {
+      setDarkColor(e.target.value);
+    }
   };
 
   //   When the user clicks submit, run this function.
@@ -118,7 +162,6 @@ function Profile() {
       .put(`https://game-site-server.onrender.com/preferences/${id}`, prefData)
       .then((response) => {
         // Takes the user back to chess after they update their profile.
-        window.location.href = "/chess";
         if (newThemeName) {
           axios
             .post("https://game-site-server.onrender.com/themes", newThemeData)
@@ -127,6 +170,7 @@ function Profile() {
               setThemeArray(sortThemeArray(response.data));
             });
         }
+        window.location.href = "/chess";
       })
       .catch((error) => {});
   };
@@ -230,7 +274,8 @@ function Profile() {
                   id={tile.id}
                   value={tile.value}
                   squareColor={tile.squareColor}
-                  theme={theme}
+                  lightColor={lightColor}
+                  darkColor={darkColor}
                 />
               );
             })}
