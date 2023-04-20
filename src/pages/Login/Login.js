@@ -99,44 +99,52 @@ function Signup() {
       <article className="login">
         <h1 className="login__header">Login</h1>
         <form className="login__form">
-          <div className="login__form-field">
-            <img src={userIcon} />
-            <input
-              type="text"
-              name="email"
-              id="email"
-              placeholder="email"
-              onChange={(event) => handleEmail(event)}
-              className="login__form-input"
-            />
-          </div>
+          <section className="login__form-field-container">
+            <div className="login__form-field">
+              <img src={userIcon} />
+              <input
+                type="text"
+                name="email"
+                id="email"
+                placeholder="email"
+                onChange={(event) => handleEmail(event)}
+                className="login__form-input"
+              />
+            </div>
 
-          <span
-            className={emailError ? "profile__error" : "profile__error--hidden"}
-          >
-            Please enter a valid email address.
-          </span>
+            <span
+              className={
+                emailError ? "login__form-error" : "login__form-error--hidden"
+              }
+            >
+              Please enter a valid email address.
+            </span>
+          </section>
 
-          <div className="login__form-field">
-            <img src={lockIcon} />
-            <input
-              type="password"
-              name="password"
-              id="password"
-              placeholder="password"
-              autoComplete="off"
-              onChange={(event) => handlePassword(event)}
-              className="login__form-input"
-            />
-          </div>
+          <section className="login__form-field-container">
+            <div className="login__form-field">
+              <img src={lockIcon} />
+              <input
+                type="password"
+                name="password"
+                id="password"
+                placeholder="password"
+                autoComplete="off"
+                onChange={(event) => handlePassword(event)}
+                className="login__form-input"
+              />
+            </div>
 
-          <span
-            className={
-              passwordError ? "profile__error" : "profile__error--hidden"
-            }
-          >
-            Please enter a valid password.
-          </span>
+            <span
+              className={
+                passwordError
+                  ? "login__form-error"
+                  : "login__form-error--hidden"
+              }
+            >
+              Please enter a valid password.
+            </span>
+          </section>
 
           <Link className="login__button-container" to="/chess">
             <button

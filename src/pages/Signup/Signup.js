@@ -169,105 +169,125 @@ function Signup() {
         <h1 className="signup__header">Sign Up</h1>
         <form className="signup__form">
           <h2 className="signup__form-header">Login Information</h2>
-          <div className="signup__form-field">
-            <img src={userIcon} />
-            <input
-              type="text"
-              name="email"
-              id="email"
-              placeholder="email"
-              onChange={(event) => handleEmail(event)}
-              className="signup__form-input"
-            />
-          </div>
+          <section className="signup__form-field-container">
+            <div className="signup__form-field">
+              <img src={userIcon} />
+              <input
+                type="text"
+                name="email"
+                id="email"
+                placeholder="email"
+                onChange={(event) => handleEmail(event)}
+                className="signup__form-input"
+              />
+            </div>
 
-          <span
-            className={emailError ? "profile__error" : "profile__error--hidden"}
-          >
-            Please enter a valid email address.
-          </span>
+            <span
+              className={
+                emailError ? "signup__form-error" : "signup__form-error--hidden"
+              }
+            >
+              Please enter a valid email address.
+            </span>
+          </section>
 
-          <div className="signup__form-field">
-            <img src={lockIcon} />
-            <input
-              type="password"
-              name="password"
-              id="password"
-              placeholder="password"
-              autoComplete="off"
-              onChange={(event) => handlePassword(event)}
-              className="signup__form-input"
-            />
-          </div>
+          <section className="signup__form-field-container">
+            <div className="signup__form-field">
+              <img src={lockIcon} />
+              <input
+                type="password"
+                name="password"
+                id="password"
+                placeholder="password"
+                autoComplete="off"
+                onChange={(event) => handlePassword(event)}
+                className="signup__form-input"
+              />
+            </div>
 
-          <span
-            className={
-              passwordError ? "profile__error" : "profile__error--hidden"
-            }
-          >
-            Please enter a valid password.
-          </span>
+            <span
+              className={
+                passwordError
+                  ? "signup__form-error"
+                  : "signup__form-error--hidden"
+              }
+            >
+              Please enter a valid password.
+            </span>
+          </section>
 
-          <div className="signup__form-field">
-            <img src={confirmPasswordIcon} />
-            <input
-              type="password"
-              name="confirmPassword"
-              id="confirmPassword"
-              placeholder="confirm password"
-              autoComplete="off"
-              onChange={(event) => handleConfirmPassword(event)}
-              className="signup__form-input"
-            />
-          </div>
+          <section className="signup__form-field-container">
+            <div className="signup__form-field">
+              <img src={confirmPasswordIcon} />
+              <input
+                type="password"
+                name="confirmPassword"
+                id="confirmPassword"
+                placeholder="confirm password"
+                autoComplete="off"
+                onChange={(event) => handleConfirmPassword(event)}
+                className="signup__form-input"
+              />
+            </div>
 
-          <span
-            className={
-              confirmPasswordError ? "profile__error" : "profile__error--hidden"
-            }
-          >
-            Please make sure passwords match.
-          </span>
+            <span
+              className={
+                confirmPasswordError
+                  ? "signup__form-error"
+                  : "signup__form-error--hidden"
+              }
+            >
+              Please make sure passwords match.
+            </span>
+          </section>
 
           <h2 className="signup__form-header">Account Info</h2>
 
-          <div className="signup__form-field">
-            <img src={whiteKing} />
-            <input
-              type="text"
-              name="name"
-              id="name"
-              placeholder="display name"
-              autoComplete="off"
-              onChange={(event) => handleName(event)}
-              className="signup__form-input"
-            />
-          </div>
+          <section className="signup__form-field-container">
+            <div className="signup__form-field">
+              <img src={whiteKing} />
+              <input
+                type="text"
+                name="name"
+                id="name"
+                placeholder="display name"
+                autoComplete="off"
+                onChange={(event) => handleName(event)}
+                className="signup__form-input"
+              />
+            </div>
 
-          <span
-            className={nameError ? "profile__error" : "profile__error--hidden"}
-          >
-            Please enter a display name.
-          </span>
+            <span
+              className={
+                nameError ? "signup__form-error" : "signup__form-error--hidden"
+              }
+            >
+              Please enter a display name.
+            </span>
+          </section>
 
-          <div className="signup__form-field">
-            <img src={blackPawn} />
-            <input
-              type="text"
-              name="elo"
-              id="elo"
-              placeholder="estimated starting elo"
-              autoComplete="off"
-              onChange={(event) => handleElo(event)}
-              className="signup__form-input"
-            />
-          </div>
+          <section className="signup__form-field-container">
+            <div className="signup__form-field">
+              <img src={blackPawn} />
+              <input
+                type="text"
+                name="elo"
+                id="elo"
+                placeholder="estimated starting elo"
+                autoComplete="off"
+                onChange={(event) => handleElo(event)}
+                className="signup__form-input"
+              />
+            </div>
 
-          <span
-            className={eloError ? "profile__error" : "profile__error--hidden"}
-          >
-            Please enter a number with less than 5 digits.
-          </span>
+            <span
+              className={
+                eloError ? "signup__form-error" : "signup__form-error--hidden"
+              }
+            >
+              Please enter a number with less than 5 digits.
+            </span>
+          </section>
 
           <Link className="signup__button-container" to="/home">
             <button
