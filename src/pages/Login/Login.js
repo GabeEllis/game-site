@@ -7,44 +7,72 @@ import Navbar from "../Navbar/Navbar";
 import "./Login.scss";
 
 function Signup() {
-  const [error, setError] = useState("");
+  // State variables for form data.
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  // State variables for form errors.
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
 
   //   Gets email.
   const handleEmail = (event) => {
     setEmail(event.target.value);
+
+    // Checks to see if email isn't valid, if not applies error if so removes error.
+    if (isEmailValid(event.target.value)) {
+      setEmailError(false);
+    } else {
+      setEmailError(true);
+    }
   };
+
   //   Gets password.
   const handlePassword = (event) => {
     setPassword(event.target.value);
+
+    // Checks to see if password isn't valid, if not applies error if so removes error.
+    if (isPasswordValid(event.target.value)) {
+      setPasswordError(false);
+    } else {
+      setPasswordError(true);
+    }
+  };
+
+  // Email validation
+  function isEmailValid(email) {
+    if (
+      !/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+        email
+      )
+    ) {
+      return false;
+    }
+    return true;
+  }
+
+  // Password validation, makes sure the password has at least one special character, one number, and is between 6-16 characters.
+  function isPasswordValid(password) {
+    if (
+      !/^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/.test(password)
+    ) {
+      return false;
+    }
+    return true;
+  }
+
+  // Checks to see if the form information is valid.
+  const isFormValid = () => {
+    if (emailError || passwordError) {
+      return false;
+    }
+
+    return true;
   };
 
   //   When the user clicks submit, run this function.
   const handleSubmit = (event) => {
     event.preventDefault();
-
-    //Validate no empty fields
-    if (!email || !password) {
-      return;
-    }
-
-    // Email validation
-    else if (
-      !/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
-        email
-      )
-    ) {
-      return;
-    }
-
-    // Password validation
-    // Makes sure the password has at least one special character, one number, and is between 6-16 characters.
-    else if (
-      !/^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/.test(password)
-    ) {
-      return;
-    }
 
     const loginData = {
       email: email,
@@ -52,7 +80,7 @@ function Signup() {
     };
 
     // Post if no errors
-    if (!error) {
+    if (isFormValid() === true) {
       axios
         .post("https://game-site-server.onrender.com/users/login", loginData)
         .then((response) => {
@@ -83,6 +111,12 @@ function Signup() {
             />
           </div>
 
+          <span
+            className={emailError ? "profile__error" : "profile__error--hidden"}
+          >
+            Please enter a valid email address.
+          </span>
+
           <div className="login__form-field">
             <img src={lockIcon} />
             <input
@@ -95,6 +129,14 @@ function Signup() {
               className="login__form-input"
             />
           </div>
+
+          <span
+            className={
+              passwordError ? "profile__error" : "profile__error--hidden"
+            }
+          >
+            Please enter a valid password.
+          </span>
 
           <Link className="login__button-container" to="/chess">
             <button
