@@ -35,13 +35,15 @@
     &-field {
       width: 100%;
       position: relative;
-      margin-bottom: 0.75rem;
+      &-container {
+        margin-bottom: 0.75rem;
 
-      @include tablet {
-        margin-bottom: 1.25rem;
-      }
-      @include desktop {
-        margin-bottom: 1.25rem;
+        @include tablet {
+          margin-bottom: 1.25rem;
+        }
+        @include desktop {
+          margin-bottom: 1.25rem;
+        }
       }
       & > img {
         width: 2rem;
@@ -68,6 +70,13 @@
 
       &:focus {
         outline: 1px solid rgb(61, 142, 169);
+      }
+    }
+    &-error {
+      @include body-copy;
+      color: rgb(190, 15, 15);
+      &--hidden {
+        display: none;
       }
     }
   }
