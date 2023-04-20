@@ -47,7 +47,16 @@
     &-field {
       width: 100%;
       position: relative;
-      margin-bottom: 0.75rem;
+      &-container {
+        margin-bottom: 0.75rem;
+
+        @include tablet {
+          margin-bottom: 1.25rem;
+        }
+        @include desktop {
+          margin-bottom: 1.25rem;
+        }
+      }
       & > img {
         width: 2rem;
         height: 2rem;
@@ -70,6 +79,13 @@
       border-radius: 0.25rem;
       background-color: #fdfdfd;
       padding: 0.5rem 1rem 0.5rem 3rem;
+    }
+    &-error {
+      @include body-copy;
+      color: rgb(190, 15, 15);
+      &--hidden {
+        display: none;
+      }
     }
   }
   &__button {
