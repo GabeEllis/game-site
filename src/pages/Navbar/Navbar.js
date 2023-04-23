@@ -10,19 +10,29 @@ function Navbar() {
       <nav className="navbar">
         <ul>
           <li>
-            <NavLink to="/">Home</NavLink>
+            <NavLink to="/">
+              <p>Home</p>
+            </NavLink>
           </li>
           <li>
-            <NavLink to="/sudoku">Sudoku</NavLink>
+            <NavLink to="/sudoku">
+              <p>Sudoku</p>
+            </NavLink>
           </li>
           <li>
-            <NavLink to="/chess">Chess</NavLink>
+            <NavLink to="/chess">
+              <p>Chess</p>
+            </NavLink>
           </li>
           <li>
-            <NavLink to="/profile">Profile</NavLink>
+            <NavLink to="/profile">
+              <p>Profile</p>
+            </NavLink>
           </li>
           <li>
-            <NavLink to="/signout">Sign out</NavLink>
+            <NavLink to="/signout">
+              <p>Sign out</p>
+            </NavLink>
           </li>
         </ul>
       </nav>
