@@ -14,17 +14,12 @@
     margin: 0;
     & > li {
       @include subheader;
-      height: 100%;
-      padding: 1rem 0;
-      background-color: rgb(40, 40, 40);
       display: flex;
       justify-content: center;
       align-items: center;
+      height: 100%;
+      background-color: rgb(40, 40, 40);
       flex-grow: 1;
-
-      @include tablet {
-        padding: 2rem 0;
-      }
 
       &:last-child {
         border: none;
@@ -33,8 +28,20 @@
         background-color: rgb(20, 20, 20);
       }
       & > a {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        padding: 1rem 0;
         color: ivory;
         text-decoration: none;
+
+        @include tablet {
+          padding: 2rem 0;
+        }
+        & > p {
+        }
       }
     }
   }
